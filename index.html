@@ -383,6 +383,20 @@
   .btn-close:hover { background: #e9eaee; }
   .btn-apply { background: var(--grip); border: 0; color: #fff; font-size: 15px; font-weight: 800; padding: 13px 34px; border-radius: 10px; cursor: pointer; }
   .btn-apply:hover { background: var(--grip-strong); }
+
+  /* 일괄 수정 실패 팝업 */
+  .modal-fail { max-width: 600px; }
+  .fail-lead { font-size: 15px; font-weight: 600; color: #2b2d34; line-height: 1.65; margin: 0 0 22px; }
+  .fail-subhead { font-size: 15px; font-weight: 800; color: #1d1f25; margin: 0 0 12px; }
+  .fail-table-wrap { border: 1px solid #e3e4e8; border-radius: 8px; overflow: hidden; }
+  .fail-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .fail-table th { background: #f4f5f7; color: #5c606b; font-weight: 600; padding: 13px 10px; }
+  .fail-table thead tr { border-bottom: 1px solid #e3e4e8; }
+  .fail-table th + th, .fail-table td + td { border-left: 1px solid #e3e4e8; }
+  .fail-table td { padding: 16px 12px; text-align: center; color: #2b2d34; }
+  .fail-table .col-no { width: 70px; }
+  .fail-table .col-name { width: 160px; }
+  .fail-table td.reason { color: #2b2d34; }
   .drag { color: #c6c9d0; align-self: center; font-size: 18px; padding: 0 2px; cursor: grab; }
 
   .sales-stats {
@@ -911,6 +925,26 @@
   </div>
 </div>
 
+<!-- 일괄 수정 실패 팝업 -->
+<div class="modal-overlay" id="failModal">
+  <div class="modal modal-fail" role="dialog" aria-modal="true" aria-label="일괄 수정 실패">
+    <div class="modal-title">일괄 수정 실패</div>
+    <div class="modal-body">
+      <p class="fail-lead">상품 수정에 실패한 <span id="failCount">1</span>개 상품을 제외하고 수정사항이 반영되었습니다. 실패 건은 사유 확인 후 다시 시도해 주세요.</p>
+      <div class="fail-subhead">실패 내역</div>
+      <div class="fail-table-wrap">
+        <table class="fail-table">
+          <thead><tr><th class="col-no">NO</th><th class="col-name">상품명</th><th>사유</th></tr></thead>
+          <tbody id="failTbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-foot" style="justify-content:flex-end;">
+      <button class="btn-apply" id="failOk">확인</button>
+    </div>
+  </div>
+</div>
+
 <script>
   // 라이브 방송 타이머 — 초 단위 카운트업
   (function () {
@@ -989,7 +1023,13 @@
       });
     });
 
-    function closeModal() { modal.classList.remove('open'); }
+    var pmPrice = document.getElementById('pmPrice');
+    // 팝업이 닫히면 항상 전체선택으로 초기화 + 입력값 비움
+    function resetPm() {
+      pmChecks.forEach(function (c) { c.classList.add('checked'); });
+      if (pmPrice) pmPrice.value = '';
+    }
+    function closeModal() { modal.classList.remove('open'); resetPm(); }
     if (btnPrice) btnPrice.addEventListener('click', function () {
       if (!btnPrice.classList.contains('enabled')) return;
       if (pmCount) pmCount.textContent = checkedRows().length;
@@ -999,23 +1039,51 @@
     if (pmClose) pmClose.addEventListener('click', closeModal);
     if (modal) modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
 
-    // 반영 — 선택 상품들의 선택 가격 항목 일괄 변경
-    var pmPrice = document.getElementById('pmPrice');
+    // 실패 팝업
+    var failModal = document.getElementById('failModal');
+    function showFail(names) {
+      document.getElementById('failCount').textContent = names.length;
+      var tb = document.getElementById('failTbody');
+      tb.innerHTML = '';
+      names.forEach(function (nm, i) {
+        var tr = document.createElement('tr');
+        var c1 = document.createElement('td'); c1.textContent = String(i + 1);
+        var c2 = document.createElement('td'); c2.textContent = nm;
+        var c3 = document.createElement('td'); c3.className = 'reason'; c3.textContent = '라이브가 최소 금액은 200원 입니다.';
+        tr.appendChild(c1); tr.appendChild(c2); tr.appendChild(c3);
+        tb.appendChild(tr);
+      });
+      failModal.classList.add('open');
+    }
+    var failOk = document.getElementById('failOk');
+    if (failOk) failOk.addEventListener('click', function () { failModal.classList.remove('open'); });
+    if (failModal) failModal.addEventListener('click', function (e) { if (e.target === failModal) failModal.classList.remove('open'); });
+
+    // 반영 — 선택 상품들의 선택 가격 항목 일괄 변경 (라이브가 최소 200원)
+    var LIVE_MIN = 200;
     var pmApply = document.getElementById('pmApply');
     if (pmApply) pmApply.addEventListener('click', function () {
       var raw = (pmPrice.value || '').replace(/[^0-9]/g, '');
       if (!raw) { closeModal(); return; }
-      var disp = parseInt(raw, 10).toLocaleString('en-US');
+      var num = parseInt(raw, 10);
+      var disp = num.toLocaleString('en-US');
       var doJ = pmGet('jeongga') && pmGet('jeongga').classList.contains('checked');
       var doS = pmGet('sangsi') && pmGet('sangsi').classList.contains('checked');
       var doL = pmGet('live') && pmGet('live').classList.contains('checked');
+      var failed = [];
       checkedRows().forEach(function (r) {
+        // 라이브가 최소 금액(200원) 미달 → 해당 상품은 수정에서 제외
+        if (doL && num < LIVE_MIN) {
+          var ni = r.querySelector('.pr-name-input');
+          failed.push(ni ? ni.value : '상품');
+          return;
+        }
         if (doJ) { var a = r.querySelector('.pi-regular-value'); if (a) a.textContent = disp + '원'; }
         if (doS) { var b = r.querySelector('.pi-discount-value'); if (b) b.textContent = disp + '원'; }
         if (doL) { var c = r.querySelector('.pi-live-input'); if (c) c.value = disp; }
       });
-      pmPrice.value = '';
       closeModal();
+      if (failed.length) showFail(failed);
     });
 
     refresh();
