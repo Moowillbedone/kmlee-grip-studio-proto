@@ -554,6 +554,71 @@
   .toast .t-ic { width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; font-size: 12px; font-weight: 800; }
   .toast.success .t-ic { background: #22c55e; color: #fff; }
   .toast.fail .t-ic { background: var(--grip); color: #fff; }
+
+  /* PRD 상단: 과제 개요 + 검증 플로우 */
+  .prd-overview { background: #fbfbfc; border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 14px; }
+  .ov-title { font-size: 14px; font-weight: 800; color: #1d1f25; display: flex; align-items: center; gap: 7px; margin-bottom: 6px; }
+  .prd-k2 { display: block; font-size: 11px; font-weight: 800; color: #9499a3; letter-spacing: .03em; margin: 13px 0 5px; }
+  .prd-overview p { margin: 0; font-size: 12.5px; line-height: 1.65; color: #41444d; }
+  .prd-overview p b { color: var(--grip); font-weight: 700; }
+  .prd-flow { margin-bottom: 16px; }
+  .vflow { display: flex; flex-direction: column; }
+  .vstep { position: relative; margin-bottom: 26px; }
+  .vstep:last-child { margin-bottom: 0; }
+  .vstep::after { content: "↓"; position: absolute; left: 50%; bottom: -20px; transform: translateX(-50%); color: #c4c9d1; font-size: 13px; }
+  .vstep:last-child::after { display: none; }
+  .vnode { position: relative; background: #fff; border: 1px solid var(--field-border); border-radius: 10px; padding: 10px 12px 10px 40px; font-size: 12.5px; font-weight: 700; color: #2b2d34; }
+  .vnode small { display: block; font-weight: 500; font-size: 11px; color: var(--t3); margin-top: 3px; line-height: 1.5; }
+  .vn-num { position: absolute; left: 10px; top: 11px; width: 22px; height: 22px; border-radius: 50%; background: var(--grip); color: #fff; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+  .vdecision { background: var(--grip-soft); border: 1px solid #f6c6d0; color: var(--grip); font-weight: 800; font-size: 12.5px; text-align: center; padding: 11px; border-radius: 10px; }
+  .vbranch { display: flex; gap: 8px; }
+  .vout { flex: 1; border-radius: 10px; padding: 9px 11px; font-size: 11.5px; font-weight: 700; line-height: 1.5; }
+  .vout-ok { background: #eafaf0; border: 1px solid #bfe9cf; color: #1f8b4c; }
+  .vout-no { background: #fdeef0; border: 1px solid #f6c6d0; color: var(--grip-strong); }
+  .vnode-final { background: #f5f6f8; }
+
+  /* 자동 데모 런치 버튼 + 모달 */
+  .demo-launch { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: #1d1f25; color: #fff; border: 0; border-radius: 10px; padding: 13px; font-size: 13.5px; font-weight: 800; cursor: pointer; margin-bottom: 14px; }
+  .demo-launch:hover { background: #2c2f38; }
+  .demo-launch .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--grip); animation: livePulse 1.5s ease-out infinite; }
+  #demoModal { z-index: 145; }
+  .demo-modal { max-width: 560px; }
+  .demo-loop { font-size: 11px; font-weight: 700; color: var(--grip); background: var(--grip-soft); padding: 3px 8px; border-radius: 6px; margin-left: 8px; vertical-align: middle; }
+  .demo-caption { font-size: 13.5px; font-weight: 700; color: #1d1f25; background: #fbfbfc; border: 1px solid var(--border); border-left: 3px solid var(--grip); border-radius: 8px; padding: 11px 13px; margin-bottom: 14px; min-height: 44px; display: flex; align-items: center; line-height: 1.5; }
+  .demo-stage { position: relative; background: #f6f6f8; border-radius: 12px; padding: 16px; min-height: 232px; }
+  .dm-row { display: flex; align-items: center; gap: 10px; background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 12px; transition: box-shadow .2s, border-color .2s; }
+  .dm-row.sel { border-color: var(--grip); box-shadow: 0 0 0 3px rgba(245,55,91,.12); }
+  .dm-check { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid #cfd2d9; color: #cdd0d8; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; flex: 0 0 auto; transition: all .2s; }
+  .dm-check.on { background: var(--grip); border-color: var(--grip); color: #fff; }
+  .dm-name { font-size: 12px; font-weight: 700; color: #2b2d34; white-space: nowrap; }
+  .dm-prices { display: flex; gap: 9px; flex: 1; }
+  .dm-cell { display: flex; flex-direction: column; gap: 2px; align-items: flex-start; }
+  .dm-cell i { font-size: 10px; color: var(--t3); font-style: normal; }
+  .dm-cell b { font-size: 13px; font-weight: 800; color: #20222a; transition: color .2s; }
+  .dm-cell.flash b { color: var(--grip); }
+  .dm-badge { font-size: 10px; font-weight: 800; color: var(--grip); background: #fdeaef; border-radius: 4px; padding: 1px 4px; font-style: normal; margin-top: 2px; }
+  .dm-edit { background: #f4f5f7; color: #aeb2bb; border: 0; border-radius: 8px; padding: 8px 12px; font-size: 12px; font-weight: 700; flex: 0 0 auto; transition: all .2s; }
+  .dm-edit.on { background: var(--grip-soft-2); color: var(--grip); box-shadow: 0 0 0 1px var(--grip) inset; }
+  .dm-edit.press { background: var(--grip); color: #fff; box-shadow: none; }
+  .dm-mobile { margin-top: 12px; font-size: 12px; color: #5c606b; background: #fff; border: 1px dashed #d4d8df; border-radius: 8px; padding: 9px 12px; }
+  .dm-mobile b { color: var(--grip); font-weight: 800; }
+  .dm-popup { position: absolute; left: 16px; right: 16px; bottom: 16px; background: #fff; border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 12px 32px rgba(20,22,30,.22); padding: 13px 15px; opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity .25s, transform .25s; z-index: 4; }
+  .dm-popup.show { opacity: 1; transform: none; }
+  .dm-popup-title { font-size: 13px; font-weight: 800; color: #1d1f25; margin-bottom: 8px; }
+  .dm-chips { font-size: 11.5px; color: var(--grip); font-weight: 700; margin-bottom: 9px; }
+  .dm-input { font-size: 13px; color: #41444d; }
+  .dm-input b { font-size: 15px; font-weight: 800; color: #20222a; border: 1px solid var(--field-border); border-radius: 6px; padding: 3px 9px; margin-right: 4px; }
+  .dm-apply { display: inline-block; margin-top: 10px; background: var(--grip); color: #fff; font-size: 12px; font-weight: 800; padding: 7px 18px; border-radius: 8px; }
+  .dm-toast { position: absolute; left: 16px; bottom: 16px; display: flex; align-items: center; gap: 8px; background: #1f2126; color: #fff; font-size: 12.5px; font-weight: 700; padding: 9px 13px; border-radius: 10px; opacity: 0; transform: translateY(8px); transition: all .25s; z-index: 6; }
+  .dm-toast.show { opacity: 1; transform: none; }
+  .dm-toast .ic { width: 16px; height: 16px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; }
+  .dm-toast.ok .ic { background: #22c55e; }
+  .dm-toast.no .ic { background: var(--grip); }
+  .dm-sync { position: absolute; right: 16px; bottom: 16px; font-size: 12px; font-weight: 800; color: #5a52e0; background: #eef0ff; border: 1px solid #d6dcff; border-radius: 8px; padding: 9px 13px; opacity: 0; transition: opacity .25s; z-index: 5; }
+  .dm-sync.show { opacity: 1; }
+  .dm-dots { display: flex; gap: 6px; justify-content: center; margin-top: 14px; }
+  .dm-dots span { width: 7px; height: 7px; border-radius: 50%; background: #d4d8df; transition: all .2s; }
+  .dm-dots span.on { background: var(--grip); width: 18px; border-radius: 4px; }
 </style>
 </head>
 <body>
@@ -1036,11 +1101,70 @@
     </div>
     <button class="prd-close" id="prdClose" title="닫기">✕</button>
   </div>
-  <div class="prd-list" id="prdList"></div>
+  <div class="prd-list" id="prdList">
+    <button class="demo-launch" id="demoLaunch"><span class="pulse"></span> ▶ 자동 데모 보기 (검증 플로우 재생)</button>
+    <div class="prd-overview">
+      <div class="ov-title">🎯 과제 개요</div>
+      <span class="prd-k2">과제의 목적</span>
+      <p>비즈센터와 스튜디오는 한정판매 상품의 <b>가격 데이터를 연동·공유</b>한다. 비즈센터에서 막혀 있던 가격 수정 제약을 풀어, <b>정가·상시할인가·라이브가를 리스트에서 자유롭게(+일괄로) 수정</b>할 수 있게 하는 것이 목표.</p>
+      <span class="prd-k2">배경 · 실제 문제</span>
+      <p>[비즈센터] 한정판매 &gt; 방송상품설정에서 <b>정가(정상가) 수정이 막혀 있어</b>, 할인가·라이브가를 정가보다 높게 입력하면 <b>가격 방어 밸리데이션</b>에 걸려 수정이 불가했다.</p>
+      <span class="prd-k2">해결</span>
+      <p>상품 가격 리스트에서 <b>정가·상시할인가·라이브가를 모두 인라인 수정</b> 가능하게 하고, <b>[가격 수정] 버튼으로 일괄 수정</b>까지 지원. 스튜디오도 같은 데이터를 연동하므로 동일 정책을 반영.</p>
+    </div>
+    <div class="prd-flow">
+      <span class="prd-k2">검증 플로우</span>
+      <div class="vflow">
+        <div class="vstep"><div class="vnode"><span class="vn-num">1</span>상품 1개 이상 선택</div></div>
+        <div class="vstep"><div class="vnode"><span class="vn-num">2</span>액션 버튼 활성화 확인<small>가격 수정 · 스토어 ON / OFF</small></div></div>
+        <div class="vstep"><div class="vnode"><span class="vn-num">3</span>인라인 가격 수정 + Enter<small>정가·상시·라이브 → 배지 자동계산 · 모바일 반영 · 성공 토스트</small></div></div>
+        <div class="vstep"><div class="vnode"><span class="vn-num">4</span>[가격 수정] → 일괄수정 팝업<small>팝업 열 때 전체선택</small></div></div>
+        <div class="vstep"><div class="vnode"><span class="vn-num">5</span>변경 대상 선택 + 금액 입력 → 반영</div></div>
+        <div class="vstep"><div class="vdecision">라이브가 ≥ 200원 ?</div></div>
+        <div class="vstep"><div class="vbranch"><div class="vout vout-ok">예 → 적용 + 성공 토스트</div><div class="vout vout-no">아니오 → 실패 내역 팝업 · 미적용 · 실패 토스트</div></div></div>
+        <div class="vstep"><div class="vnode vnode-final"><span class="vn-num">6</span>변경 결과 비즈센터 데이터 연동 확인</div></div>
+      </div>
+    </div>
+  </div>
 </aside>
 
 <!-- 토스트(좌측 하단) -->
 <div class="toast-wrap" id="toastWrap"></div>
+
+<!-- 자동 데모 모달 (검증 플로우 반복 재생) -->
+<div class="modal-overlay" id="demoModal">
+  <div class="modal demo-modal" role="dialog" aria-modal="true" aria-label="자동 데모">
+    <div class="modal-title">자동 데모 · 가격 수정 플로우<span class="demo-loop">↻ 자동 반복</span></div>
+    <div class="modal-body">
+      <div class="demo-caption" id="demoCaption">—</div>
+      <div class="demo-stage">
+        <div class="dm-row" id="dmRow">
+          <span class="dm-check" id="dmCheck">✓</span>
+          <span class="dm-name">미니 대표 선크림</span>
+          <div class="dm-prices">
+            <div class="dm-cell"><i>정가</i><b id="dmReg">11,111</b></div>
+            <div class="dm-cell" id="dmDisCell"><i>상시할인가</i><b id="dmDis">1,000</b><span class="dm-badge" id="dmBadge">91%</span></div>
+            <div class="dm-cell" id="dmLiveCell"><i>라이브가</i><b id="dmLive">1,000</b></div>
+          </div>
+          <button class="dm-edit" id="dmEdit">가격 수정</button>
+        </div>
+        <div class="dm-mobile">📱 모바일 라이브가 <b id="dmMobile">1,000원 · 91%</b></div>
+        <div class="dm-popup" id="dmPopup">
+          <div class="dm-popup-title">가격 일괄 수정</div>
+          <div class="dm-chips">✓ 전체 · ✓ 정가 · ✓ 상시할인가 · ✓ 라이브가</div>
+          <div class="dm-input"><b id="dmInput">3,000</b>원으로 수정합니다.</div>
+          <span class="dm-apply">반영</span>
+        </div>
+        <div class="dm-toast" id="dmToast"><span class="ic">✓</span><span id="dmToastTxt">가격 수정에 성공하였습니다.</span></div>
+        <div class="dm-sync" id="dmSync">↔ 비즈센터 연동 반영</div>
+      </div>
+      <div class="dm-dots" id="dmDots"></div>
+    </div>
+    <div class="modal-foot" style="justify-content:flex-end;">
+      <button class="btn-close" id="demoClose">닫기</button>
+    </div>
+  </div>
+</div>
 
 <script>
   // 라이브 방송 타이머 — 초 단위 카운트업
@@ -1360,6 +1484,74 @@
     if (closeBtn) closeBtn.addEventListener('click', function () { setMode(false); });
     window.addEventListener('resize', function () { if (on) place(); });
     window.addEventListener('scroll', function () { if (on) place(); }, { passive: true });
+  })();
+
+  // ============ 자동 데모 (검증 플로우 반복 재생) ============
+  (function () {
+    var modal = document.getElementById('demoModal');
+    var launch = document.getElementById('demoLaunch');
+    var closeBtn = document.getElementById('demoClose');
+    if (!modal || !launch) return;
+    var $ = function (id) { return document.getElementById(id); };
+    var cap = $('demoCaption'), row = $('dmRow'), check = $('dmCheck'), edit = $('dmEdit');
+    var dis = $('dmDis'), live = $('dmLive'), badge = $('dmBadge'), mobile = $('dmMobile');
+    var disCell = $('dmDisCell'), liveCell = $('dmLiveCell');
+    var popup = $('dmPopup'), input = $('dmInput'), toast = $('dmToast'), toastTxt = $('dmToastTxt'), sync = $('dmSync');
+    var dots = $('dmDots');
+
+    function setToast(txt, ok) { toastTxt.textContent = txt; toast.querySelector('.ic').textContent = ok ? '✓' : '✕'; toast.className = 'dm-toast show ' + (ok ? 'ok' : 'no'); }
+    function clearToast() { toast.className = 'dm-toast'; }
+    function unflash() { disCell.classList.remove('flash'); liveCell.classList.remove('flash'); }
+
+    var steps = [
+      { c: '① 상품 미선택 — [가격 수정] 버튼 비활성', f: function () {
+        check.classList.remove('on'); row.classList.remove('sel'); edit.classList.remove('on', 'press');
+        dis.textContent = '1,000'; live.textContent = '1,000'; badge.textContent = '91%'; mobile.textContent = '1,000원 · 91%';
+        popup.classList.remove('show'); clearToast(); sync.classList.remove('show'); unflash();
+      } },
+      { c: '② 상품 선택 → [가격 수정]·스토어 ON/OFF 버튼 활성화', f: function () {
+        check.classList.add('on'); row.classList.add('sel'); edit.classList.add('on');
+      } },
+      { c: '③ 라이브가 인라인 직접 수정 + Enter → 모바일 실시간 반영 · 성공 토스트', f: function () {
+        unflash(); live.textContent = '2,500'; liveCell.classList.add('flash'); mobile.textContent = '2,500원 · 78%';
+        setToast('가격 수정에 성공하였습니다.', true);
+      } },
+      { c: '④ [가격 수정] → 일괄 수정 팝업(열 때 전체선택) · 금액 3,000 입력', f: function () {
+        unflash(); clearToast(); edit.classList.add('press'); input.textContent = '3,000'; popup.classList.add('show');
+      } },
+      { c: '⑤ 반영 → 라이브가 ≥ 200원 → 적용 + 성공 토스트', f: function () {
+        popup.classList.remove('show'); edit.classList.remove('press');
+        dis.textContent = '3,000'; live.textContent = '3,000'; badge.textContent = '73%'; mobile.textContent = '3,000원 · 73%';
+        disCell.classList.add('flash'); liveCell.classList.add('flash'); setToast('가격 수정에 성공하였습니다.', true);
+      } },
+      { c: '⑥ 200원 미만(150) 입력 → 반영 시도', f: function () {
+        unflash(); clearToast(); edit.classList.add('press'); input.textContent = '150'; popup.classList.add('show');
+      } },
+      { c: '⑦ 실패 → 미적용 (라이브가 최소 200원) · 실패 토스트', f: function () {
+        popup.classList.remove('show'); edit.classList.remove('press'); setToast('가격 수정에 실패하였습니다.', false);
+      } },
+      { c: '⑧ 변경 결과는 비즈센터와 데이터 연동 반영', f: function () {
+        clearToast(); sync.classList.add('show');
+      } }
+    ];
+
+    dots.innerHTML = '';
+    var dotEls = steps.map(function () { var s = document.createElement('span'); dots.appendChild(s); return s; });
+
+    var idx = 0, timer = null;
+    function render() {
+      cap.textContent = steps[idx].c;
+      steps[idx].f();
+      dotEls.forEach(function (d, i) { d.classList.toggle('on', i === idx); });
+    }
+    function tick() { idx = (idx + 1) % steps.length; render(); }
+    function start() { idx = 0; render(); clearInterval(timer); timer = setInterval(tick, 2400); }
+    function stop() { clearInterval(timer); timer = null; }
+
+    launch.addEventListener('click', function () { modal.classList.add('open'); start(); });
+    function closeDemo() { modal.classList.remove('open'); stop(); }
+    if (closeBtn) closeBtn.addEventListener('click', closeDemo);
+    modal.addEventListener('click', function (e) { if (e.target === modal) closeDemo(); });
   })();
 </script>
 </body>
