@@ -486,17 +486,11 @@
   .prd-toggle .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--grip); }
   body.prd-on .prd-toggle { display: none; }
 
-  .app { transition: margin-right .26s ease; }
-  body.prd-on .app { margin-right: 360px; }
-  /* PRD 모드에서는 좌측 사이드바 + 방송 컬럼 숨김(가로 공간 확보) */
+  /* PRD 모드: 좌측 사이드바(225) + 방송 컬럼(348) + gap(16) = 589px를 숨겨, 그 폭을 그대로 PRD 패널이 흡수.
+     → 한정판매·실시간성과·채팅 컬럼은 PRD 켜기 전과 동일한 폭/비율을 유지(브로드캐스트만 빠짐). */
+  body.prd-on .app { margin-right: 589px; }
   body.prd-on .sidebar { display: none; }
   body.prd-on .col-broadcast { display: none; }
-  /* PRD 모드: 폭이 부족하면 우측 컬럼(성과·채팅)을 아래로 줄바꿈 — 겹침/잘림 방지, 컴포넌트 크기 유지 */
-  body.prd-on .main { flex-wrap: wrap; }
-  body.prd-on .col-sales { flex: 1 1 520px; min-width: 480px; }
-  body.prd-on .col-right { flex: 1 1 340px; flex-direction: row; flex-wrap: wrap; }
-  body.prd-on .col-right > * { flex: 1 1 300px; }
-  body.prd-on .chat-card { height: auto; min-height: 360px; }
 
   /* 화면 번호 라벨(마커) */
   .prd-marker {
@@ -512,7 +506,7 @@
 
   /* PRD 패널 */
   .prd-panel {
-    position: fixed; top: 0; right: 0; bottom: 0; width: 360px; z-index: 120;
+    position: fixed; top: 0; right: 0; bottom: 0; width: 589px; z-index: 120;
     background: #fff; border-left: 1px solid var(--border);
     box-shadow: -8px 0 28px rgba(20,22,30,.10);
     transform: translateX(100%); transition: transform .26s ease;
