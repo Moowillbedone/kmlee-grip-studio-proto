@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Grip Studio 2.0 · 라이브 스튜디오 대시보드 (프로토타입)</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<style>
+  :root {
+    /* Brand */
+    --grip: #f5375b;
+    --grip-strong: #ec2a4f;
+    --grip-soft: #ffeaef;
+    --grip-soft-2: #fff2f4;
+
+    /* Surfaces */
+    --bg: #f1f2f4;
+    --card: #ffffff;
+    --preview-bg: #f6f6f8;
+    --field: #ffffff;
+
+    /* Lines */
+    --border: #ececef;
+    --border-strong: #e2e3e7;
+    --field-border: #e3e4e8;
+
+    /* Text */
+    --t1: #1f2126;     /* primary */
+    --t2: #5c606b;     /* secondary */
+    --t3: #8d919c;     /* muted */
+    --t4: #b4b8c1;     /* faint */
+
+    /* Accents */
+    --navy: #2f3046;
+
+    --radius: 14px;
+    --radius-sm: 9px;
+    --shadow: 0 1px 2px rgba(24,27,34,.04), 0 1px 3px rgba(24,27,34,.03);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--t1);
+    font-family: "Pretendard", "Pretendard Variable", -apple-system, BlinkMacSystemFont,
+      "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -.01em;
+  }
+  button { font-family: inherit; cursor: pointer; }
+  input { font-family: inherit; }
+
+  .app { display: flex; min-height: 100vh; }
+
+  /* ============ SIDEBAR ============ */
+  .sidebar {
+    width: 225px;
+    flex: 0 0 225px;
+    background: #fff;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 22px 16px 18px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 2px 6px 0;
+    position: relative;
+  }
+  .brand-logo {
+    width: 30px; height: 30px;
+    border-radius: 9px;
+    background: var(--grip);
+    display: flex; align-items: center; justify-content: center;
+    flex: 0 0 auto;
+  }
+  .brand-name { font-size: 17px; font-weight: 800; color: #20222a; letter-spacing: -.02em; }
+  .brand-name .biz { font-weight: 600; color: #6f737d; margin-left: 3px; }
+  .brand-collapse {
+    position: absolute; right: 0; top: 0;
+    color: #c4c7ce; font-size: 15px; background: none; border: 0; padding: 2px;
+  }
+
+  .nav { margin-top: 26px; display: flex; flex-direction: column; gap: 4px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 11px;
+    padding: 11px 13px;
+    border-radius: 10px;
+    color: var(--t2);
+    font-size: 14.5px; font-weight: 600;
+    border: 0; background: none; width: 100%; text-align: left;
+  }
+  .nav-item svg { width: 19px; height: 19px; flex: 0 0 auto; }
+  .nav-item:hover { background: #f7f7f9; }
+  .nav-item.active { background: var(--grip-soft); color: var(--grip); }
+
+  .sidebar-spacer { flex: 1; }
+  .sidebar-bottom { display: flex; flex-direction: column; gap: 2px; }
+  .sidebar-bottom .nav-item { padding: 10px 13px; color: var(--t2); font-weight: 500; }
+  .profile {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 9px 2px;
+    margin-top: 6px;
+  }
+  .profile-avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: linear-gradient(135deg,#ffd1da,#ffb3c1);
+    flex: 0 0 auto;
+  }
+  .profile-meta { min-width: 0; }
+  .profile-name { font-size: 13.5px; font-weight: 700; color: #2a2c33; }
+  .profile-mail { font-size: 12px; color: var(--t3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 130px; }
+
+  /* ============ MAIN ============ */
+  .main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    gap: 16px;
+    padding: 18px;
+    align-items: flex-start;
+  }
+  .col-broadcast { flex: 0 0 348px; }
+  .col-sales { flex: 1 1 auto; min-width: 0; }
+  .col-right { flex: 0 0 360px; display: flex; flex-direction: column; gap: 16px; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+
+  /* ---------- Broadcast column ---------- */
+  .bc-card { padding: 16px 16px 0; overflow: hidden; }
+  .bc-head { display: flex; justify-content: space-between; align-items: center; color: var(--t3); font-size: 13px; font-weight: 600; }
+  .bc-timer { font-size: 30px; font-weight: 800; letter-spacing: .01em; margin: 2px 0 14px; color: #1c1e24; }
+  .bc-preview {
+    position: relative;
+    background: var(--preview-bg);
+    border-radius: 12px;
+    height: 470px;
+    margin: 0 -16px;
+    border-top: 1px solid var(--border);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 16px;
+  }
+  .bc-empty-icon { color: #c9ccd3; }
+  .bc-empty-title { font-size: 15px; font-weight: 700; color: #8b8f99; }
+  .bc-empty-sub { font-size: 13px; color: #b2b6bf; margin-top: -10px; }
+
+  .product-overlay {
+    position: absolute; left: 14px; right: 14px; bottom: 16px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(20,22,30,.10);
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px;
+  }
+  .po-thumb {
+    width: 56px; height: 56px; border-radius: 9px; flex: 0 0 auto;
+    background: #eef0f3; position: relative; overflow: hidden;
+  }
+  .po-badge {
+    position: absolute; top: 0; left: 0;
+    background: var(--navy); color: #fff;
+    font-size: 9px; font-weight: 700;
+    padding: 2px 5px; border-bottom-right-radius: 7px;
+  }
+  .po-info { flex: 1; min-width: 0; }
+  .po-name { font-size: 13.5px; font-weight: 600; color: #2b2d34; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .po-price { margin-top: 3px; font-size: 13px; }
+  .po-price .pct { color: var(--grip); font-weight: 800; }
+  .po-price .won { font-weight: 800; color: #20222a; margin-left: 3px; }
+  .po-stock { text-align: right; flex: 0 0 auto; font-size: 11.5px; line-height: 1.5; }
+  .po-stock .k { color: var(--t3); }
+  .po-stock .sell { color: var(--grip); font-weight: 800; }
+  .po-stock .v { font-weight: 800; color: #20222a; }
+
+  .action-bar {
+    display: flex; justify-content: space-between;
+    padding: 16px 8px 4px;
+  }
+  .action {
+    display: flex; flex-direction: column; align-items: center; gap: 7px;
+    background: none; border: 0; color: var(--t2); font-size: 12px; font-weight: 600;
+  }
+  .action .ico {
+    width: 46px; height: 46px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 2px 6px rgba(20,22,30,.08);
+  }
+  .ico-redo { background: #f0f1f4; }
+  .ico-draw { background: linear-gradient(135deg,#ffd66b,#ff9f43); }
+  .ico-ox   { background: #fff; border: 1px solid #eee; font-size: 14px; font-weight: 800; }
+  .ico-ox .o { color: var(--grip); }
+  .ico-ox .x { color: #3b82f6; }
+  .ico-init { background: linear-gradient(135deg,#ff8fa3,#f5375b); color:#fff; font-size: 15px; font-weight:800; }
+  .ico-dice { background: linear-gradient(135deg,#ff6b81,#ec2a4f); }
+
+  /* ---------- Sales panel (한정판매) ---------- */
+  .sales-card { padding: 18px 20px 18px; }
+  .sales-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .sales-title { font-size: 18px; font-weight: 800; color: #1d1f25; }
+  .head-btns { display: flex; gap: 8px; }
+  .btn-ghost {
+    background: #fff; border: 1px solid var(--field-border); color: #41444d;
+    font-size: 13px; font-weight: 600; padding: 8px 13px; border-radius: 9px;
+  }
+  .btn-ghost:hover { background: #fafafb; border-color: var(--border-strong); }
+
+  .sales-note { text-align: center; color: var(--t3); font-size: 12.5px; padding: 16px 0 14px; }
+
+  .toolbar { display: flex; gap: 8px; }
+  .select {
+    position: relative;
+    display: flex; align-items: center; justify-content: space-between; gap: 18px;
+    background: #fff; border: 1px solid var(--field-border); border-radius: 9px;
+    padding: 9px 12px; font-size: 13.5px; font-weight: 500; color: #34373f;
+    min-width: 118px;
+  }
+  .select svg { color: #b0b4bd; }
+  .search {
+    flex: 1; display: flex; align-items: center; gap: 8px;
+    background: #fff; border: 1px solid var(--field-border); border-radius: 9px;
+    padding: 9px 13px;
+  }
+  .search svg { color: #b9bdc6; flex: 0 0 auto; }
+  .search input { border: 0; outline: 0; flex: 1; font-size: 13.5px; color: #34373f; background: none; }
+  .search input::placeholder { color: #b3b7c0; }
+
+  .select-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 18px;
+  }
+  .checkbox-lbl { display: flex; align-items: center; gap: 9px; font-size: 13.5px; color: #41444d; font-weight: 500; }
+  .cbox {
+    width: 19px; height: 19px; border-radius: 6px; border: 1.5px solid #d4d7de; background:#fff;
+    display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto;
+  }
+  .store-toggle { display: flex; gap: 8px; }
+  .btn-store {
+    background: #f4f5f7; border: 1px solid #ededf0; color: #aeb2bb;
+    font-size: 12.5px; font-weight: 700; padding: 7px 14px; border-radius: 8px;
+  }
+
+  .product-row {
+    display: flex; align-items: flex-start; gap: 14px;
+    border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px 14px;
+    margin-top: 16px;
+  }
+  .pr-thumb {
+    width: 54px; height: 54px; border-radius: 9px; background: #eef0f3; flex: 0 0 auto;
+    position: relative; overflow: hidden;
+  }
+  .pr-main { flex: 1; min-width: 0; }
+  .pr-name-row { display: flex; align-items: center; gap: 10px; }
+  .pr-name-input {
+    flex: 1; border: 1px solid var(--field-border); border-radius: 9px;
+    padding: 10px 13px; font-size: 14px; font-weight: 600; color: #2b2d34;
+    outline: none; min-width: 0;
+  }
+  .btn-up {
+    background: var(--grip); color: #fff; border: 0;
+    font-size: 14px; font-weight: 800; padding: 10px 20px; border-radius: 9px;
+    display: inline-flex; align-items: center; gap: 5px; flex: 0 0 auto;
+  }
+  .btn-up:hover { background: var(--grip-strong); }
+  .btn-storeoff {
+    background: #f4f5f7; border: 1px solid #ededf0; color: #9aa0a9;
+    font-size: 13px; font-weight: 700; padding: 10px 16px; border-radius: 9px; flex: 0 0 auto;
+  }
+  .pr-price-row { display: flex; align-items: center; gap: 14px; margin-top: 11px; flex-wrap: wrap; }
+  .pr-orig { color: var(--t3); text-decoration: line-through; font-size: 13px; }
+  .pr-pct { color: var(--grip); font-weight: 800; font-size: 14px; }
+  .price-field {
+    display: inline-flex; align-items: baseline; gap: 4px;
+    border: 1px solid var(--field-border); border-radius: 9px;
+    padding: 9px 13px; font-size: 14px; font-weight: 700; color: #20222a;
+  }
+  .price-field .unit { color: var(--t3); font-weight: 500; font-size: 13px; }
+  .pr-sale-btns { display: flex; gap: 8px; margin-left: auto; }
+  .btn-sale { background: #fff; border: 1px solid var(--field-border); color: #5c606b; font-size: 13px; font-weight: 600; padding: 9px 14px; border-radius: 9px; }
+  .btn-sale.active { color: var(--grip); border-color: var(--grip); background: var(--grip-soft-2); }
+  .drag { color: #c6c9d0; align-self: center; font-size: 18px; padding: 0 2px; cursor: grab; }
+
+  .sales-stats {
+    display: flex; align-items: center; gap: 0;
+    margin-top: 18px; padding-top: 18px;
+    border-top: 1px solid var(--border);
+  }
+  .stat-cell { display: flex; flex-direction: column; gap: 5px; padding-right: 34px; }
+  .stat-cell .lbl { font-size: 12.5px; color: var(--t3); }
+  .stat-cell .val { font-size: 17px; font-weight: 800; color: #20222a; }
+  .stat-cell .val-box {
+    border: 1px solid var(--field-border); border-radius: 8px; padding: 6px 12px;
+    font-size: 15px; font-weight: 800; color: #20222a; display: inline-block;
+  }
+  .stat-div { width: 1px; align-self: stretch; background: var(--border); margin: 2px 24px; }
+  .stat-cell.right { margin-left: auto; padding-right: 0; text-align: right; align-items: flex-end; }
+  .stat-cell.right .val { color: var(--grip); }
+
+  /* ---------- Right: 실시간 판매 성과 ---------- */
+  .perf-card { padding: 18px 20px; }
+  .perf-head { display: flex; align-items: flex-start; justify-content: space-between; }
+  .perf-title { font-size: 17px; font-weight: 800; color: #1d1f25; }
+  .perf-sub { font-size: 12px; color: var(--t3); margin-top: 4px; }
+  .refresh-btn {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: #f5f6f8; border: 1px solid var(--border); color: #9398a2;
+    display: flex; align-items: center; justify-content: center; flex: 0 0 auto;
+  }
+  .perf-grid { display: grid; grid-template-columns: 1fr 1fr; margin-top: 18px; }
+  .perf-cell { padding: 14px 4px; border-top: 1px solid #f1f1f3; }
+  .perf-cell:nth-child(1), .perf-cell:nth-child(2) { border-top: 0; }
+  .perf-cell:nth-child(even) { padding-left: 22px; }
+  .perf-cell .lbl { font-size: 12.5px; color: var(--t3); }
+  .perf-cell .val { font-size: 19px; font-weight: 800; color: #20222a; margin-top: 5px; }
+  .perf-cell .val .u { font-size: 13px; font-weight: 600; color: var(--t3); margin-left: 3px; }
+
+  /* ---------- Right: chat ---------- */
+  .chat-card { display: flex; flex-direction: column; height: 430px; }
+  .chat-tabs {
+    display: flex; align-items: center; gap: 20px;
+    padding: 16px 18px 0; position: relative;
+    border-bottom: 1px solid var(--border);
+  }
+  .chat-tab { font-size: 14.5px; font-weight: 600; color: var(--t3); padding-bottom: 13px; border: 0; background: none; position: relative; }
+  .chat-tab.active { color: #1d1f25; font-weight: 700; }
+  .chat-tab.active::after { content:""; position:absolute; left:0; right:0; bottom:-1px; height:2px; background:#1d1f25; border-radius:2px; }
+  .chat-ext { margin-left: auto; color: #b6bac2; padding-bottom: 11px; background:none; border:0; }
+  .chat-body { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+  .chat-empty-1 { font-size: 13px; color: #bcbfc7; }
+  .chat-empty-2 { font-size: 13px; color: #bcbfc7; }
+  .chat-input-row { display: flex; align-items: center; gap: 10px; padding: 12px 14px; }
+  .chat-gear {
+    width: 38px; height: 38px; border-radius: 50%; flex: 0 0 auto;
+    background: #f3f4f6; border: 1px solid var(--border); color: #9398a2;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .chat-input {
+    flex: 1; border: 1px solid var(--field-border); border-radius: 21px;
+    padding: 10px 16px; font-size: 13.5px; outline: none; color: #34373f;
+  }
+  .chat-input::placeholder { color: #b3b7c0; }
+  .chat-send {
+    width: 38px; height: 38px; border-radius: 50%; flex: 0 0 auto;
+    background: var(--grip); border: 0; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .chat-send:hover { background: var(--grip-strong); }
+
+  @media (max-width: 1280px) {
+    .main { flex-wrap: wrap; }
+    .col-right { flex: 1 1 100%; flex-direction: row; }
+    .col-right > * { flex: 1; }
+    .chat-card { height: auto; min-height: 360px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-logo">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+          <path d="M5 13a10 10 0 0 1 14 0" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>
+          <path d="M8 16.2a5.5 5.5 0 0 1 8 0" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>
+          <circle cx="12" cy="19" r="1.6" fill="#fff"/>
+        </svg>
+      </span>
+      <span class="brand-name">Grip<span class="biz">business</span></span>
+      <button class="brand-collapse" title="접기">«</button>
+    </div>
+
+    <nav class="nav">
+      <button class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="3.5" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.9"/><rect x="13.5" y="3.5" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.9"/><rect x="3.5" y="13.5" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.9"/><rect x="13.5" y="13.5" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.9"/></svg>
+        대시보드
+      </button>
+      <button class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="3.5" width="16" height="17" rx="2.5" stroke="currentColor" stroke-width="1.9"/><path d="M8 9h8M8 13h8M8 17h5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>
+        스크립트
+      </button>
+    </nav>
+
+    <div class="sidebar-spacer"></div>
+
+    <div class="sidebar-bottom">
+      <button class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12a7 7 0 0 1 14 0v5a2 2 0 0 1-2 2h-1v-6h3M5 12v5a2 2 0 0 0 2 2h1v-6H5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        문의하기
+      </button>
+      <button class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4M9 16l4-4-4-4M13 12H4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        로그아웃
+      </button>
+      <div class="profile">
+        <span class="profile-avatar"></span>
+        <span class="profile-meta">
+          <div class="profile-name">모니터를좋아해</div>
+          <div class="profile-mail">gripqa10@gripcor...</div>
+        </span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===================== MAIN ===================== -->
+  <main class="main">
+
+    <!-- ---------- Broadcast column ---------- -->
+    <section class="col-broadcast">
+      <div class="card bc-card">
+        <div class="bc-head"><span>한정</span><span>2/40</span></div>
+        <div class="bc-timer">00:00:00</div>
+
+        <div class="bc-preview">
+          <svg class="bc-empty-icon" width="88" height="88" viewBox="0 0 24 24" fill="none">
+            <path d="M3.2 14.8 9 9l1.8 1.8M9 9l-2.2-2.2a1.2 1.2 0 0 1 0-1.7l1.6-1.6a1.2 1.2 0 0 1 1.7 0L12.3 5" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+            <path d="M10.8 10.8 13 13l-3.6 3.6a1.2 1.2 0 0 1-1.7 0l-2.5-2.5a1.2 1.2 0 0 1 0-1.7L10.8 10.8Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+            <path d="M14 4a6 6 0 0 1 6 6M14.5 7.5a2.7 2.7 0 0 1 2.7 2.7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="m11 17 3.5 3.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+          <div class="bc-empty-title">방송이 진행되고 있지 않습니다</div>
+          <div class="bc-empty-sub">라이브를 시작하면 여기에 표시됩니다</div>
+
+          <div class="product-overlay">
+            <span class="po-thumb"><span class="po-badge">한정상품</span></span>
+            <span class="po-info">
+              <div class="po-name">미니 대표 선크림</div>
+              <div class="po-price"><span class="pct">91%</span><span class="won">1,000원</span></div>
+            </span>
+            <span class="po-stock">
+              <div><span class="k">판매가능</span> <span class="sell">999+</span></div>
+              <div><span class="k">재고</span> <span class="v">999+</span></div>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-bar">
+        <button class="action"><span class="ico ico-redo">↻</span>다시하기</button>
+        <button class="action"><span class="ico ico-draw">🏅</span>추첨</button>
+        <button class="action"><span class="ico ico-ox"><span class="o">O</span><span class="x">X</span></span>OX</button>
+        <button class="action"><span class="ico ico-init">초성</span>초성</button>
+        <button class="action"><span class="ico ico-dice">🎲</span>주사위</button>
+      </div>
+    </section>
+
+    <!-- ---------- Sales panel ---------- -->
+    <section class="col-sales">
+      <div class="card sales-card">
+        <div class="sales-head">
+          <h1 class="sales-title">한정판매</h1>
+          <div class="head-btns">
+            <button class="btn-ghost">UP한 상품 목록</button>
+            <button class="btn-ghost">등록된 상품 가져오기</button>
+            <button class="btn-ghost">플래시 상품 등록</button>
+          </div>
+        </div>
+
+        <div class="sales-note">한정판매 상품은 1개씩만 판매 가능합니다.</div>
+
+        <div class="toolbar">
+          <div class="select">전체 <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="select">상품명 <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="search">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.2-3.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <input placeholder="검색어를 입력하세요" />
+          </div>
+        </div>
+
+        <div class="select-row">
+          <label class="checkbox-lbl">
+            <span class="cbox"></span> 전체선택 (0/1)
+          </label>
+          <div class="store-toggle">
+            <button class="btn-store">스토어 ON</button>
+            <button class="btn-store">스토어 OFF</button>
+          </div>
+        </div>
+
+        <div class="product-row">
+          <label class="cbox" style="margin-top:8px"></label>
+          <span class="pr-thumb"></span>
+          <div class="pr-main">
+            <div class="pr-name-row">
+              <input class="pr-name-input" value="미니 대표 선크림" />
+              <button class="btn-up">▲ UP</button>
+              <button class="btn-storeoff">스토어 OFF</button>
+            </div>
+            <div class="pr-price-row">
+              <span class="pr-orig">11,111원</span>
+              <span class="pr-pct">91%</span>
+              <span class="price-field">1,000 <span class="unit">원</span></span>
+              <div class="pr-sale-btns">
+                <button class="btn-sale">판매예정</button>
+                <button class="btn-sale active">판매시작</button>
+                <button class="btn-sale">품절</button>
+              </div>
+            </div>
+          </div>
+          <span class="drag">≡</span>
+        </div>
+
+        <div class="sales-stats">
+          <div class="stat-cell">
+            <span class="lbl">점유 수량</span>
+            <span class="val">0</span>
+          </div>
+          <div class="stat-cell">
+            <span class="lbl">실주문 수량</span>
+            <span class="val">0</span>
+          </div>
+          <div class="stat-cell" style="padding-left:10px">
+            <span class="lbl">판매가능 수량</span>
+            <span class="val-box">123,213</span>
+          </div>
+          <div class="stat-div"></div>
+          <div class="stat-cell right">
+            <span class="lbl">라이브 매출</span>
+            <span class="val">₩0</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- Right column ---------- -->
+    <aside class="col-right">
+      <div class="card perf-card">
+        <div class="perf-head">
+          <div>
+            <div class="perf-title">실시간 판매 성과</div>
+            <div class="perf-sub">마지막 정보 08:55:53 · 1분마다 갱신</div>
+          </div>
+          <button class="refresh-btn">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M20 11a8 8 0 1 0-.6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M20 4v5h-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+
+        <div class="perf-grid">
+          <div class="perf-cell"><div class="lbl">실시간 접속</div><div class="val">0<span class="u">명</span></div></div>
+          <div class="perf-cell"><div class="lbl">누적 접속</div><div class="val">1<span class="u">명</span></div></div>
+          <div class="perf-cell"><div class="lbl">주문 금액</div><div class="val">0<span class="u">원</span></div></div>
+          <div class="perf-cell"><div class="lbl">주문 건수</div><div class="val">0<span class="u">건</span></div></div>
+          <div class="perf-cell"><div class="lbl">실거래 금액</div><div class="val">0<span class="u">원</span></div></div>
+          <div class="perf-cell"><div class="lbl">실거래 건수</div><div class="val">0<span class="u">건</span></div></div>
+          <div class="perf-cell"><div class="lbl">점유 수량</div><div class="val">0<span class="u">개</span></div></div>
+          <div class="perf-cell"><div class="lbl">점유 금액</div><div class="val">0<span class="u">원</span></div></div>
+        </div>
+      </div>
+
+      <div class="card chat-card">
+        <div class="chat-tabs">
+          <button class="chat-tab active">채팅</button>
+          <button class="chat-tab">공지</button>
+          <button class="chat-tab">Q&amp;A</button>
+          <button class="chat-tab">FAQ</button>
+          <button class="chat-tab">메모</button>
+          <button class="chat-ext">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M14 5h5v5M19 5l-7 7M11 5H7a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <div class="chat-body">
+          <div class="chat-empty-1">라이브 중</div>
+          <div class="chat-empty-2">채팅을 남길 수 있습니다</div>
+        </div>
+        <div class="chat-input-row">
+          <button class="chat-gear">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 13a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V19a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7.2 17.5l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.6 1.6 0 0 0 4.6 12 1.6 1.6 0 0 0 3 11.2H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 5.4l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.6 1.6 0 0 0 10 1.6a2 2 0 1 1 4 0V2a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1A1.6 1.6 0 0 0 22 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity=".7"/></svg>
+          </button>
+          <input class="chat-input" placeholder="메세지를 입력하세요" />
+          <button class="chat-send">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 19V6M6 12l6-6 6 6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+  </main>
+</div>
+</body>
+</html>
