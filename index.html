@@ -277,15 +277,14 @@
     margin-top: 18px;
   }
   .checkbox-lbl { display: flex; align-items: center; gap: 9px; font-size: 13.5px; color: #41444d; font-weight: 500; }
-  /* 원형 체크박스 */
+  /* 원형 체크박스 (기본: 회색 체크 표시 / 선택: 코랄) */
   .cbox {
     width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid #cfd2d9; background:#fff;
     display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto;
-    color: #fff; cursor: pointer;
+    color: #cdd0d8; cursor: pointer; transition: background .12s, border-color .12s, color .12s;
   }
-  .cbox svg { opacity: 0; transition: opacity .12s; }
-  .cbox.checked { background: var(--grip); border-color: var(--grip); }
-  .cbox.checked svg { opacity: 1; }
+  .cbox svg { opacity: 1; }
+  .cbox.checked { background: var(--grip); border-color: var(--grip); color: #fff; }
 
   .store-toggle { display: flex; gap: 8px; }
   .btn-store {
@@ -326,26 +325,59 @@
   }
   .btn-storeoff:hover { background: #7e828a; }
 
-  /* 하단: 가격(좌, 세로) + 판매상태(우) */
-  .pr-bottom { display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; }
-  .pr-price-left { display: flex; flex-direction: column; gap: 9px; min-width: 0; }
-  .pr-price-line { display: flex; align-items: baseline; gap: 9px; }
-  .pr-orig { color: var(--t3); text-decoration: line-through; font-size: 14px; }
-  .pr-pct { color: var(--grip); font-weight: 800; font-size: 16px; }
-  .price-box {
-    display: inline-flex; align-items: center; gap: 8px;
-    border: 1px solid var(--field-border); border-radius: 9px;
-    padding: 9px 14px; width: 230px; max-width: 100%; background: #fff;
+  /* 하단: 가격 3분할(정가/상시할인가/라이브가) + 판매상태 */
+  .pr-bottom { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+  .pi-prices {
+    display: flex; align-items: stretch; flex: 1 1 360px; max-width: 470px; min-width: 318px;
+    border: 1px solid var(--field-border); border-radius: 9px; overflow: hidden; background: #fff;
   }
-  .price-box:focus-within { border-color: #c7cad1; }
-  .price-box input {
-    border: 0; outline: 0; background: none; flex: 1; min-width: 0;
-    font-size: 15px; font-weight: 700; color: #20222a;
-  }
-  .price-box .unit { color: var(--t3); font-weight: 500; font-size: 13px; flex: 0 0 auto; }
+  .pi-cell { flex: 1 1 0; min-width: 0; padding: 8px 12px; display: flex; flex-direction: column; gap: 4px; justify-content: center; }
+  .pi-cell + .pi-cell { border-left: 1px solid var(--field-border); }
+  .pi-label { font-size: 11px; line-height: 1; font-weight: 500; color: var(--t3); letter-spacing: -.01em; white-space: nowrap; }
+  .pi-value-row { display: flex; align-items: baseline; gap: 5px; min-width: 0; }
+  .pi-regular-value { font-size: 14px; font-weight: 500; color: var(--t3); text-decoration: line-through; text-decoration-color: #b9bcc4; white-space: nowrap; }
+  .pi-discount-value { font-size: 15px; font-weight: 700; color: #20222a; white-space: nowrap; }
+  .pi-discount-badge { display: inline-flex; align-items: center; height: 16px; font-size: 11px; font-weight: 700; color: var(--grip); background: #fdeaef; border-radius: 4px; padding: 0 5px; line-height: 1; white-space: nowrap; align-self: center; }
+  .pi-cell.pi-cell--live { flex: 1.4 1 0; background: #fff5f7; border-left: 2px solid var(--grip); }
+  .pi-cell--live .pi-label { color: var(--grip); font-weight: 600; }
+  .pi-live-field { display: flex; align-items: baseline; gap: 3px; }
+  .pi-live-input { width: 80px; border: 1px solid #f3b6c5; border-radius: 6px; background: #fff; color: var(--grip); font-family: inherit; font-size: 16px; font-weight: 800; text-align: right; padding: 4px 7px; line-height: 1.2; letter-spacing: -.02em; outline: none; transition: border-color .12s, box-shadow .12s; }
+  .pi-live-input:hover { border-color: var(--grip); }
+  .pi-live-input:focus { border-color: var(--grip); box-shadow: 0 0 0 3px rgba(245,55,91,.15); }
+  .pi-live-unit { font-size: 13px; font-weight: 700; color: var(--grip); }
+
   .pr-sale-btns { display: flex; gap: 8px; flex: 0 0 auto; }
   .btn-sale { background: #fff; border: 1px solid var(--field-border); color: #5c606b; font-size: 13px; font-weight: 600; padding: 10px 16px; border-radius: 9px; }
   .btn-sale.active { color: var(--grip); border-color: var(--grip); background: var(--grip-soft-2); }
+
+  /* 활성화된 상단 액션 버튼(가격수정/스토어) */
+  .btn-store.enabled { background: #fff; border-color: var(--field-border); color: #41444d; cursor: pointer; }
+  .btn-store.enabled:hover { background: #fafafb; }
+  .btn-store.enabled.primary { color: var(--grip); border-color: var(--grip); background: var(--grip-soft-2); }
+
+  /* 가격 일괄 수정 모달 */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(20,22,30,.45); display: none; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: #fff; border-radius: 16px; width: 100%; max-width: 540px; box-shadow: 0 24px 60px rgba(20,22,30,.28); overflow: hidden; }
+  .modal-title { text-align: center; font-size: 19px; font-weight: 800; color: #1d1f25; padding: 22px 24px; border-bottom: 1px solid var(--border); }
+  .modal-body { padding: 26px 28px 28px; }
+  .modal-lead { font-size: 17px; font-weight: 700; color: #20222a; margin: 0 0 22px; }
+  .modal-checks { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+  .modal-divider { width: 1px; height: 18px; background: var(--border-strong); }
+  .pm-check { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; color: #2b2d34; cursor: pointer; user-select: none; }
+  .pm-box { width: 22px; height: 22px; border-radius: 7px; border: 1.5px solid #d4d7de; background: #fff; display: inline-flex; align-items: center; justify-content: center; color: #fff; flex: 0 0 auto; transition: background .12s, border-color .12s; }
+  .pm-box svg { opacity: 0; }
+  .pm-check.checked .pm-box { background: var(--grip); border-color: var(--grip); }
+  .pm-check.checked .pm-box svg { opacity: 1; }
+  .modal-input-row { display: flex; align-items: center; gap: 14px; }
+  .modal-price-input { width: 220px; border: 1px solid var(--field-border); border-radius: 9px; padding: 13px 15px; font-size: 16px; font-weight: 700; color: #20222a; outline: none; font-family: inherit; }
+  .modal-price-input:focus { border-color: #c7cad1; }
+  .modal-input-row .suffix { font-size: 15px; color: #41444d; font-weight: 500; }
+  .modal-foot { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; border-top: 1px solid var(--border); }
+  .btn-close { background: #f1f2f4; border: 0; color: #5c606b; font-size: 15px; font-weight: 700; padding: 13px 28px; border-radius: 10px; cursor: pointer; }
+  .btn-close:hover { background: #e9eaee; }
+  .btn-apply { background: var(--grip); border: 0; color: #fff; font-size: 15px; font-weight: 800; padding: 13px 34px; border-radius: 10px; cursor: pointer; }
+  .btn-apply:hover { background: var(--grip-strong); }
   .drag { color: #c6c9d0; align-self: center; font-size: 18px; padding: 0 2px; cursor: grab; }
 
   .sales-stats {
@@ -565,15 +597,16 @@
 
         <div class="select-row">
           <label class="checkbox-lbl">
-            <span class="cbox"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="m5 12 5 5 9-10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span> 전체선택 (0/1)
+            <span class="cbox" id="selectAllBox"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="m5 12 5 5 9-10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span> 전체선택 <span id="selectAllText">(0/6)</span>
           </label>
           <div class="store-toggle">
-            <button class="btn-store">가격 수정</button>
-            <button class="btn-store">스토어 ON</button>
-            <button class="btn-store">스토어 OFF</button>
+            <button class="btn-store" id="btnPriceEdit">가격 수정</button>
+            <button class="btn-store" id="btnStoreOn">스토어 ON</button>
+            <button class="btn-store" id="btnStoreOff">스토어 OFF</button>
           </div>
         </div>
 
+        <div class="product-list">
         <div class="product-row">
           <label class="cbox"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="m5 12 5 5 9-10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></label>
           <span class="pr-thumb"></span>
@@ -586,15 +619,10 @@
               </div>
             </div>
             <div class="pr-bottom">
-              <div class="pr-price-left">
-                <div class="pr-price-line">
-                  <span class="pr-orig">11,111원</span>
-                  <span class="pr-pct">91%</span>
-                </div>
-                <div class="price-box">
-                  <input type="text" inputmode="numeric" value="1,000" aria-label="판매가" />
-                  <span class="unit">원</span>
-                </div>
+              <div class="pi-prices">
+                <div class="pi-cell pi-cell--regular"><span class="pi-label">정가</span><div class="pi-value-row"><span class="pi-regular-value">11,111원</span></div></div>
+                <div class="pi-cell pi-cell--discount"><span class="pi-label">상시할인가</span><div class="pi-value-row"><span class="pi-discount-value">1,000원</span><span class="pi-discount-badge">91%</span></div></div>
+                <div class="pi-cell pi-cell--live"><span class="pi-label">라이브가</span><div class="pi-live-field"><input class="pi-live-input" value="1,000" inputmode="numeric" aria-label="라이브가" /><span class="pi-live-unit">원</span></div></div>
               </div>
               <div class="pr-sale-btns">
                 <button class="btn-sale active">판매예정</button>
@@ -604,6 +632,142 @@
             </div>
           </div>
           <span class="drag">≡</span>
+        </div>
+
+        <div class="product-row">
+          <label class="cbox"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="m5 12 5 5 9-10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></label>
+          <span class="pr-thumb"></span>
+          <div class="pr-main">
+            <div class="pr-top">
+              <input class="pr-name-input" value="수분 진정 토너 200ml" />
+              <div class="pr-actions">
+                <button class="btn-up">▲ UP</button>
+                <button class="btn-storeoff">스토어 OFF</button>
+              </div>
+            </div>
+            <div class="pr-bottom">
+              <div class="pi-prices">
+                <div class="pi-cell pi-cell--regular"><span class="pi-label">정가</span><div class="pi-value-row"><span class="pi-regular-value">22,000원</span></div></div>
+                <div class="pi-cell pi-cell--discount"><span class="pi-label">상시할인가</span><div class="pi-value-row"><span class="pi-discount-value">9,900원</span><span class="pi-discount-badge">55%</span></div></div>
+                <div class="pi-cell pi-cell--live"><span class="pi-label">라이브가</span><div class="pi-live-field"><input class="pi-live-input" value="8,900" inputmode="numeric" aria-label="라이브가" /><span class="pi-live-unit">원</span></div></div>
+              </div>
+              <div class="pr-sale-btns">
+                <button class="btn-sale">판매예정</button>
+                <button class="btn-sale active">판매시작</button>
+                <button class="btn-sale">품절</button>
+              </div>
+            </div>
+          </div>
+          <span class="drag">≡</span>
+        </div>
+
+        <div class="product-row">
+          <label class="cbox"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="m5 12 5 5 9-10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></label>
+          <span class="pr-thumb"></span>
+          <div class="pr-main">
+            <div class="pr-top">
+              <input class="pr-name-input" value="데일리 클렌징 폼" />
+              <div class="pr-actions">
+                <button class="btn-up">▲ UP</button>
+                <button class="btn-storeoff">스토어 OFF</button>
+              </div>
+            </div>
+            <div class="pr-bottom">
+              <div class="pi-prices">
+                <div class="pi-cell pi-cell--regular"><span class="pi-label">정가</span><div class="pi-value-row"><span class="pi-regular-value">15,000원</span></div></div>
+                <div class="pi-cell pi-cell--discount"><span class="pi-label">상시할인가</span><div class="pi-value-row"><span class="pi-discount-value">7,500원</span><span class="pi-discount-badge">50%</span></div></div>
+                <div class="pi-cell pi-cell--live"><span class="pi-label">라이브가</span><div class="pi-live-field"><input class="pi-live-input" value="6,900" inputmode="numeric" aria-label="라이브가" /><span class="pi-live-unit">원</span></div></div>
+              </div>
+              <div class="pr-sale-btns">
+                <button class="btn-sale">판매예정</button>
+                <button class="btn-sale">판매시작</button>
+                <button class="btn-sale active">품절</button>
+              </div>
+            </div>
+          </div>
+          <span class="drag">≡</span>
+        </div>
+
+        <div class="product-row">
+          <label class="cbox"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="m5 12 5 5 9-10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></label>
+          <span class="pr-thumb"></span>
+          <div class="pr-main">
+            <div class="pr-top">
+              <input class="pr-name-input" value="비타민C 브라이트 세럼" />
+              <div class="pr-actions">
+                <button class="btn-up">▲ UP</button>
+                <button class="btn-storeoff">스토어 OFF</button>
+              </div>
+            </div>
+            <div class="pr-bottom">
+              <div class="pi-prices">
+                <div class="pi-cell pi-cell--regular"><span class="pi-label">정가</span><div class="pi-value-row"><span class="pi-regular-value">39,000원</span></div></div>
+                <div class="pi-cell pi-cell--discount"><span class="pi-label">상시할인가</span><div class="pi-value-row"><span class="pi-discount-value">19,900원</span><span class="pi-discount-badge">49%</span></div></div>
+                <div class="pi-cell pi-cell--live"><span class="pi-label">라이브가</span><div class="pi-live-field"><input class="pi-live-input" value="17,900" inputmode="numeric" aria-label="라이브가" /><span class="pi-live-unit">원</span></div></div>
+              </div>
+              <div class="pr-sale-btns">
+                <button class="btn-sale active">판매예정</button>
+                <button class="btn-sale">판매시작</button>
+                <button class="btn-sale">품절</button>
+              </div>
+            </div>
+          </div>
+          <span class="drag">≡</span>
+        </div>
+
+        <div class="product-row">
+          <label class="cbox"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="m5 12 5 5 9-10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></label>
+          <span class="pr-thumb"></span>
+          <div class="pr-main">
+            <div class="pr-top">
+              <input class="pr-name-input" value="수분 진정 크림 50ml" />
+              <div class="pr-actions">
+                <button class="btn-up">▲ UP</button>
+                <button class="btn-storeoff">스토어 OFF</button>
+              </div>
+            </div>
+            <div class="pr-bottom">
+              <div class="pi-prices">
+                <div class="pi-cell pi-cell--regular"><span class="pi-label">정가</span><div class="pi-value-row"><span class="pi-regular-value">28,000원</span></div></div>
+                <div class="pi-cell pi-cell--discount"><span class="pi-label">상시할인가</span><div class="pi-value-row"><span class="pi-discount-value">14,000원</span><span class="pi-discount-badge">50%</span></div></div>
+                <div class="pi-cell pi-cell--live"><span class="pi-label">라이브가</span><div class="pi-live-field"><input class="pi-live-input" value="12,900" inputmode="numeric" aria-label="라이브가" /><span class="pi-live-unit">원</span></div></div>
+              </div>
+              <div class="pr-sale-btns">
+                <button class="btn-sale">판매예정</button>
+                <button class="btn-sale active">판매시작</button>
+                <button class="btn-sale">품절</button>
+              </div>
+            </div>
+          </div>
+          <span class="drag">≡</span>
+        </div>
+
+        <div class="product-row">
+          <label class="cbox"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="m5 12 5 5 9-10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></label>
+          <span class="pr-thumb"></span>
+          <div class="pr-main">
+            <div class="pr-top">
+              <input class="pr-name-input" value="모이스처 립밤 2종 세트" />
+              <div class="pr-actions">
+                <button class="btn-up">▲ UP</button>
+                <button class="btn-storeoff">스토어 OFF</button>
+              </div>
+            </div>
+            <div class="pr-bottom">
+              <div class="pi-prices">
+                <div class="pi-cell pi-cell--regular"><span class="pi-label">정가</span><div class="pi-value-row"><span class="pi-regular-value">12,000원</span></div></div>
+                <div class="pi-cell pi-cell--discount"><span class="pi-label">상시할인가</span><div class="pi-value-row"><span class="pi-discount-value">6,900원</span><span class="pi-discount-badge">43%</span></div></div>
+                <div class="pi-cell pi-cell--live"><span class="pi-label">라이브가</span><div class="pi-live-field"><input class="pi-live-input" value="5,900" inputmode="numeric" aria-label="라이브가" /><span class="pi-live-unit">원</span></div></div>
+              </div>
+              <div class="pr-sale-btns">
+                <button class="btn-sale active">판매예정</button>
+                <button class="btn-sale">판매시작</button>
+                <button class="btn-sale">품절</button>
+              </div>
+            </div>
+          </div>
+          <span class="drag">≡</span>
+        </div>
         </div>
 
         <div class="sales-stats">
@@ -682,6 +846,32 @@
 
   </main>
 </div>
+
+<!-- 가격 일괄 수정 모달 -->
+<div class="modal-overlay" id="priceModal">
+  <div class="modal" role="dialog" aria-modal="true" aria-label="가격 일괄 수정">
+    <div class="modal-title">가격 일괄 수정</div>
+    <div class="modal-body">
+      <p class="modal-lead">선택한 <span id="pmCount">0</span>개 상품의 가격을 변경합니다.</p>
+      <div class="modal-checks">
+        <label class="pm-check checked" data-type="all"><span class="pm-box"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="m5 12 5 5 9-10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span> 전체</label>
+        <span class="modal-divider"></span>
+        <label class="pm-check checked" data-type="jeongga"><span class="pm-box"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="m5 12 5 5 9-10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span> 정가</label>
+        <label class="pm-check checked" data-type="sangsi"><span class="pm-box"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="m5 12 5 5 9-10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span> 상시할인가</label>
+        <label class="pm-check checked" data-type="live"><span class="pm-box"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="m5 12 5 5 9-10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span> 라이브가</label>
+      </div>
+      <div class="modal-input-row">
+        <input class="modal-price-input" id="pmPrice" type="text" inputmode="numeric" placeholder="" aria-label="수정할 가격" />
+        <span class="suffix">원으로 수정합니다.</span>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-close" id="pmClose">닫기</button>
+      <button class="btn-apply" id="pmApply">반영</button>
+    </div>
+  </div>
+</div>
+
 <script>
   // 라이브 방송 타이머 — 초 단위 카운트업
   (function () {
@@ -707,13 +897,90 @@
     });
   });
 
-  // 원형 체크박스 토글
-  document.querySelectorAll('.cbox').forEach(function (c) {
-    c.addEventListener('click', function (e) {
-      e.preventDefault();
-      c.classList.toggle('checked');
+  // 선택 + 가격 일괄 수정
+  (function () {
+    var rows = Array.prototype.slice.call(document.querySelectorAll('.product-row'));
+    var selectAllBox = document.getElementById('selectAllBox');
+    var selectAllLabel = selectAllBox ? selectAllBox.closest('.checkbox-lbl') : null;
+    var selectAllText = document.getElementById('selectAllText');
+    var btnPrice = document.getElementById('btnPriceEdit');
+    var actionBtns = [btnPrice, document.getElementById('btnStoreOn'), document.getElementById('btnStoreOff')];
+    var modal = document.getElementById('priceModal');
+    var pmCount = document.getElementById('pmCount');
+
+    function box(r) { return r.querySelector('.cbox'); }
+    function checkedRows() { return rows.filter(function (r) { return box(r).classList.contains('checked'); }); }
+
+    function refresh() {
+      var n = checkedRows().length;
+      if (selectAllText) selectAllText.textContent = '(' + n + '/' + rows.length + ')';
+      if (selectAllBox) selectAllBox.classList.toggle('checked', n === rows.length && n > 0);
+      actionBtns.forEach(function (b) { if (b) b.classList.toggle('enabled', n > 0); });
+      if (btnPrice) btnPrice.classList.toggle('primary', n > 0);
+    }
+
+    rows.forEach(function (r) {
+      box(r).addEventListener('click', function (e) { e.preventDefault(); box(r).classList.toggle('checked'); refresh(); });
     });
-  });
+
+    if (selectAllLabel) {
+      selectAllLabel.addEventListener('click', function (e) {
+        e.preventDefault();
+        var willCheck = !(checkedRows().length === rows.length && rows.length > 0);
+        rows.forEach(function (r) { box(r).classList.toggle('checked', willCheck); });
+        refresh();
+      });
+    }
+
+    // 모달 체크 항목(전체/정가/상시할인가/라이브가)
+    var pmChecks = Array.prototype.slice.call(document.querySelectorAll('.pm-check'));
+    function pmGet(t) { return pmChecks.filter(function (c) { return c.dataset.type === t; })[0]; }
+    function pmSubs() { return pmChecks.filter(function (c) { return c.dataset.type !== 'all'; }); }
+    pmChecks.forEach(function (c) {
+      c.addEventListener('click', function () {
+        if (c.dataset.type === 'all') {
+          var willCheck = !c.classList.contains('checked');
+          c.classList.toggle('checked', willCheck);
+          pmSubs().forEach(function (s) { s.classList.toggle('checked', willCheck); });
+        } else {
+          c.classList.toggle('checked');
+          var allOn = pmSubs().every(function (s) { return s.classList.contains('checked'); });
+          var all = pmGet('all'); if (all) all.classList.toggle('checked', allOn);
+        }
+      });
+    });
+
+    function closeModal() { modal.classList.remove('open'); }
+    if (btnPrice) btnPrice.addEventListener('click', function () {
+      if (!btnPrice.classList.contains('enabled')) return;
+      if (pmCount) pmCount.textContent = checkedRows().length;
+      modal.classList.add('open');
+    });
+    var pmClose = document.getElementById('pmClose');
+    if (pmClose) pmClose.addEventListener('click', closeModal);
+    if (modal) modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
+
+    // 반영 — 선택 상품들의 선택 가격 항목 일괄 변경
+    var pmPrice = document.getElementById('pmPrice');
+    var pmApply = document.getElementById('pmApply');
+    if (pmApply) pmApply.addEventListener('click', function () {
+      var raw = (pmPrice.value || '').replace(/[^0-9]/g, '');
+      if (!raw) { closeModal(); return; }
+      var disp = parseInt(raw, 10).toLocaleString('en-US');
+      var doJ = pmGet('jeongga') && pmGet('jeongga').classList.contains('checked');
+      var doS = pmGet('sangsi') && pmGet('sangsi').classList.contains('checked');
+      var doL = pmGet('live') && pmGet('live').classList.contains('checked');
+      checkedRows().forEach(function (r) {
+        if (doJ) { var a = r.querySelector('.pi-regular-value'); if (a) a.textContent = disp + '원'; }
+        if (doS) { var b = r.querySelector('.pi-discount-value'); if (b) b.textContent = disp + '원'; }
+        if (doL) { var c = r.querySelector('.pi-live-input'); if (c) c.value = disp; }
+      });
+      pmPrice.value = '';
+      closeModal();
+    });
+
+    refresh();
+  })();
 </script>
 </body>
 </html>
