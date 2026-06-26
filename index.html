@@ -298,7 +298,7 @@
   }
   .pr-head { display: flex; align-items: center; gap: 14px; }
   .pr-stats {
-    display: flex; align-items: center;
+    display: flex; align-items: flex-start;
     margin-top: 11px; padding-top: 11px;
     border-top: 1px solid var(--border);
   }
@@ -390,18 +390,18 @@
     margin-top: 18px; padding-top: 18px;
     border-top: 1px solid var(--border);
   }
-  .stat-cell { display: flex; flex-direction: column; gap: 5px; padding-right: 34px; }
-  .stat-cell .lbl { font-size: 12.5px; color: var(--t3); }
-  .stat-cell .val { font-size: 17px; font-weight: 800; color: #20222a; }
+  .stat-cell { display: flex; flex-direction: column; gap: 6px; padding-right: 34px; }
+  .stat-cell .lbl { font-size: 12.5px; color: var(--t3); line-height: 1.2; }
+  .stat-cell .val { font-size: 17px; font-weight: 800; color: #20222a; min-height: 32px; display: flex; align-items: center; }
   .stat-cell .val-box {
-    border: 1px solid var(--field-border); border-radius: 8px; padding: 7px 12px;
+    border: 1px solid var(--field-border); border-radius: 8px; padding: 0 11px; height: 32px; box-sizing: border-box;
     font-size: 15px; font-weight: 800; color: #20222a; width: 104px;
     background: #fff; outline: none; font-family: inherit;
   }
   .stat-cell .val-box:focus { border-color: #c7cad1; }
-  .stat-div { width: 1px; align-self: stretch; background: var(--border); margin: 2px 24px; }
-  .stat-cell.right { margin-left: auto; padding-right: 0; text-align: right; align-items: flex-end; }
-  .stat-cell.right .val { color: var(--grip); }
+  .stat-div { width: 1px; height: 30px; background: #e3e4e8; margin-left: auto; margin-right: 28px; align-self: flex-end; }
+  .stat-cell.right { padding-right: 0; text-align: right; align-items: flex-end; }
+  .stat-cell.right .val { color: var(--grip); justify-content: flex-end; }
 
   /* ---------- Right: 실시간 판매 성과 ---------- */
   .perf-card { padding: 18px 20px; }
@@ -640,7 +640,7 @@
             <span class="drag">≡</span>
           </div>
           <div class="pr-stats">
-            <div class="stat-cell"><span class="lbl">점유 수량</span><span class="val">0</span></div>
+            <div class="stat-cell"><span class="lbl">장바구니 수량</span><span class="val">0</span></div>
             <div class="stat-cell"><span class="lbl">실주문 수량</span><span class="val">0</span></div>
             <div class="stat-cell" style="padding-left:10px"><span class="lbl">판매가능 수량</span><input class="val-box" type="text" inputmode="numeric" value="123,213" aria-label="판매가능 수량" /></div>
             <div class="stat-div"></div>
@@ -676,7 +676,7 @@
             <span class="drag">≡</span>
           </div>
           <div class="pr-stats">
-            <div class="stat-cell"><span class="lbl">점유 수량</span><span class="val">0</span></div>
+            <div class="stat-cell"><span class="lbl">장바구니 수량</span><span class="val">0</span></div>
             <div class="stat-cell"><span class="lbl">실주문 수량</span><span class="val">0</span></div>
             <div class="stat-cell" style="padding-left:10px"><span class="lbl">판매가능 수량</span><input class="val-box" type="text" inputmode="numeric" value="8,500" aria-label="판매가능 수량" /></div>
             <div class="stat-div"></div>
@@ -712,7 +712,7 @@
             <span class="drag">≡</span>
           </div>
           <div class="pr-stats">
-            <div class="stat-cell"><span class="lbl">점유 수량</span><span class="val">0</span></div>
+            <div class="stat-cell"><span class="lbl">장바구니 수량</span><span class="val">0</span></div>
             <div class="stat-cell"><span class="lbl">실주문 수량</span><span class="val">0</span></div>
             <div class="stat-cell" style="padding-left:10px"><span class="lbl">판매가능 수량</span><input class="val-box" type="text" inputmode="numeric" value="0" aria-label="판매가능 수량" /></div>
             <div class="stat-div"></div>
@@ -748,7 +748,7 @@
             <span class="drag">≡</span>
           </div>
           <div class="pr-stats">
-            <div class="stat-cell"><span class="lbl">점유 수량</span><span class="val">0</span></div>
+            <div class="stat-cell"><span class="lbl">장바구니 수량</span><span class="val">0</span></div>
             <div class="stat-cell"><span class="lbl">실주문 수량</span><span class="val">0</span></div>
             <div class="stat-cell" style="padding-left:10px"><span class="lbl">판매가능 수량</span><input class="val-box" type="text" inputmode="numeric" value="4,200" aria-label="판매가능 수량" /></div>
             <div class="stat-div"></div>
@@ -784,7 +784,7 @@
             <span class="drag">≡</span>
           </div>
           <div class="pr-stats">
-            <div class="stat-cell"><span class="lbl">점유 수량</span><span class="val">0</span></div>
+            <div class="stat-cell"><span class="lbl">장바구니 수량</span><span class="val">0</span></div>
             <div class="stat-cell"><span class="lbl">실주문 수량</span><span class="val">0</span></div>
             <div class="stat-cell" style="padding-left:10px"><span class="lbl">판매가능 수량</span><input class="val-box" type="text" inputmode="numeric" value="12,000" aria-label="판매가능 수량" /></div>
             <div class="stat-div"></div>
@@ -820,7 +820,7 @@
             <span class="drag">≡</span>
           </div>
           <div class="pr-stats">
-            <div class="stat-cell"><span class="lbl">점유 수량</span><span class="val">0</span></div>
+            <div class="stat-cell"><span class="lbl">장바구니 수량</span><span class="val">0</span></div>
             <div class="stat-cell"><span class="lbl">실주문 수량</span><span class="val">0</span></div>
             <div class="stat-cell" style="padding-left:10px"><span class="lbl">판매가능 수량</span><input class="val-box" type="text" inputmode="numeric" value="999" aria-label="판매가능 수량" /></div>
             <div class="stat-div"></div>
