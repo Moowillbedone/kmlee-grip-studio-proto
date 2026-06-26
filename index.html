@@ -488,8 +488,9 @@
 
   .app { transition: margin-right .26s ease; }
   body.prd-on .app { margin-right: 360px; }
-  /* PRD 모드에서는 좌측 사이드바 숨김(가로 공간 확보) */
+  /* PRD 모드에서는 좌측 사이드바 + 방송 컬럼 숨김(가로 공간 확보) */
   body.prd-on .sidebar { display: none; }
+  body.prd-on .col-broadcast { display: none; }
   /* PRD 모드: 폭이 부족하면 우측 컬럼(성과·채팅)을 아래로 줄바꿈 — 겹침/잘림 방지, 컴포넌트 크기 유지 */
   body.prd-on .main { flex-wrap: wrap; }
   body.prd-on .col-sales { flex: 1 1 520px; min-width: 480px; }
@@ -531,7 +532,15 @@
   .prd-num { width: 22px; height: 22px; border-radius: 50%; background: var(--grip); color: #fff; font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; }
   .prd-item-head h4 { margin: 0; font-size: 14.5px; font-weight: 700; color: #1d1f25; }
   .prd-item p { margin: 0; font-size: 13px; line-height: 1.6; color: #5c606b; }
-  .prd-item .tag { display: inline-block; margin-top: 8px; font-size: 11px; font-weight: 700; color: var(--grip); background: var(--grip-soft); padding: 3px 8px; border-radius: 6px; }
+  .prd-item .tag { display: inline-block; margin-top: 10px; font-size: 11px; font-weight: 700; color: var(--grip); background: var(--grip-soft); padding: 3px 8px; border-radius: 6px; }
+  /* 정의 / 기능 구조 */
+  .prd-block { margin-top: 11px; }
+  .prd-k { display: block; font-size: 11px; font-weight: 800; color: #9499a3; letter-spacing: .03em; margin-bottom: 5px; }
+  .prd-item .prd-block p { margin: 0; font-size: 13px; line-height: 1.6; color: #41444d; }
+  .prd-item .prd-block ul { margin: 0; padding-left: 17px; }
+  .prd-item .prd-block li { font-size: 13px; line-height: 1.6; color: #5c606b; margin-bottom: 5px; }
+  .prd-item .prd-block li::marker { color: #c4c8d0; }
+  .prd-item .prd-block li:last-child { margin-bottom: 0; }
 </style>
 </head>
 <body>
@@ -1164,26 +1173,58 @@
   // ============ PRD 모드 ============
   (function () {
     var PRD = [
-      { n: 1, target: '.bc-card', title: '라이브 방송 모니터', tag: '실시간 송출',
-        body: '셀러 송출 화면을 실시간 모니터링. 상단 상태바(네트워크·온도·FPS·카메라·배터리)와 라이브 타이머(● 빨강 + 초 단위 카운트업), 좌상단 한정 배지, 우상단 IVS / LL-HLS 송출 상태, 기프트 누적, 우측 공유·음소거·채팅 컨트롤을 제공. 방송 미진행 시 빈 상태 안내를 노출.' },
-      { n: 2, target: '.action-bar', title: '라이브 인터랙션 (게임)', tag: '참여 유도',
-        body: '다시하기·추첨·OX·초성·주사위 5종 미니게임으로 시청자 참여와 체류를 유도. 버튼 선택 시 진행 모달이 실행되어 라이브 중 즉시 운영(예정).' },
-      { n: 3, target: '.sales-head', title: '한정판매 상품 관리', tag: '1개 집중 판매',
-        body: '한정판매는 동시 1개 상품만 판매 가능. UP한 상품 목록 / 등록된 상품 가져오기 / 플래시 상품 등록으로 라인업을 구성하고, 전체·상품명 필터와 검색으로 빠르게 탐색.' },
-      { n: 4, target: '.select-row', title: '상품 선택 & 일괄 제어', tag: '다중 선택',
-        body: '원형 체크박스(기본은 비활성 회색 체크 표시). 전체선택 시 모든 상품이 선택되고, 1개 이상 선택되면 [가격 수정]·[스토어 ON]·[스토어 OFF] 버튼이 활성화. 선택 개수는 (n/총개수)로 표기.' },
-      { n: 5, target: '.pi-prices', title: '3단 가격 정보', tag: '정가·상시·라이브',
-        body: '정가(취소선)·상시할인가(정가 대비 할인율 배지)·라이브가(이번 방송 전용 판매가)를 분리 표기해 각 가격의 의미를 명확화. 라이브가는 인라인으로 직접 수정 가능하며 강조 표기.' },
-      { n: 6, target: '.pr-sale-btns', title: '판매 상태', tag: '상태 전환',
-        body: '판매예정 / 판매시작 / 품절 중 하나를 선택(라디오 방식). 상품별 현재 판매 상태를 표시하고 클릭으로 즉시 전환.' },
-      { n: 7, target: '.pr-stats', title: '상품별 실시간 통계', tag: '상품 단위 집계',
-        body: '상품 단위로 장바구니 수량·실주문 수량·판매가능 수량(편집 가능)·라이브 매출을 집계. 라이브 매출은 강조 컬러로 표기.' },
-      { n: 8, target: '#btnPriceEdit', title: '가격 일괄 수정', tag: '일괄 변경 · 검증',
-        body: '선택한 상품들의 가격을 한 번에 변경. 팝업에서 변경 대상(전체/정가/상시할인가/라이브가)을 선택 후 금액 입력하여 반영. 라이브가 최소 200원 검증(미달 시 실패 내역 팝업 노출·해당 상품 제외). 팝업을 닫으면 선택 항목은 항상 전체선택으로 초기화.' },
-      { n: 9, target: '.perf-card', title: '실시간 판매 성과', tag: '1분 갱신',
-        body: '실시간/누적 접속, 주문 금액·건수, 실거래 금액·건수, 점유 수량·금액을 1분 주기로 갱신해 라이브 성과를 한눈에 파악.' },
-      { n: 10, target: '.chat-card', title: '채팅 · 공지 · CS', tag: '소통 운영',
-        body: '채팅/공지/Q&A/FAQ/메모 탭으로 시청자 소통과 운영 메시지를 통합 관리. 라이브 중 실시간 채팅 입력·노출.' }
+      { n: 1, target: '.sales-head', title: '한정판매 상품 관리', tag: '1개 집중 판매',
+        def: '한정판매 라인업을 등록·구성하고 탐색하는 메인 관리 영역.',
+        features: [
+          '한정판매는 동시 1개 상품만 판매 가능(정책).',
+          'UP한 상품 목록 / 등록된 상품 가져오기 / 플래시 상품 등록으로 라인업 구성.',
+          '전체·상품명 필터와 검색으로 빠르게 탐색.'
+        ] },
+      { n: 2, target: '.select-row', title: '상품 선택 & 일괄 제어', tag: '다중 선택',
+        def: '여러 상품을 한 번에 제어하기 위한 선택 진입점.',
+        features: [
+          '원형 체크박스(기본은 비활성 회색 체크 표시).',
+          '전체선택 시 모든 상품 선택, 선택 개수는 (n/총개수)로 표기.',
+          '1개 이상 선택 시 [가격 수정]·[스토어 ON]·[스토어 OFF] 버튼 활성화.'
+        ] },
+      { n: 3, target: '.pi-prices', title: '3단 가격 정보', tag: '정가·상시·라이브',
+        def: '한 상품의 가격을 의미별 3단으로 분리 표기.',
+        features: [
+          '정가(취소선) — 상품의 원래 판매가.',
+          '상시할인가 — 정가 대비 할인율 배지와 함께 표기.',
+          '라이브가 — 이번 방송 전용 판매가, 인라인 직접 수정 가능.'
+        ] },
+      { n: 4, target: '.pr-sale-btns', title: '판매 상태', tag: '상태 전환',
+        def: '상품별 판매 상태를 지정·전환.',
+        features: [
+          '판매예정 / 판매시작 / 품절 중 하나 선택(라디오 방식).',
+          '현재 상태를 표시하고 클릭으로 즉시 전환.'
+        ] },
+      { n: 5, target: '.pr-stats', title: '상품별 실시간 통계', tag: '상품 단위 집계',
+        def: '상품 단위의 실시간 판매 지표.',
+        features: [
+          '장바구니 수량·실주문 수량·판매가능 수량(편집 가능)·라이브 매출 집계.',
+          '라이브 매출은 강조 컬러로 표기.'
+        ] },
+      { n: 6, target: '#btnPriceEdit', title: '가격 일괄 수정', tag: '일괄 변경 · 검증',
+        def: '선택한 상품들의 가격을 한 번에 변경.',
+        features: [
+          '팝업에서 변경 대상(전체/정가/상시할인가/라이브가) 선택 후 금액 입력하여 반영.',
+          '라이브가 최소 200원 검증(미달 시 실패 내역 팝업 노출·해당 상품 제외).',
+          '팝업을 닫으면 선택 항목은 항상 전체선택으로 초기화.'
+        ] },
+      { n: 7, target: '.perf-card', title: '실시간 판매 성과', tag: '1분 갱신',
+        def: '라이브 전체 성과를 실시간 집계.',
+        features: [
+          '실시간/누적 접속, 주문 금액·건수, 실거래 금액·건수, 점유 수량·금액 표기.',
+          '1분 주기로 갱신.'
+        ] },
+      { n: 8, target: '.chat-card', title: '채팅 · 공지 · CS', tag: '소통 운영',
+        def: '시청자 소통과 운영 메시지를 통합 관리.',
+        features: [
+          '채팅 / 공지 / Q&A / FAQ / 메모 탭 제공.',
+          '라이브 중 실시간 채팅 입력·노출.'
+        ] }
     ];
 
     var list = document.getElementById('prdList');
@@ -1201,7 +1242,12 @@
       var div = document.createElement('div');
       div.className = 'prd-item';
       div.setAttribute('data-prd', it.n);
-      div.innerHTML = '<div class="prd-item-head"><span class="prd-num">' + it.n + '</span><h4>' + it.title + '</h4></div><p>' + it.body + '</p>' + (it.tag ? '<span class="tag">' + it.tag + '</span>' : '');
+      var feats = (it.features || []).map(function (f) { return '<li>' + f + '</li>'; }).join('');
+      div.innerHTML =
+        '<div class="prd-item-head"><span class="prd-num">' + it.n + '</span><h4>' + it.title + '</h4></div>' +
+        '<div class="prd-block"><span class="prd-k">정의</span><p>' + it.def + '</p></div>' +
+        '<div class="prd-block"><span class="prd-k">기능</span><ul>' + feats + '</ul></div>' +
+        (it.tag ? '<span class="tag">' + it.tag + '</span>' : '');
       list.appendChild(div);
       items[it.n] = div;
 
