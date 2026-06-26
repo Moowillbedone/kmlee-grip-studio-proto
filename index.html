@@ -535,6 +535,24 @@
   .prd-item .prd-block li { font-size: 13px; line-height: 1.6; color: #5c606b; margin-bottom: 5px; }
   .prd-item .prd-block li::marker { color: #c4c8d0; }
   .prd-item .prd-block li:last-child { margin-bottom: 0; }
+  /* AS-IS / TO-BE 라벨 */
+  .prd-k-asis { color: #9499a3; }
+  .prd-k-tobe { color: var(--grip); }
+  .prd-item .prd-block .prd-k-asis + p { color: #6b6f78; }
+
+  /* 토스트(좌측 하단) */
+  .toast-wrap { position: fixed; left: 22px; bottom: 22px; z-index: 200; display: flex; flex-direction: column; gap: 10px; }
+  .toast {
+    display: flex; align-items: center; gap: 10px;
+    background: #1f2126; color: #fff; padding: 13px 18px; border-radius: 12px;
+    font-size: 14px; font-weight: 600; box-shadow: 0 10px 28px rgba(20,22,30,.30);
+    animation: toastIn .22s ease; transition: opacity .25s, transform .25s;
+  }
+  .toast.hide { opacity: 0; transform: translateY(8px); }
+  @keyframes toastIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  .toast .t-ic { width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; font-size: 12px; font-weight: 800; }
+  .toast.success .t-ic { background: #22c55e; color: #fff; }
+  .toast.fail .t-ic { background: var(--grip); color: #fff; }
 </style>
 </head>
 <body>
@@ -1020,6 +1038,9 @@
   <div class="prd-list" id="prdList"></div>
 </aside>
 
+<!-- 토스트(좌측 하단) -->
+<div class="toast-wrap" id="toastWrap"></div>
+
 <script>
   // 라이브 방송 타이머 — 초 단위 카운트업
   (function () {
@@ -1134,6 +1155,18 @@
     if (failOk) failOk.addEventListener('click', function () { failModal.classList.remove('open'); });
     if (failModal) failModal.addEventListener('click', function (e) { if (e.target === failModal) failModal.classList.remove('open'); });
 
+    // 토스트(좌측 하단)
+    function showToast(msg, ok) {
+      var wrap = document.getElementById('toastWrap');
+      if (!wrap) return;
+      var t = document.createElement('div');
+      t.className = 'toast ' + (ok ? 'success' : 'fail');
+      t.innerHTML = '<span class="t-ic">' + (ok ? '✓' : '!') + '</span><span>' + msg + '</span>';
+      wrap.appendChild(t);
+      setTimeout(function () { t.classList.add('hide'); }, 2400);
+      setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 2750);
+    }
+
     // 반영 — 선택 상품들의 선택 가격 항목 일괄 변경 (라이브가 최소 200원)
     var LIVE_MIN = 200;
     var pmApply = document.getElementById('pmApply');
@@ -1158,7 +1191,12 @@
         if (doL) { var c = r.querySelector('.pi-live-input'); if (c) c.value = disp; }
       });
       closeModal();
-      if (failed.length) showFail(failed);
+      if (failed.length) {
+        showFail(failed);
+        showToast('가격 수정에 실패 하였습니다.', false);
+      } else {
+        showToast('가격 수정에 성공 하였습니다.', true);
+      }
     });
 
     refresh();
@@ -1167,57 +1205,29 @@
   // ============ PRD 모드 ============
   (function () {
     var PRD = [
-      { n: 1, target: '.sales-head', title: '한정판매 상품 관리', tag: '1개 집중 판매',
-        def: '한정판매 라인업을 등록·구성하고 탐색하는 메인 관리 영역.',
-        features: [
-          '한정판매는 동시 1개 상품만 판매 가능(정책).',
-          'UP한 상품 목록 / 등록된 상품 가져오기 / 플래시 상품 등록으로 라인업 구성.',
-          '전체·상품명 필터와 검색으로 빠르게 탐색.'
-        ] },
-      { n: 2, target: '.select-row', title: '상품 선택 & 일괄 제어', tag: '다중 선택',
+      { n: 1, target: '.select-row', title: '상품 선택 & 일괄 제어', tag: '다중 선택',
         def: '여러 상품을 한 번에 제어하기 위한 선택 진입점.',
         features: [
           '원형 체크박스(기본은 비활성 회색 체크 표시).',
           '전체선택 시 모든 상품 선택, 선택 개수는 (n/총개수)로 표기.',
           '1개 이상 선택 시 [가격 수정]·[스토어 ON]·[스토어 OFF] 버튼 활성화.'
         ] },
-      { n: 3, target: '.pi-prices', title: '3단 가격 정보', tag: '정가·상시·라이브',
+      { n: 2, target: '.pi-prices', title: '가격 정보', tag: '정가·상시·라이브',
         def: '한 상품의 가격을 의미별 3단으로 분리 표기.',
+        asis: '정가·할인가·라이브가를 명확하게 구분해 알 수 없음.',
+        tobe: '영역별 금액을 노출하여 가격 일괄 수정 내용 및 비즈센터 내용과 일치.',
         features: [
           '정가(취소선) — 상품의 원래 판매가.',
           '상시할인가 — 정가 대비 할인율 배지와 함께 표기.',
           '라이브가 — 이번 방송 전용 판매가, 인라인 직접 수정 가능.'
         ] },
-      { n: 4, target: '.pr-sale-btns', title: '판매 상태', tag: '상태 전환',
-        def: '상품별 판매 상태를 지정·전환.',
-        features: [
-          '판매예정 / 판매시작 / 품절 중 하나 선택(라디오 방식).',
-          '현재 상태를 표시하고 클릭으로 즉시 전환.'
-        ] },
-      { n: 5, target: '.pr-stats', title: '상품별 실시간 통계', tag: '상품 단위 집계',
-        def: '상품 단위의 실시간 판매 지표.',
-        features: [
-          '장바구니 수량·실주문 수량·판매가능 수량(편집 가능)·라이브 매출 집계.',
-          '라이브 매출은 강조 컬러로 표기.'
-        ] },
-      { n: 6, target: '#btnPriceEdit', title: '가격 일괄 수정', tag: '일괄 변경 · 검증',
+      { n: 3, target: '#btnPriceEdit', title: '가격 일괄 수정', tag: '일괄 변경 · 검증',
         def: '선택한 상품들의 가격을 한 번에 변경.',
         features: [
           '팝업에서 변경 대상(전체/정가/상시할인가/라이브가) 선택 후 금액 입력하여 반영.',
           '라이브가 최소 200원 검증(미달 시 실패 내역 팝업 노출·해당 상품 제외).',
+          '반영 결과를 좌측 하단 토스트로 안내(200원 미만=실패 / 이상=성공).',
           '팝업을 닫으면 선택 항목은 항상 전체선택으로 초기화.'
-        ] },
-      { n: 7, target: '.perf-card', title: '실시간 판매 성과', tag: '1분 갱신',
-        def: '라이브 전체 성과를 실시간 집계.',
-        features: [
-          '실시간/누적 접속, 주문 금액·건수, 실거래 금액·건수, 점유 수량·금액 표기.',
-          '1분 주기로 갱신.'
-        ] },
-      { n: 8, target: '.chat-card', title: '채팅 · 공지 · CS', tag: '소통 운영',
-        def: '시청자 소통과 운영 메시지를 통합 관리.',
-        features: [
-          '채팅 / 공지 / Q&A / FAQ / 메모 탭 제공.',
-          '라이브 중 실시간 채팅 입력·노출.'
         ] }
     ];
 
@@ -1237,10 +1247,13 @@
       div.className = 'prd-item';
       div.setAttribute('data-prd', it.n);
       var feats = (it.features || []).map(function (f) { return '<li>' + f + '</li>'; }).join('');
+      var blocks = '<div class="prd-block"><span class="prd-k">정의</span><p>' + it.def + '</p></div>';
+      if (it.asis) blocks += '<div class="prd-block"><span class="prd-k prd-k-asis">AS-IS</span><p>' + it.asis + '</p></div>';
+      if (it.tobe) blocks += '<div class="prd-block"><span class="prd-k prd-k-tobe">TO-BE</span><p>' + it.tobe + '</p></div>';
+      blocks += '<div class="prd-block"><span class="prd-k">기능</span><ul>' + feats + '</ul></div>';
       div.innerHTML =
         '<div class="prd-item-head"><span class="prd-num">' + it.n + '</span><h4>' + it.title + '</h4></div>' +
-        '<div class="prd-block"><span class="prd-k">정의</span><p>' + it.def + '</p></div>' +
-        '<div class="prd-block"><span class="prd-k">기능</span><ul>' + feats + '</ul></div>' +
+        blocks +
         (it.tag ? '<span class="tag">' + it.tag + '</span>' : '');
       list.appendChild(div);
       items[it.n] = div;
