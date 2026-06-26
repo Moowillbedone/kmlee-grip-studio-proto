@@ -473,6 +473,57 @@
     .col-right > * { flex: 1; }
     .chat-card { height: auto; min-height: 360px; }
   }
+
+  /* ============ PRD 모드 ============ */
+  .prd-toggle {
+    position: fixed; right: 22px; bottom: 22px; z-index: 130;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: #1d1f25; color: #fff; border: 0; border-radius: 24px;
+    padding: 12px 20px; font-size: 14px; font-weight: 700; cursor: pointer;
+    box-shadow: 0 8px 24px rgba(20,22,30,.28); font-family: inherit;
+  }
+  .prd-toggle:hover { background: #2c2f38; }
+  .prd-toggle .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--grip); }
+  body.prd-on .prd-toggle { display: none; }
+
+  .app { transition: margin-right .26s ease; }
+  body.prd-on .app { margin-right: 392px; }
+
+  /* 화면 번호 라벨(마커) */
+  .prd-marker {
+    position: absolute; display: none; z-index: 95;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--grip); color: #fff; border: 2px solid #fff;
+    font-size: 13px; font-weight: 800; font-family: inherit;
+    align-items: center; justify-content: center; cursor: pointer; padding: 0;
+    box-shadow: 0 2px 8px rgba(245,55,91,.4); transition: transform .15s, box-shadow .15s;
+  }
+  body.prd-on .prd-marker { display: flex; }
+  .prd-marker:hover, .prd-marker.glow { transform: scale(1.28); box-shadow: 0 0 0 7px rgba(245,55,91,.22), 0 2px 10px rgba(245,55,91,.5); z-index: 96; }
+
+  /* PRD 패널 */
+  .prd-panel {
+    position: fixed; top: 0; right: 0; bottom: 0; width: 392px; z-index: 120;
+    background: #fff; border-left: 1px solid var(--border);
+    box-shadow: -8px 0 28px rgba(20,22,30,.10);
+    transform: translateX(100%); transition: transform .26s ease;
+    display: flex; flex-direction: column;
+  }
+  body.prd-on .prd-panel { transform: translateX(0); }
+  .prd-head { display: flex; align-items: flex-start; justify-content: space-between; padding: 18px 20px; border-bottom: 1px solid var(--border); }
+  .prd-head h3 { margin: 0; font-size: 16px; font-weight: 800; color: #1d1f25; }
+  .prd-head .sub { font-size: 12px; color: var(--t3); margin-top: 3px; font-weight: 500; }
+  .prd-close { width: 32px; height: 32px; border-radius: 8px; border: 0; background: #f1f2f4; color: #5c606b; font-size: 16px; cursor: pointer; flex: 0 0 auto; }
+  .prd-close:hover { background: #e9eaee; }
+  .prd-list { flex: 1; overflow-y: auto; padding: 8px 12px 28px; }
+  .prd-item { padding: 14px; border-radius: 12px; cursor: pointer; border: 1px solid transparent; transition: background .12s, border-color .12s; }
+  .prd-item:hover, .prd-item.hl { background: #fafafb; }
+  .prd-item.active { background: var(--grip-soft-2); border-color: #f6c6d0; }
+  .prd-item-head { display: flex; align-items: center; gap: 9px; margin-bottom: 7px; }
+  .prd-num { width: 22px; height: 22px; border-radius: 50%; background: var(--grip); color: #fff; font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+  .prd-item-head h4 { margin: 0; font-size: 14.5px; font-weight: 700; color: #1d1f25; }
+  .prd-item p { margin: 0; font-size: 13px; line-height: 1.6; color: #5c606b; }
+  .prd-item .tag { display: inline-block; margin-top: 8px; font-size: 11px; font-weight: 700; color: var(--grip); background: var(--grip-soft); padding: 3px 8px; border-radius: 6px; }
 </style>
 </head>
 <body>
@@ -945,6 +996,19 @@
   </div>
 </div>
 
+<!-- PRD 모드 -->
+<button class="prd-toggle" id="prdToggle"><span class="dot"></span> PRD 모드</button>
+<aside class="prd-panel" id="prdPanel" aria-label="PRD 기능 명세">
+  <div class="prd-head">
+    <div>
+      <h3>PRD · 기능 명세</h3>
+      <div class="sub">그립 스튜디오 2.0 · 한정판매 라이브 콘솔</div>
+    </div>
+    <button class="prd-close" id="prdClose" title="닫기">✕</button>
+  </div>
+  <div class="prd-list" id="prdList"></div>
+</aside>
+
 <script>
   // 라이브 방송 타이머 — 초 단위 카운트업
   (function () {
@@ -1087,6 +1151,101 @@
     });
 
     refresh();
+  })();
+
+  // ============ PRD 모드 ============
+  (function () {
+    var PRD = [
+      { n: 1, target: '.bc-card', title: '라이브 방송 모니터', tag: '실시간 송출',
+        body: '셀러 송출 화면을 실시간 모니터링. 상단 상태바(네트워크·온도·FPS·카메라·배터리)와 라이브 타이머(● 빨강 + 초 단위 카운트업), 좌상단 한정 배지, 우상단 IVS / LL-HLS 송출 상태, 기프트 누적, 우측 공유·음소거·채팅 컨트롤을 제공. 방송 미진행 시 빈 상태 안내를 노출.' },
+      { n: 2, target: '.action-bar', title: '라이브 인터랙션 (게임)', tag: '참여 유도',
+        body: '다시하기·추첨·OX·초성·주사위 5종 미니게임으로 시청자 참여와 체류를 유도. 버튼 선택 시 진행 모달이 실행되어 라이브 중 즉시 운영(예정).' },
+      { n: 3, target: '.sales-head', title: '한정판매 상품 관리', tag: '1개 집중 판매',
+        body: '한정판매는 동시 1개 상품만 판매 가능. UP한 상품 목록 / 등록된 상품 가져오기 / 플래시 상품 등록으로 라인업을 구성하고, 전체·상품명 필터와 검색으로 빠르게 탐색.' },
+      { n: 4, target: '.select-row', title: '상품 선택 & 일괄 제어', tag: '다중 선택',
+        body: '원형 체크박스(기본은 비활성 회색 체크 표시). 전체선택 시 모든 상품이 선택되고, 1개 이상 선택되면 [가격 수정]·[스토어 ON]·[스토어 OFF] 버튼이 활성화. 선택 개수는 (n/총개수)로 표기.' },
+      { n: 5, target: '.pi-prices', title: '3단 가격 정보', tag: '정가·상시·라이브',
+        body: '정가(취소선)·상시할인가(정가 대비 할인율 배지)·라이브가(이번 방송 전용 판매가)를 분리 표기해 각 가격의 의미를 명확화. 라이브가는 인라인으로 직접 수정 가능하며 강조 표기.' },
+      { n: 6, target: '.pr-sale-btns', title: '판매 상태', tag: '상태 전환',
+        body: '판매예정 / 판매시작 / 품절 중 하나를 선택(라디오 방식). 상품별 현재 판매 상태를 표시하고 클릭으로 즉시 전환.' },
+      { n: 7, target: '.pr-stats', title: '상품별 실시간 통계', tag: '상품 단위 집계',
+        body: '상품 단위로 장바구니 수량·실주문 수량·판매가능 수량(편집 가능)·라이브 매출을 집계. 라이브 매출은 강조 컬러로 표기.' },
+      { n: 8, target: '#btnPriceEdit', title: '가격 일괄 수정', tag: '일괄 변경 · 검증',
+        body: '선택한 상품들의 가격을 한 번에 변경. 팝업에서 변경 대상(전체/정가/상시할인가/라이브가)을 선택 후 금액 입력하여 반영. 라이브가 최소 200원 검증(미달 시 실패 내역 팝업 노출·해당 상품 제외). 팝업을 닫으면 선택 항목은 항상 전체선택으로 초기화.' },
+      { n: 9, target: '.perf-card', title: '실시간 판매 성과', tag: '1분 갱신',
+        body: '실시간/누적 접속, 주문 금액·건수, 실거래 금액·건수, 점유 수량·금액을 1분 주기로 갱신해 라이브 성과를 한눈에 파악.' },
+      { n: 10, target: '.chat-card', title: '채팅 · 공지 · CS', tag: '소통 운영',
+        body: '채팅/공지/Q&A/FAQ/메모 탭으로 시청자 소통과 운영 메시지를 통합 관리. 라이브 중 실시간 채팅 입력·노출.' }
+    ];
+
+    var list = document.getElementById('prdList');
+    var toggleBtn = document.getElementById('prdToggle');
+    var closeBtn = document.getElementById('prdClose');
+    if (!list || !toggleBtn) return;
+    var markers = {}, items = {};
+
+    function setActive(n) {
+      Object.keys(items).forEach(function (k) { items[k].classList.toggle('active', k === String(n)); });
+    }
+    function flash(m) { m.classList.add('glow'); setTimeout(function () { m.classList.remove('glow'); }, 1300); }
+
+    PRD.forEach(function (it) {
+      var div = document.createElement('div');
+      div.className = 'prd-item';
+      div.setAttribute('data-prd', it.n);
+      div.innerHTML = '<div class="prd-item-head"><span class="prd-num">' + it.n + '</span><h4>' + it.title + '</h4></div><p>' + it.body + '</p>' + (it.tag ? '<span class="tag">' + it.tag + '</span>' : '');
+      list.appendChild(div);
+      items[it.n] = div;
+
+      var m = document.createElement('button');
+      m.type = 'button';
+      m.className = 'prd-marker';
+      m.setAttribute('data-prd', it.n);
+      m.textContent = it.n;
+      document.body.appendChild(m);
+      markers[it.n] = m;
+
+      // 패널 항목 → 화면 라벨 빛남 / 클릭 시 화면 요소로 이동
+      div.addEventListener('mouseenter', function () { m.classList.add('glow'); });
+      div.addEventListener('mouseleave', function () { m.classList.remove('glow'); });
+      div.addEventListener('click', function () {
+        var el = document.querySelector(it.target);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setActive(it.n); flash(m);
+      });
+      // 화면 라벨 → 패널 항목으로 스크롤 이동 / hover 시 항목 강조
+      m.addEventListener('mouseenter', function () { div.classList.add('hl'); });
+      m.addEventListener('mouseleave', function () { div.classList.remove('hl'); });
+      m.addEventListener('click', function () {
+        div.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setActive(it.n); flash(m);
+      });
+    });
+
+    function place() {
+      PRD.forEach(function (it) {
+        var el = document.querySelector(it.target);
+        var m = markers[it.n];
+        if (!el || !m) return;
+        var r = el.getBoundingClientRect();
+        m.style.top = (r.top + window.scrollY - 12) + 'px';
+        m.style.left = (r.left + window.scrollX - 12) + 'px';
+      });
+    }
+
+    var on = false;
+    var appEl = document.querySelector('.app');
+    function setMode(v) {
+      on = v;
+      document.body.classList.toggle('prd-on', on);
+      if (on) { place(); requestAnimationFrame(place); setTimeout(place, 120); setTimeout(place, 320); setTimeout(place, 520); }
+    }
+    // 레이아웃 시프트(.app margin) 완료 후 정확히 재배치
+    if (appEl) appEl.addEventListener('transitionend', function (e) { if (on && e.propertyName === 'margin-right') place(); });
+    toggleBtn.addEventListener('click', function () { setMode(true); });
+    if (closeBtn) closeBtn.addEventListener('click', function () { setMode(false); });
+    window.addEventListener('resize', function () { if (on) place(); });
+    window.addEventListener('scroll', function () { if (on) place(); }, { passive: true });
   })();
 </script>
 </body>
