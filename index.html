@@ -299,7 +299,7 @@
   .pr-head { display: flex; align-items: center; gap: 14px; }
   .pr-stats {
     display: flex; align-items: center;
-    margin-top: 14px; padding-top: 14px;
+    margin-top: 11px; padding-top: 11px;
     border-top: 1px solid var(--border);
   }
   .pr-stats .stat-cell { padding-right: 30px; }
@@ -308,7 +308,7 @@
     background: var(--product-img) center/cover no-repeat, #f1f2f4;
     position: relative; overflow: hidden;
   }
-  .pr-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+  .pr-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 11px; }
 
   /* 상단: 이름 인풋 + UP/스토어 */
   .pr-top { display: flex; align-items: center; gap: 10px; }
@@ -332,7 +332,7 @@
   .btn-storeoff:hover { background: #7e828a; }
 
   /* 하단: 가격 3분할(정가/상시할인가/라이브가) + 판매상태 */
-  .pr-bottom { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+  .pr-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
   .pi-prices {
     display: flex; align-items: stretch; flex: 1 1 360px; max-width: 470px; min-width: 318px;
     border: 1px solid var(--field-border); border-radius: 9px; overflow: hidden; background: #fff;
@@ -344,13 +344,12 @@
   .pi-regular-value { font-size: 14px; font-weight: 500; color: var(--t3); text-decoration: line-through; text-decoration-color: #b9bcc4; white-space: nowrap; }
   .pi-discount-value { font-size: 15px; font-weight: 700; color: #20222a; white-space: nowrap; }
   .pi-discount-badge { display: inline-flex; align-items: center; height: 16px; font-size: 11px; font-weight: 700; color: var(--grip); background: #fdeaef; border-radius: 4px; padding: 0 5px; line-height: 1; white-space: nowrap; align-self: center; }
-  .pi-cell.pi-cell--live { flex: 1.4 1 0; background: #fff5f7; border-left: 2px solid var(--grip); }
-  .pi-cell--live .pi-label { color: var(--grip); font-weight: 600; }
+  .pi-cell.pi-cell--live { flex: 1.3 1 0; }
   .pi-live-field { display: flex; align-items: baseline; gap: 3px; }
-  .pi-live-input { width: 80px; border: 1px solid #f3b6c5; border-radius: 6px; background: #fff; color: var(--grip); font-family: inherit; font-size: 16px; font-weight: 800; text-align: right; padding: 4px 7px; line-height: 1.2; letter-spacing: -.02em; outline: none; transition: border-color .12s, box-shadow .12s; }
-  .pi-live-input:hover { border-color: var(--grip); }
-  .pi-live-input:focus { border-color: var(--grip); box-shadow: 0 0 0 3px rgba(245,55,91,.15); }
-  .pi-live-unit { font-size: 13px; font-weight: 700; color: var(--grip); }
+  .pi-live-input { width: 84px; border: 1px solid var(--field-border); border-radius: 6px; background: #fff; color: #20222a; font-family: inherit; font-size: 15px; font-weight: 800; text-align: right; padding: 4px 8px; line-height: 1.2; letter-spacing: -.01em; outline: none; transition: border-color .12s, box-shadow .12s; }
+  .pi-live-input:hover { border-color: #c7cad1; }
+  .pi-live-input:focus { border-color: #b6bac2; box-shadow: 0 0 0 3px rgba(140,144,151,.14); }
+  .pi-live-unit { font-size: 13px; font-weight: 600; color: var(--t3); }
 
   .pr-sale-btns { display: flex; gap: 8px; flex: 0 0 auto; }
   .btn-sale { background: #fff; border: 1px solid var(--field-border); color: #5c606b; font-size: 13px; font-weight: 600; padding: 10px 16px; border-radius: 9px; }
