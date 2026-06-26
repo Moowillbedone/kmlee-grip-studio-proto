@@ -535,6 +535,7 @@
   .prd-item .prd-block li { font-size: 13px; line-height: 1.6; color: #5c606b; margin-bottom: 5px; }
   .prd-item .prd-block li::marker { color: #c4c8d0; }
   .prd-item .prd-block li:last-child { margin-bottom: 0; }
+  .prd-item .prd-block li strong { color: #20222a; font-weight: 800; }
   /* AS-IS / TO-BE 라벨 */
   .prd-k-asis { color: #9499a3; }
   .prd-k-tobe { color: var(--grip); }
@@ -1128,6 +1129,7 @@
     function closeModal() { modal.classList.remove('open'); resetPm(); }
     if (btnPrice) btnPrice.addEventListener('click', function () {
       if (!btnPrice.classList.contains('enabled')) return;
+      resetPm(); // 팝업 열 때 무조건 전체선택 + 입력 초기화
       if (pmCount) pmCount.textContent = checkedRows().length;
       modal.classList.add('open');
     });
@@ -1227,7 +1229,8 @@
           '팝업에서 변경 대상(전체/정가/상시할인가/라이브가) 선택 후 금액 입력하여 반영.',
           '라이브가 최소 200원 검증(미달 시 실패 내역 팝업 노출·해당 상품 제외).',
           '반영 결과를 좌측 하단 토스트로 안내(200원 미만=실패 / 이상=성공).',
-          '팝업을 닫으면 선택 항목은 항상 전체선택으로 초기화.'
+          '팝업을 열 때는 무조건 체크박스 전체선택(전체·정가·상시할인가·라이브가).',
+          '<strong>변경된 가격은 &lt;비즈센터&gt;에도 연동되어 가격 반영됨.</strong>'
         ] }
     ];
 
