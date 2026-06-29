@@ -576,9 +576,18 @@
   .vout-ok { background: #eafaf0; border: 1px solid #bfe9cf; color: #1f8b4c; }
   .vout-no { background: #fdeef0; border: 1px solid #f6c6d0; color: var(--grip-strong); }
   .vnode-final { background: #f5f6f8; }
-  /* 검증 플로우 — 2경로 다이어그램 */
-  .prd-flow .prd-k2 { margin-bottom: 9px; }
-  .fpath { border: 1px solid var(--border); border-radius: 12px; padding: 13px; margin-bottom: 10px; background: #fff; }
+  /* 검증 플로우 — 2경로 다이어그램 (하나의 영역으로 묶음) */
+  .prd-flow { border: 1px solid var(--border); border-radius: 14px; padding: 14px; background: #fff; margin-bottom: 16px; }
+  .prd-flow .prd-k2 { margin: 0 0 11px; }
+  .fpath { border: 1px solid #edeff2; border-radius: 12px; padding: 13px; margin-bottom: 10px; background: #f8f9fb; }
+  .fbul { margin: 0; padding-left: 18px; }
+  .fbul li { font-size: 12px; line-height: 1.7; color: #41444d; }
+  .fbul li b { font-weight: 800; color: #1d1f25; }
+  .fbul li b.ok { color: #1f8b4c; }
+  .fbul li b.no { color: var(--grip); }
+  /* 과제개요/검증플로우 ↔ 번호별 기능 명세 구분 라벨 */
+  .prd-section-label { font-size: 12px; font-weight: 800; color: #1d1f25; letter-spacing: .02em; margin: 6px 0 12px; padding-top: 16px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 7px; }
+  .prd-section-label::before { content: ""; width: 4px; height: 13px; background: var(--grip); border-radius: 2px; }
   .fpath-h { font-size: 12.5px; font-weight: 800; color: #1d1f25; margin-bottom: 11px; display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
   .fpath-h em { font-style: normal; font-weight: 600; font-size: 11px; color: var(--t3); }
   .fpath-tag { font-size: 11px; font-weight: 800; color: #fff; padding: 3px 8px; border-radius: 6px; flex: 0 0 auto; }
@@ -587,7 +596,7 @@
   .frow { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
   .fnode { background: #f4f5f7; border: 1px solid #ececef; border-radius: 8px; padding: 7px 10px; font-size: 11.5px; font-weight: 600; color: #41444d; }
   .fnode.ok { background: #eafaf0; border-color: #bfe9cf; color: #1f8b4c; font-weight: 700; }
-  .fnode.final { background: #1f2126; border: 0; color: #fff; font-weight: 700; text-align: center; padding: 11px; font-size: 12px; }
+  .fnode.final { background: #f4f5f7; border: 1px dashed #cfd3da; color: #2b2d34; font-weight: 700; text-align: center; padding: 11px; font-size: 12px; }
   .farr { color: #c4c9d1; font-size: 12px; font-weight: 700; }
   .fdec { margin: 11px 0 8px; background: var(--grip-soft); border: 1px solid #f6c6d0; color: var(--grip); font-weight: 800; font-size: 12px; text-align: center; padding: 9px; border-radius: 8px; }
   .fbranch { display: flex; gap: 8px; }
@@ -1111,13 +1120,13 @@
       <span class="prd-k2">검증 플로우 · 2가지 수정 경로</span>
       <div class="fpath">
         <div class="fpath-h"><span class="fpath-tag a">경로 A</span> 리스트 직접 수정 <em>· 체크박스 불필요</em></div>
-        <div class="frow">
-          <span class="fnode">정가·상시할인가·라이브가 입력</span>
-          <span class="farr">→</span>
-          <span class="fnode">Enter</span>
-          <span class="farr">→</span>
-          <span class="fnode ok">배지 자동계산 · 모바일 반영 · 성공 토스트</span>
-        </div>
+        <ul class="fbul">
+          <li>정가·상시할인가 수정 시 할인율 <b>배지 자동 계산</b></li>
+          <li>라이브가 수정 시 <b>즉시 수정 가능</b></li>
+          <li>모든 가격 <b>200원 이상</b> 수정 시 <b class="ok">성공 토스트</b></li>
+          <li>모든 가격 <b>200원 미만</b> 수정 시 <b class="no">실패 토스트</b> · 미적용(되돌림)</li>
+          <li>변경된 가격은 좌측 <b>모바일 프리뷰</b>에 반영</li>
+        </ul>
       </div>
       <div class="fpath">
         <div class="fpath-h"><span class="fpath-tag b">경로 B</span> 일괄 수정 <em>· 체크 + [가격 수정]</em></div>
@@ -1135,8 +1144,9 @@
         </div>
       </div>
       <div class="fmerge">↓ 두 경로 모두</div>
-      <div class="fnode final">변경 결과 비즈센터 · 스튜디오 데이터 연동 반영</div>
+      <div class="fnode final">🔗 변경 결과는 비즈센터 · 스튜디오 데이터와 연동 반영</div>
     </div>
+    <div class="prd-section-label">기능 명세</div>
   </div>
 </aside>
 
@@ -1303,9 +1313,9 @@
           failed.push(ni ? ni.value : '상품');
           return;
         }
-        if (doJ) { var a = r.querySelector('.pi-regular-input'); if (a) a.value = disp; }
-        if (doS) { var b = r.querySelector('.pi-discount-input'); if (b) b.value = disp; }
-        if (doL) { var c = r.querySelector('.pi-live-input'); if (c) c.value = disp; }
+        if (doJ) { var a = r.querySelector('.pi-regular-input'); if (a) { a.value = disp; a.dataset.prev = disp; } }
+        if (doS) { var b = r.querySelector('.pi-discount-input'); if (b) { b.value = disp; b.dataset.prev = disp; } }
+        if (doL) { var c = r.querySelector('.pi-live-input'); if (c) { c.value = disp; c.dataset.prev = disp; } }
         recalcBadge(r); syncMobile(r);
       });
       closeModal();
@@ -1337,21 +1347,29 @@
       var poPct = bcOverlay.querySelector('.po-price .pct'); if (poPct) poPct.textContent = pct + '%';
       var poWon = bcOverlay.querySelector('.po-price .won'); if (poWon) poWon.textContent = fmtNum(live) + '원';
     }
+    var PRICE_MIN = 200;
     rows.forEach(function (row) {
       row.querySelectorAll('.pi-regular-input, .pi-discount-input, .pi-live-input').forEach(function (inp) {
-        inp.addEventListener('input', function () { recalcBadge(row); syncMobile(row); });
-        inp.addEventListener('blur', function () {
-          if (inp.value.replace(/[^0-9]/g, '')) inp.value = fmtNum(toNum(inp.value));
-          recalcBadge(row); syncMobile(row);
-        });
-        inp.addEventListener('keydown', function (e) {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            if (inp.value.replace(/[^0-9]/g, '')) inp.value = fmtNum(toNum(inp.value));
-            recalcBadge(row); syncMobile(row); inp.blur();
+        inp.dataset.prev = inp.value;            // 마지막 유효(≥200) 값 기억
+        var lock = false;
+        function commit() {
+          if (lock) return; lock = true; setTimeout(function () { lock = false; }, 60); // Enter→blur 중복 방지
+          var raw = inp.value.replace(/[^0-9]/g, '');
+          if (!raw) { inp.value = inp.dataset.prev; recalcBadge(row); syncMobile(row); return; }
+          var n = parseInt(raw, 10);
+          if (n < PRICE_MIN) {                   // 200원 미만 → 미적용(되돌림) + 실패 토스트
+            inp.value = inp.dataset.prev;
+            recalcBadge(row); syncMobile(row);
+            showToast('가격 수정에 실패하였습니다.', false);
+          } else {                               // 200원 이상 → 적용 + 성공 토스트
+            inp.value = fmtNum(n); inp.dataset.prev = inp.value;
+            recalcBadge(row); syncMobile(row);
             showToast('가격 수정에 성공하였습니다.', true);
           }
-        });
+        }
+        inp.addEventListener('input', function () { recalcBadge(row); syncMobile(row); });
+        inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); commit(); inp.blur(); } });
+        inp.addEventListener('blur', commit);
       });
       recalcBadge(row);
     });
