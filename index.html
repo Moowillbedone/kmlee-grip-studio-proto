@@ -1543,7 +1543,7 @@
         target: function () { return q('#failModal .modal'); },
         act: function () { var a = document.getElementById('pmApply'); if (a) a.click(); } },
       { tag: '공통', t: '변경 결과는 <b>비즈센터 · 스튜디오</b>와 데이터 연동되어 반영됩니다.',
-        target: function () { return row1().querySelector('.pr-stats'); },
+        target: function () { return row1().querySelector('.pi-prices'); },
         act: function () { var f = document.getElementById('failOk'); if (f) f.click(); } }
     ];
 
@@ -1570,16 +1570,24 @@
       dotEls.forEach(function (d, i) { d.classList.toggle('on', i === idx); });
       setTimeout(function () { place(s.target ? s.target() : null); }, 260);
     }
-    function tick() { idx = (idx + 1) % steps.length; render(); }
+    function arm() { clearInterval(timer); timer = setInterval(function () { go(1); }, 3000); }
+    function go(delta) { idx = (idx + delta + steps.length) % steps.length; render(); arm(); } // 수동 이동 시 타이머 리셋
     function start() {
       if (document.body.classList.contains('prd-on') && prdClose) prdClose.click(); // 풀 화면(비 PRD)으로
       snapshot(); spot.style.opacity = '0'; overlay.classList.add('on');
-      idx = 0; render(); clearInterval(timer); timer = setInterval(tick, 3000);
+      idx = 0; render(); arm();
     }
     function stop() { clearInterval(timer); timer = null; overlay.classList.remove('on'); resetUI(); }
 
     launch.addEventListener('click', start);
     if (endBtn) endBtn.addEventListener('click', stop);
+    // 화살표 ←/→ 로 즉시 이전/다음 (대기 없음), Esc 종료
+    document.addEventListener('keydown', function (e) {
+      if (!overlay.classList.contains('on')) return;
+      if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+      else if (e.key === 'Escape') { e.preventDefault(); stop(); }
+    });
   })();
 </script>
 </body>
