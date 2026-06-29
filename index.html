@@ -1289,6 +1289,7 @@
 
     // 토스트(좌측 하단)
     function showToast(msg, ok) {
+      if (window.__tourSilent) return;          // 데모 재구성(되감기 등) 중에는 토스트 억제
       var wrap = document.getElementById('toastWrap');
       if (!wrap) return;
       var t = document.createElement('div');
@@ -1298,6 +1299,7 @@
       setTimeout(function () { t.classList.add('hide'); }, 2400);
       setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 2750);
     }
+    window.__gripToast = showToast;               // 데모(경로 A)가 동일 토스트를 재사용
 
     // 반영 — 선택 상품들의 선택 가격 항목 일괄 변경 (정가·상시할인가·라이브가 모두 최소 200원)
     var BULK_MIN = 200;
@@ -1546,7 +1548,7 @@
         target: function () { return row1().querySelector('.pi-prices'); } },
       { tag: '경로 A · 성공', t: '라이브가에 <b>200원 이상</b> 입력 후 <b>Enter</b> → 상시할인가 할인율 배지 자동계산 · <b>성공 토스트</b>(좌측 하단).',
         target: function () { return row1().querySelector('.pi-cell--live'); },
-        act: function () { var i = row1().querySelector('.pi-live-input'); i.value = '2,500'; input(i); enter(i); } },
+        act: function () { var i = row1().querySelector('.pi-live-input'); i.value = '2,500'; i.dataset.prev = '2,500'; input(i); if (window.__gripToast) window.__gripToast('가격 수정에 성공하였습니다.', true); } },
       { tag: '경로 A · 결과', t: '수정한 라이브가가 <b>좌측 모바일 라이브 화면</b>에 즉시 반영됩니다.',
         target: function () { return q('.product-overlay'); } },
       { tag: '경로 A · 검증', t: '이번엔 라이브가에 <b>200원 미만(150)</b>을 입력해 봅니다.',
@@ -1554,7 +1556,7 @@
         act: function () { var i = row1().querySelector('.pi-live-input'); i.value = '150'; input(i); } },
       { tag: '경로 A · 실패', t: '<b>Enter</b> → 200원 미만은 적용되지 않고 <b>이전 값(2,500원)으로 복원</b> · <b>실패 토스트</b>.',
         target: function () { return row1().querySelector('.pi-cell--live'); },
-        act: function () { var i = row1().querySelector('.pi-live-input'); enter(i); } },
+        act: function () { var i = row1().querySelector('.pi-live-input'); i.value = (i.dataset.prev || '2,500'); input(i); if (window.__gripToast) window.__gripToast('가격 수정에 실패하였습니다.', false); } },
       { tag: '경로 B · 일괄 수정', t: '일괄 수정은 <b>상품을 1개 이상 선택(체크)</b>하는 것부터 시작합니다.',
         target: function () { return row1().querySelector('.cbox'); } },
       { tag: '경로 B · 일괄 수정', t: '선택하면 <b>[가격 수정]</b> 버튼이 활성화됩니다 → 클릭.',
@@ -1564,7 +1566,7 @@
         target: function () { return q('#priceModal .modal'); },
         act: function () { q('#btnPriceEdit').click(); } },
       { tag: '경로 B · 검증', t: '대상 가격이 <b>모두 ≥ 200원</b>이면 정상 반영됩니다. (예: 3,000원)',
-        target: function () { return q('#priceModal .modal-foot'); },
+        target: function () { return [q('#priceModal .modal-input-row'), q('#priceModal .modal-foot')]; },   // 금액 입력란 ~ 반영 버튼을 한 영역으로
         act: function () { var p = document.getElementById('pmPrice'); if (p) p.value = '3,000'; } },
       { tag: '경로 B · 성공', t: '<b>반영</b> → 선택 상품 가격이 일괄 변경되고 <b>성공 토스트</b>가 표시됩니다.',
         target: function () { return row1().querySelector('.pi-prices'); },
@@ -1583,25 +1585,37 @@
     dotsWrap.innerHTML = '';
     var dotEls = steps.map(function () { var s = document.createElement('span'); dotsWrap.appendChild(s); return s; });
 
-    function place(elm) {
-      if (!elm) { spot.style.opacity = '0'; return; }
+    function place(t) {
+      var els = Array.isArray(t) ? t.filter(Boolean) : (t ? [t] : []);   // 단일 요소 또는 여러 요소(합집합 영역)
+      if (!els.length) { spot.style.opacity = '0'; return; }
       spot.style.opacity = '1';
-      var r = elm.getBoundingClientRect(), pad = 8;
-      spot.style.top = (r.top - pad) + 'px'; spot.style.left = (r.left - pad) + 'px';
-      spot.style.width = (r.width + pad * 2) + 'px'; spot.style.height = (r.height + pad * 2) + 'px';
-      var coTop = r.bottom + 14;
-      if (coTop + 130 > window.innerHeight - 96) coTop = Math.max(16, r.top - 144);
-      var coLeft = Math.min(Math.max(16, r.left), window.innerWidth - 338);
+      var top = Infinity, left = Infinity, right = -Infinity, bottom = -Infinity;
+      els.forEach(function (e) { var r = e.getBoundingClientRect(); top = Math.min(top, r.top); left = Math.min(left, r.left); right = Math.max(right, r.right); bottom = Math.max(bottom, r.bottom); });
+      var pad = 8;
+      spot.style.top = (top - pad) + 'px'; spot.style.left = (left - pad) + 'px';
+      spot.style.width = (right - left + pad * 2) + 'px'; spot.style.height = (bottom - top + pad * 2) + 'px';
+      var coTop = bottom + 14;
+      if (coTop + 130 > window.innerHeight - 96) coTop = Math.max(16, top - 144);
+      var coLeft = Math.min(Math.max(16, left), window.innerWidth - 338);
       callout.style.top = coTop + 'px'; callout.style.left = coLeft + 'px';
     }
 
     var idx = 0, timer = null;
+    // 0→현재 단계까지 절대 상태로 재구성한다. 좌/우 화살표·자동진행 어디서 오든 동일하고 깨끗한 화면이 되어
+    // 이전 모달·팝업·토스트가 남지 않는다(특히 ← 이전 이동 시 매끄러운 연결).
+    function rebuild(target) {
+      window.__tourSilent = true;                                 // 재구성 중 토스트 억제
+      for (var k = 0; k < target; k++) { var st = steps[k]; if (st.act) { try { st.act(); } catch (e) {} } }
+      window.__tourSilent = false;
+      var cur = steps[target]; if (cur && cur.act) { try { cur.act(); } catch (e) {} }   // 현재 단계만 토스트 노출
+    }
     function render() {
-      var s = steps[idx];
-      if (s.act) { try { s.act(); } catch (e) {} }
+      var s = steps[idx], cur = idx;
+      rebuild(idx);
       tcStep.textContent = s.tag; tcText.innerHTML = s.t;
       dotEls.forEach(function (d, i) { d.classList.toggle('on', i === idx); });
-      setTimeout(function () { place(s.target ? s.target() : null); }, 260);
+      // 모달 열림 트랜지션이 끝난 뒤 좌표가 확정되므로 여러 시점에 재배치(마지막이 정착값). 단계가 바뀌면 무시.
+      [240, 460, 700].forEach(function (d) { setTimeout(function () { if (idx === cur) place(s.target ? s.target() : null); }, d); });
     }
     function arm() { clearInterval(timer); timer = setInterval(function () { go(1); }, 3000); }
     function go(delta) { idx = (idx + delta + steps.length) % steps.length; render(); arm(); } // 수동 이동 시 타이머 리셋
