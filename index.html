@@ -1544,7 +1544,7 @@
         target: function () { return row1(); }, act: function () { resetUI(); } },
       { tag: '경로 A · 직접 수정', t: '체크 없이도 <b>정가·상시할인가·라이브가</b>를 리스트에서 바로 수정할 수 있습니다.',
         target: function () { return row1().querySelector('.pi-prices'); } },
-      { tag: '경로 A · 직접 수정', t: '라이브가 값 입력 후 <b>Enter</b> → 할인율 배지 자동계산 · <b>성공 토스트</b>(좌측 하단).',
+      { tag: '경로 A · 직접 수정', t: '라이브가 값 입력 후 <b>Enter</b> → 상시할인가 할인율 배지 자동계산 · <b>성공 토스트</b>(좌측 하단).',
         target: function () { return row1().querySelector('.pi-cell--live'); },
         act: function () { var i = row1().querySelector('.pi-live-input'); i.value = '2,500'; input(i); enter(i); } },
       { tag: '경로 A · 결과', t: '수정한 라이브가가 <b>좌측 모바일 라이브 화면</b>에 즉시 반영됩니다.',
