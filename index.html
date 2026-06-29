@@ -1120,13 +1120,18 @@
       <span class="prd-k2">검증 플로우 · 2가지 수정 경로</span>
       <div class="fpath">
         <div class="fpath-h"><span class="fpath-tag a">경로 A</span> 리스트 직접 수정 <em>· 체크박스 불필요</em></div>
-        <ul class="fbul">
-          <li>정가·상시할인가 수정 시 할인율 <b>배지 자동 계산</b></li>
-          <li>라이브가 수정 시 <b>즉시 수정 가능</b></li>
-          <li>모든 가격 <b>200원 이상</b> 수정 시 <b class="ok">성공 토스트</b></li>
-          <li>모든 가격 <b>200원 미만</b> 수정 시 <b class="no">실패 토스트</b> · 미적용(되돌림)</li>
-          <li>변경된 가격은 좌측 <b>모바일 프리뷰</b>에 반영</li>
-        </ul>
+        <div class="frow">
+          <span class="fnode">정가·상시할인가·라이브가 직접 입력</span>
+          <span class="farr">→</span>
+          <span class="fnode">Enter</span>
+          <span class="farr">→</span>
+          <span class="fnode">할인율 배지 자동계산 · 모바일 프리뷰 반영</span>
+        </div>
+        <div class="fdec">수정한 가격 ≥ 200원 ?</div>
+        <div class="fbranch">
+          <span class="fout ok">예 → 적용 + 성공 토스트</span>
+          <span class="fout no">아니오 → 미적용(되돌림) · 실패 토스트</span>
+        </div>
       </div>
       <div class="fpath">
         <div class="fpath-h"><span class="fpath-tag b">경로 B</span> 일괄 수정 <em>· 체크 + [가격 수정]</em></div>
