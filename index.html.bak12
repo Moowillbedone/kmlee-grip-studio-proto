@@ -807,8 +807,8 @@
   .cr-live-title { white-space:nowrap; flex:0 0 auto; }
   .cr-live-hint { color:#8d919c; font-weight:500; font-size:11px; line-height:1.3; flex:1; min-width:0; }
   /* Q&A 항목 라이브 노출 토글 */
-  .qa-vis { display:inline-block; border-radius:14px; padding:4px 9px; font-size:11px; font-weight:800; flex:0 0 auto; background:#eceef1; color:#8d919c; white-space:nowrap; }
-  .qa-vis.priv { background:var(--grip-soft); color:var(--grip); }
+  .qa-live { border:0; border-radius:14px; padding:4px 9px; font-size:11px; font-weight:800; cursor:pointer; flex:0 0 auto; background:#eceef1; color:#8d919c; white-space:nowrap; }
+  .qa-live.on { background:var(--grip-soft); color:var(--grip); }
 </style>
 </head>
 <body>
@@ -1970,7 +1970,7 @@
         var ansRow = it.answering
           ? '<div class="qa-ans-edit"><input class="qa-ans-input" data-i="' + i + '" placeholder="답변을 입력하세요" value="' + (it.a || '') + '"/><button class="qa-ans-ok" data-i="' + i + '">등록</button></div>'
           : (it.a ? '<div class="qa-row qa-a"><span class="qa-ic a">A</span><span class="qa-txt">' + it.a + '</span></div>' : '<div class="qa-row qa-a pending"><span class="qa-ic a">A</span><span class="qa-txt">답변 대기 중</span></div>');
-        var visBtn = '<span class="qa-vis' + (it.priv ? ' priv' : '') + '">' + (it.priv ? '🔒 본인만' : '🌐 전체 공개') + '</span>';
+        var visBtn = '<button class="qa-live' + (it.priv ? ' on' : '') + '" data-priv="' + i + '">' + (it.priv ? '🔒 본인만 · ' + U[it.uid].n : '🌐 전체 공개') + '</button>';
         return '<div class="qa-item" data-i="' + i + '"><div class="qa-head"><div class="qa-rows"><div class="qa-row"><span class="qa-ic q">Q</span><span class="qa-txt"><b style="color:' + u.c + '">' + u.n + '</b> ' + it.q + '</span></div>' + ansRow + '</div>' + visBtn + '<span class="qa-time">' + ago(it.t) + '</span><button class="qa-menu" data-i="' + i + '">⋮</button></div></div>';
       }).join('');
     }
@@ -1980,6 +1980,8 @@
     if (qaPanel) qaPanel.addEventListener('click', function (e) {
       var mb = e.target.closest('.qa-menu');
       if (mb) { qmenuI = parseInt(mb.getAttribute('data-i'), 10); qmenu.innerHTML = '<button data-a="ans">답변하기</button><button data-a="del">삭제하기</button>'; var r = mb.getBoundingClientRect(); qmenu.style.top = (r.bottom + 4) + 'px'; qmenu.style.left = Math.min(r.left - 120, window.innerWidth - 142) + 'px'; qmenu.classList.add('on'); return; }
+      var lv = e.target.closest('.qa-live');
+      if (lv) { var li = parseInt(lv.getAttribute('data-priv'), 10); qaList[li].priv = !qaList[li].priv; renderQA(); updateOvQA(); return; }
       var ok = e.target.closest('.qa-ans-ok');
       if (ok) { var i = parseInt(ok.getAttribute('data-i'), 10); var inp = qaPanel.querySelector('.qa-ans-input[data-i="' + i + '"]'); qaList[i].a = (inp.value || '').trim() || null; qaList[i].answering = false; renderQA(); updateOvQA(); return; }
     });
@@ -2229,7 +2231,7 @@
         '<span class="prd-k2">배경 · 실제 문제</span>' +
         '<p>“답변 = 전체 공개”만 있어, 무관/방해성 질문에 답하면 그대로 전체 Q&amp;A·방송에 박제되어 방송 흐름을 해친다.</p>' +
         '<span class="prd-k2">해결 (정책)</span>' +
-        '<p>답변 박스에 <b>[본인만 보기] 토글</b> 제공.<br/>· <b>OFF(기본) = 전체 공개</b>: <b>모든 유저</b>의 Q&amp;A에 노출 + 방송 프리뷰 띠지 노출.<br/>· <b>ON = 본인만</b>: <b>문의한 본인에게만</b> Q&amp;A로 노출, <b>다른 유저·방송에는 노출 안 됨</b>.</p>' +
+        '<p>답변 박스에 <b>[본인만 보기] 토글</b> 제공.<br/>· <b>OFF(기본) = 전체 공개</b>: <b>모든 유저</b>의 Q&amp;A에 노출 + 방송 프리뷰 띠지 노출.<br/>· <b>ON = 본인만</b>: <b>문의한 본인에게만</b> Q&amp;A로 노출, <b>다른 유저·방송에는 노출 안 됨</b>.<br/>Q&amp;A 탭에서 항목별로 전체/본인만을 사후 전환할 수 있다.</p>' +
         '<span class="prd-k2">참고</span>' +
         '<p>후속으로 “작성 시점부터 Q&amp;A 미노출(완전 비공개)” 옵션도 확장 가능.</p>',
       flowHTML:
@@ -2240,8 +2242,8 @@
           '<div class="fdec">본인만 보기 = ON ?</div>' +
           '<div class="fbranch"><span class="fout no">아니오(기본) → 전체 공개: 모든 유저 Q&amp;A + 방송 띠지</span><span class="fout ok">예 → 본인만: 문의자에게만 · 다른 유저·방송 미노출</span></div>' +
         '</div>' +
-        '<div class="fmerge">↓ Q&amp;A 등록</div>' +
-        '<div class="fnode final">노출 범위는 답변 시 결정 · 전체 공개 항목만 방송 프리뷰 띠지에 노출</div>',
+        '<div class="fmerge">↓ 사후</div>' +
+        '<div class="fnode final">Q&amp;A 탭에서 항목별 [전체 공개 ↔ 본인만] 언제든 전환</div>',
       prd: [
         { n: 1, target: '#chatFeed', title: '답변 시 노출 범위 토글', tag: '전체/본인만',
           def: '답변 작성 박스에 [본인만 보기] 토글 제공(기본 꺼짐 = 전체 공개).',
@@ -2250,7 +2252,10 @@
           features: ['<b>OFF(기본) = 전체 공개</b>: 모든 유저 Q&amp;A + 방송 프리뷰 띠지 노출.', '<b>ON = 본인만</b>: 문의한 본인에게만 노출.', '토글은 답변 박스 하단에 위치.'] },
         { n: 2, target: '.chat-tab[data-tab="qa"]', title: '본인만 = 다른 유저 미노출', tag: '핵심',
           def: '본인만 보기로 답하면 문의한 유저에게만 Q&A로 노출되고 다른 유저·방송에는 노출되지 않는다.',
-          features: ['문의자 본인 Q&amp;A에만 답변 표시.', '<b>다른 유저 Q&amp;A·방송 프리뷰에는 노출 안 됨.</b>', '무관/방해성 문의 대응에 사용.'] }
+          features: ['문의자 본인 Q&amp;A에만 답변 표시.', '<b>다른 유저 Q&amp;A·방송 프리뷰에는 노출 안 됨.</b>', '무관/방해성 문의 대응에 사용.'] },
+        { n: 3, target: '#chatSearchBtn', title: 'Q&A 탭 사후 전환', tag: '전환',
+          def: '등록된 Q&A 항목의 노출 범위를 언제든 전체/본인만으로 바꾼다.',
+          features: ['각 Q&amp;A 항목에 <b>🌐 전체 공개 / 🔒 본인만</b> 토글.', '전체 공개 항목만 방송 프리뷰 띠지에 표시.'] }
       ],
       steps: [
         { tag: '시작', t: '채팅 답변의 <b>노출 범위(전체/본인만)</b>를 제어하는 흐름을 시연합니다. (Jira GRIPPGM-3402)', target: function () { return q('#chatFeed'); }, act: function () { resetUI(); } },
