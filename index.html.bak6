@@ -687,52 +687,6 @@
   .pfs-btn #pfsLabel { flex:1; white-space:normal; line-height:1.45; text-align:left; }
   .pfs-btn .pfs-caret { margin-top:2px; }
   .pfs-item { line-height:1.45; }
-  /* ===== 채팅: 실시간 스트림 + 닉네임 검색 ===== */
-  .chat-search-btn { margin-left:auto; color:#b6bac2; padding-bottom:11px; background:none; border:0; cursor:pointer; display:inline-flex; }
-  .chat-search-btn.act { color:var(--grip); }
-  .chat-search-btn:hover { color:#8d919c; }
-  .chat-search { display:none; padding:0 2px 10px; position:relative; }
-  .chat-search.on { display:block; }
-  .cs-field { display:flex; align-items:center; gap:8px; background:#f4f5f7; border:1px solid #eceef1; border-radius:9px; padding:9px 11px; color:#9a9ea7; }
-  .cs-field:focus-within { border-color:var(--grip); color:var(--grip); background:#fff; }
-  .cs-input { flex:1; border:0; background:none; outline:none; font-size:14px; color:#1f2126; }
-  .cs-input::placeholder { color:#b3b7c0; }
-  .cs-clear { display:none; border:0; background:#d3d7de; color:#fff; width:17px; height:17px; border-radius:50%; font-size:9px; cursor:pointer; line-height:17px; padding:0; flex:0 0 auto; }
-  .cs-clear.on { display:block; }
-  .cs-ac { display:none; position:absolute; left:2px; right:2px; top:calc(100% - 6px); background:#fff; border:1px solid #e3e4e8; border-radius:11px; box-shadow:0 12px 30px rgba(20,22,30,.14); padding:6px; z-index:30; max-height:250px; overflow:auto; }
-  .cs-ac.on { display:block; }
-  .cs-ac-title { font-size:11px; font-weight:700; color:#a0a4ad; padding:6px 8px 4px; }
-  .cs-ac-item { display:flex; align-items:center; gap:9px; padding:8px; border-radius:8px; cursor:pointer; }
-  .cs-ac-item:hover { background:#f4f5f7; }
-  .cs-ac-av { width:26px; height:26px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; flex:0 0 auto; }
-  .cs-ac-name { flex:1; font-size:13.5px; font-weight:600; color:#2b2d34; }
-  .cs-ac-name mark { background:var(--grip-soft); color:var(--grip); border-radius:3px; padding:0 1px; }
-  .cs-ac-cnt { font-size:12px; color:#8d919c; font-weight:600; }
-  .chat-filter { display:none; align-items:center; gap:10px; margin:0 2px 8px; padding:9px 11px; background:var(--grip-soft-2); border:1px solid #f6c6d0; border-radius:10px; }
-  .chat-filter.on { display:flex; }
-  .cf-av { width:28px; height:28px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; flex:0 0 auto; }
-  .cf-info { flex:1; min-width:0; display:flex; flex-direction:column; }
-  .cf-name { font-size:13.5px; font-weight:700; color:#20222a; }
-  .cf-count { font-size:12px; color:var(--grip); font-weight:700; }
-  .cf-close { border:0; background:#fff; color:#8d919c; width:24px; height:24px; border-radius:50%; cursor:pointer; flex:0 0 auto; box-shadow:0 1px 3px rgba(0,0,0,.12); }
-  .chat-feed-wrap { position:relative; flex:1; min-height:0; display:flex; }
-  .chat-feed { flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:9px; padding:4px 2px; }
-  .cm { font-size:13.5px; line-height:1.45; }
-  .cm.me { background:var(--grip-soft-2); border-radius:8px; padding:5px 8px; }
-  .cm-badge { display:inline-block; font-size:9px; font-weight:800; padding:1.5px 6px; border-radius:5px; margin-right:5px; vertical-align:middle; }
-  .cm-badge.sm { font-size:8.5px; padding:1px 4px; }
-  .cm-nick { font-weight:800; cursor:pointer; margin-right:6px; }
-  .cm-nick:hover { text-decoration:underline; }
-  .cm-text { color:#2b2d34; }
-  .cm-ts { font-size:10.5px; color:#c0c4cc; margin-left:6px; }
-  .chat-newbar { display:none; position:absolute; left:50%; transform:translateX(-50%); bottom:10px; background:#1f2126; color:#fff; font-size:12px; font-weight:700; padding:8px 14px; border:0; border-radius:16px; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,.22); white-space:nowrap; }
-  .chat-newbar.on { display:block; }
-  .chat-scroll { display:none; position:absolute; right:8px; bottom:10px; width:30px; height:30px; border-radius:50%; background:#fff; border:1px solid #e3e4e8; color:#5c606b; cursor:pointer; box-shadow:0 3px 10px rgba(0,0,0,.14); font-size:15px; line-height:1; }
-  .chat-scroll.on { display:block; }
-  /* 프리뷰 채팅 오버레이 */
-  .ov-chat { position:absolute; left:12px; bottom:104px; width:74%; display:flex; flex-direction:column; gap:3px; pointer-events:none; }
-  .ovc-line { font-size:11.5px; line-height:1.4; color:#f2f3f5; text-shadow:0 1px 3px rgba(0,0,0,.75); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .ovc-line b { font-weight:800; margin-right:4px; }
 </style>
 </head>
 <body>
@@ -828,7 +782,6 @@
             <button title="채팅"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9l-4 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/></svg></button>
           </div>
 
-          <div class="ov-chat"></div>
           <div class="po-strip" id="poStrip"></div>
         </div>
 
@@ -1132,37 +1085,20 @@
           <button class="chat-tab">Q&amp;A</button>
           <button class="chat-tab">FAQ</button>
           <button class="chat-tab">메모</button>
-          <button class="chat-search-btn" id="chatSearchBtn" title="채팅 검색" aria-label="채팅 검색">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.2-3.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          </button>
           <button class="chat-ext">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M14 5h5v5M19 5l-7 7M11 5H7a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
         </div>
-        <div class="chat-search" id="chatSearchBar">
-          <div class="cs-field" id="csField">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.2-3.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            <input class="cs-input" id="chatSearchInput" placeholder="닉네임 검색" />
-            <button class="cs-clear" id="chatSearchClear" aria-label="지우기">✕</button>
-          </div>
-          <div class="cs-ac" id="chatAC"></div>
-        </div>
-        <div class="chat-filter" id="chatFilterStrip">
-          <span class="cf-av" id="cfAvatar"></span>
-          <span class="cf-info"><span class="cf-name" id="cfName"></span><span class="cf-count" id="cfCount"></span></span>
-          <button class="cf-close" id="cfClose" aria-label="검색 닫기">✕</button>
-        </div>
-        <div class="chat-feed-wrap">
-          <div class="chat-feed" id="chatFeed"></div>
-          <button class="chat-newbar" id="chatNewBar"></button>
-          <button class="chat-scroll" id="chatScrollBtn" aria-label="맨 아래로">↓</button>
+        <div class="chat-body">
+          <div class="chat-empty-1">라이브 중</div>
+          <div class="chat-empty-2">채팅을 남길 수 있습니다</div>
         </div>
         <div class="chat-input-row">
           <button class="chat-gear">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 13a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V19a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7.2 17.5l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.6 1.6 0 0 0 4.6 12 1.6 1.6 0 0 0 3 11.2H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 5.4l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.6 1.6 0 0 0 10 1.6a2 2 0 1 1 4 0V2a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1A1.6 1.6 0 0 0 22 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity=".7"/></svg>
           </button>
-          <input class="chat-input" id="chatInput" placeholder="메세지를 입력하세요" />
-          <button class="chat-send" id="chatSend">
+          <input class="chat-input" placeholder="메세지를 입력하세요" />
+          <button class="chat-send">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 19V6M6 12l6-6 6 6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
         </div>
@@ -1731,141 +1667,6 @@
     applyMode('limited');   // 초기: 한정판매 모드
   })();
 
-  // ============ 채팅 — 실시간 스트림 + 닉네임 검색 (GRIPPGM-3224) ============
-  (function () {
-    var feed = document.getElementById('chatFeed');
-    if (!feed) return;
-    var U = [
-      { n: '치즈치즈', b: '구매자', bc: '#3B82F6', bb: '#EEF4FF', c: '#534AB7' },
-      { n: '민수킴', c: '#0F6E56' },
-      { n: '하늘이', b: 'VIP', bc: '#DB2777', bb: '#FDF2F8', c: '#993C1D' },
-      { n: '준영파크', c: '#185FA5' },
-      { n: '소윤최', c: '#534AB7' },
-      { n: '도윤이', c: '#92400E' },
-      { n: '서준박', c: '#185FA5' },
-      { n: '유나리', b: 'VIP', bc: '#DB2777', bb: '#FDF2F8', c: '#993556' },
-      { n: '별빛캣', c: '#166534' },
-      { n: '찐빵', b: '구매자', bc: '#3B82F6', bb: '#EEF4FF', c: '#92400E' },
-      { n: '나', b: '관리자', bc: '#fff', bb: '#f5375b', c: '#c0264a', me: true }
-    ];
-    var ME = U.length - 1;
-    var MSGS = [
-      '한정 특가 판매 주문 성공!', '배송 언제 출발하나요?', '교환 신청 가능한가요?', '사이즈 교환 접수 확인 부탁드려요',
-      '색상 교환 가능 여부 문의', '이전 주문 잘 받았습니다 감사해요', '재입고 알림 아직 안 왔어요', '결제 완료! 주문 확인 부탁요',
-      '상품 너무 좋았어요 추천합니다', '반품 접수 방법 알려주세요', '다음 특가 일정 궁금합니다', '포인트 적립 확인 부탁드려요',
-      '품절 상품 재입고 언제쯤?', '택배 송장번호 알려주세요', '주문 색상이 다른 것 같아요', '적립금 사용법이 궁금해요',
-      '오늘 라이브 특가 있나요?', '구매 인증합니다!', '혹시 세트 할인 있어요?', '사이즈 추천 부탁드려요',
-      '이거 리뷰 보고 왔어요', '가격이 너무 착해요', '빠른 배송 감사합니다', '색상 실물이 더 이쁘네요',
-      '재구매합니다 역시 좋아요', '품절되기 전에 득템!', '친구한테도 추천했어요', '스트리머님 추천 믿어요'
-    ];
-
-    var searchBtn = document.getElementById('chatSearchBtn');
-    var searchBar = document.getElementById('chatSearchBar');
-    var si = document.getElementById('chatSearchInput');
-    var clearBtn = document.getElementById('chatSearchClear');
-    var acEl = document.getElementById('chatAC');
-    var strip = document.getElementById('chatFilterStrip');
-    var newBar = document.getElementById('chatNewBar');
-    var scrollBtn = document.getElementById('chatScrollBtn');
-    var input = document.getElementById('chatInput');
-    var sendBtn = document.getElementById('chatSend');
-    var ov = document.querySelector('.ov-chat');
-
-    var allMsgs = [], filterUser = null, newCount = 0, atBottom = true, searchOpen = false;
-    var rnd = 1; // 결정적 유사난수(리셋 시 동일 흐름)
-    function rand(n) { rnd = (rnd * 9301 + 49297) % 233280; return Math.floor(rnd / 233280 * n); }
-    function now() { var d = new Date(), h = d.getHours(), m = d.getMinutes(), ap = h >= 12 ? '오후' : '오전'; h = h % 12 || 12; return ap + ' ' + h + ':' + (m < 10 ? '0' : '') + m; }
-    function badge(u, sm) { if (!u.b) return ''; return '<span class="cm-badge' + (sm ? ' sm' : '') + '" style="background:' + u.bb + ';color:' + u.bc + '">' + u.b + '</span>'; }
-
-    function msgHTML(m) {
-      var u = U[m.uid];
-      return '<div class="cm' + (u.me ? ' me' : '') + '" data-uid="' + m.uid + '">' + badge(u, true) +
-        '<span class="cm-nick" data-uid="' + m.uid + '" style="color:' + u.c + '">' + u.n + '</span>' +
-        '<span class="cm-text">' + m.text + '</span><span class="cm-ts">' + m.time + '</span></div>';
-    }
-    function scrollBottom() { requestAnimationFrame(function () { feed.scrollTop = feed.scrollHeight; }); }
-    function renderAll() {
-      var list = filterUser !== null ? allMsgs.filter(function (m) { return m.uid === filterUser; }) : allMsgs;
-      feed.innerHTML = list.map(msgHTML).join('');
-    }
-    function renderOverlay() {
-      if (!ov) return;
-      var last = allMsgs.slice(-4);
-      ov.innerHTML = last.map(function (m) { var u = U[m.uid]; return '<div class="ovc-line"><b style="color:' + (u.me ? '#ff9bb2' : lighten(u.c)) + '">' + u.n + '</b> ' + m.text + '</div>'; }).join('');
-    }
-    function lighten() { return '#dfe3ea'; } // 오버레이 닉네임은 밝게 통일(가독성)
-
-    function addMsg(m) {
-      allMsgs.push(m);
-      renderOverlay();
-      if (filterUser !== null) {
-        if (m.uid === filterUser) { feed.appendChild(cmNode(m)); scrollBottom(); }
-        else { newCount++; newBar.textContent = '전체 채팅 +' + newCount + '개의 새 메시지'; newBar.classList.add('on'); }
-      } else {
-        feed.appendChild(cmNode(m));
-        if (atBottom) scrollBottom();
-      }
-    }
-    function cmNode(m) { var d = document.createElement('div'); d.innerHTML = msgHTML(m); return d.firstChild; }
-
-    function liveMsg() { addMsg({ uid: rand(U.length - 1), text: MSGS[rand(MSGS.length)], time: now() }); } // ME 제외
-    var timer = setInterval(liveMsg, 2200);
-
-    function initChat() { allMsgs = []; filterUser = null; newCount = 0; for (var i = 0; i < 16; i++) allMsgs.push({ uid: rand(U.length - 1), text: MSGS[rand(MSGS.length)], time: now() }); renderAll(); renderOverlay(); scrollBottom(); }
-
-    feed.addEventListener('scroll', function () { var gap = feed.scrollHeight - feed.scrollTop - feed.clientHeight; atBottom = gap < 40; if (scrollBtn) scrollBtn.classList.toggle('on', !atBottom); });
-    if (scrollBtn) scrollBtn.addEventListener('click', scrollBottom);
-
-    // 닉네임 클릭 → 필터
-    feed.addEventListener('click', function (e) { var nk = e.target.closest ? e.target.closest('.cm-nick') : null; if (!nk) return; openSearch(true); applyFilter(parseInt(nk.getAttribute('data-uid'), 10)); });
-
-    // 검색 토글
-    function openSearch(on) { searchOpen = on; if (searchBar) searchBar.classList.toggle('on', on); if (searchBtn) searchBtn.classList.toggle('act', on); if (on && si) si.focus(); if (!on) { if (si) si.value = ''; if (acEl) acEl.classList.remove('on'); if (clearBtn) clearBtn.classList.remove('on'); clearFilter(); } }
-    if (searchBtn) searchBtn.addEventListener('click', function () { openSearch(!searchOpen); });
-
-    if (si) si.addEventListener('input', function () { var v = si.value.trim(); if (clearBtn) clearBtn.classList.toggle('on', v.length > 0); if (v.length > 0) showAC(v); else if (acEl) acEl.classList.remove('on'); });
-    if (si) si.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); var v = si.value.trim().toLowerCase(); if (!v) return; for (var i = 0; i < U.length; i++) { if (i !== ME && U[i].n.toLowerCase().indexOf(v) !== -1) { applyFilter(i); break; } } if (acEl) acEl.classList.remove('on'); } });
-    if (clearBtn) clearBtn.addEventListener('click', function () { si.value = ''; clearBtn.classList.remove('on'); if (acEl) acEl.classList.remove('on'); clearFilter(); si.focus(); });
-
-    function showAC(q) {
-      var ql = q.toLowerCase(), matched = [];
-      U.forEach(function (u, i) { if (i !== ME && u.n.toLowerCase().indexOf(ql) !== -1) matched.push({ u: u, idx: i, cnt: allMsgs.filter(function (m) { return m.uid === i; }).length }); });
-      if (!matched.length) { acEl.classList.remove('on'); return; }
-      var html = '<div class="cs-ac-title">닉네임 검색</div>';
-      matched.forEach(function (it) {
-        var re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
-        var hl = it.u.n.replace(re, '<mark>$1</mark>');
-        html += '<div class="cs-ac-item" data-idx="' + it.idx + '"><span class="cs-ac-av" style="background:' + (it.u.bb || '#eef1f6') + ';color:' + it.u.c + '">' + it.u.n.charAt(0) + '</span><span class="cs-ac-name">' + hl + ' ' + badge(it.u, false) + '</span><span class="cs-ac-cnt">' + it.cnt + '건</span></div>';
-      });
-      acEl.innerHTML = html; acEl.classList.add('on');
-      acEl.querySelectorAll('.cs-ac-item').forEach(function (el) { el.addEventListener('mousedown', function (ev) { ev.preventDefault(); applyFilter(parseInt(el.getAttribute('data-idx'), 10)); acEl.classList.remove('on'); }); });
-    }
-
-    function applyFilter(uid) {
-      filterUser = uid; newCount = 0; var u = U[uid];
-      if (si) si.value = u.n; if (clearBtn) clearBtn.classList.add('on');
-      var av = document.getElementById('cfAvatar'); if (av) { av.style.background = u.bb || '#eef1f6'; av.style.color = u.c; av.textContent = u.n.charAt(0); }
-      var cnt = allMsgs.filter(function (m) { return m.uid === uid; }).length;
-      var nm = document.getElementById('cfName'); if (nm) nm.innerHTML = u.n + ' ' + badge(u, true);
-      var cc = document.getElementById('cfCount'); if (cc) cc.textContent = '메시지 ' + cnt + '건';
-      if (strip) strip.classList.add('on'); if (newBar) newBar.classList.remove('on');
-      renderAll(); scrollBottom();
-    }
-    function clearFilter() { filterUser = null; newCount = 0; if (strip) strip.classList.remove('on'); if (newBar) newBar.classList.remove('on'); renderAll(); scrollBottom(); }
-    var cfClose = document.getElementById('cfClose'); if (cfClose) cfClose.addEventListener('click', function () { if (si) si.value = ''; if (clearBtn) clearBtn.classList.remove('on'); clearFilter(); });
-    if (newBar) newBar.addEventListener('click', function () { if (si) si.value = ''; if (clearBtn) clearBtn.classList.remove('on'); clearFilter(); });
-
-    // 내 메시지 전송 → 채팅·프리뷰 반영
-    function send() { var v = (input.value || '').trim(); if (!v) return; addMsg({ uid: ME, text: v, time: now() }); input.value = ''; if (filterUser !== null) { clearFilter(); if (si) si.value = ''; if (clearBtn) clearBtn.classList.remove('on'); } }
-    if (sendBtn) sendBtn.addEventListener('click', send);
-    if (input) input.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); send(); } });
-
-    // 데모 리셋용
-    window.__gripChatReset = function () { openSearch(false); if (searchBar) searchBar.classList.remove('on'); if (searchBtn) searchBtn.classList.remove('act'); if (si) si.value = ''; if (acEl) acEl.classList.remove('on'); clearFilter(); };
-
-    initChat();
-  })();
-
   // ============ PRD 모드 + 자동 데모 (기능별 전환) ============
   (function () {
     function q(s) { return document.querySelector(s); }
@@ -1990,49 +1791,6 @@
       ]
     });
 
-    // ===== 기능 3: 채팅 유저 닉네임 검색 =====
-    FEATURES.push({
-      id: 'chat', demoMode: 'limited', jira: 'GRIPPGM-3224', name: '[스튜디오] [채팅] 유저 닉네임 검색 기능',
-      overviewHTML:
-        '<div class="ov-title">🎯 과제 개요</div>' +
-        '<span class="prd-k2">과제의 목적</span>' +
-        '<p>라이브 채팅에서 <b>특정 유저의 메시지만</b> 빠르게 찾아볼 수 있게 한다. (VoC: “채팅에서 유저를 검색하고 싶다” · Jira <b>GRIPPGM-3224</b>)</p>' +
-        '<span class="prd-k2">배경 · 실제 문제</span>' +
-        '<p>라이브 중 채팅이 <b>여러 유저의 메시지로 빠르게 흐르기</b> 때문에, 특정 구매자/문의 유저의 대화를 다시 찾기 어렵다.</p>' +
-        '<span class="prd-k2">해결</span>' +
-        '<p>채팅 탭 상단에 <b>닉네임 검색 바</b> 제공 → 일부만 입력해도 <b>유사 검색 자동완성</b> → 선택 시 <b>해당 유저 메시지만</b> 필터 + <b>총 메시지 건수</b> 표기 → ✕로 실시간 채팅 복귀.</p>',
-      flowHTML:
-        '<span class="prd-k2">검증 플로우 · 닉네임 검색</span>' +
-        '<div class="fpath">' +
-          '<div class="fpath-h"><span class="fpath-tag a">경로</span> 채팅 탭 상단 🔍</div>' +
-          '<div class="frow"><span class="fnode">닉네임 일부 입력(예: “별”)</span><span class="farr">→</span><span class="fnode">유사 자동완성(별빛캣 · 건수)</span><span class="farr">→</span><span class="fnode">선택 / Enter</span></div>' +
-          '<div class="fdec">일치 유저 있음 ?</div>' +
-          '<div class="fbranch"><span class="fout ok">예 → 해당 유저 메시지만 노출 · “메시지 N건”</span><span class="fout no">아니오 → 결과 없음</span></div>' +
-        '</div>' +
-        '<div class="fmerge">↓ 복귀</div>' +
-        '<div class="fnode final">✕ 클릭 시 다시 실시간 채팅으로 이동 (닉네임 클릭으로도 바로 필터)</div>',
-      prd: [
-        { n: 1, target: '#chatSearchBtn', title: '닉네임 검색 진입', tag: '채팅 · 검색',
-          def: '채팅 탭 상단 🔍로 닉네임 검색 바를 연다(디폴트 제공).',
-          asis: ['채팅에서 유저 검색 기능 없음.'],
-          tobe: ['채팅 탭 상단 검색 바에서 닉네임으로 검색.'],
-          features: ['🔍 클릭 → 검색 바 노출.', '채팅 닉네임 클릭으로도 바로 해당 유저 필터.'] },
-        { n: 2, target: '#chatFeed', title: '유사 검색 · 자동완성', tag: 'like 검색',
-          def: '닉네임 일부만 입력해도 포함 유저를 자동완성으로 제안.',
-          features: ['입력 텍스트 포함(like) 유저 목록 노출(예: “별” → 별빛캣).', '항목마다 <b>현재까지 메시지 건수</b> 표기.', '선택 또는 Enter로 필터 적용.'] },
-        { n: 3, target: '#chatInput', title: '유저 필터 · 건수 · 복귀', tag: '필터 · 복귀',
-          def: '선택 유저의 메시지만 일시 노출하고 총 건수를 안내, ✕로 실시간 복귀.',
-          features: ['해당 유저가 작성한 메시지만 일시 노출.', '상단 스트립에 <b>“메시지 N건”</b> 한 줄 요약.', '필터 중 새 메시지는 “전체 채팅 +N” 배너로 안내.', '<b>✕</b> 클릭 → 다시 실시간 채팅으로 이동.'] }
-      ],
-      steps: [
-        { tag: '시작', t: '라이브 채팅은 여러 유저의 메시지가 <b>실시간</b>으로 올라옵니다. (좌측 프리뷰에도 노출)', target: function () { return q('#chatFeed'); }, act: function () { resetUI(); } },
-        { tag: '검색 열기', t: '채팅 탭 상단 <b>🔍</b>로 닉네임 검색을 엽니다. (닉네임 클릭으로도 바로 필터)', target: function () { return q('#chatSearchBtn'); }, act: function () { var b = document.getElementById('chatSearchBtn'); if (b && !(document.getElementById('chatSearchBar') || {}).classList.contains('on')) b.click(); } },
-        { tag: '유사 자동완성', t: '닉네임 일부만 입력하면(예: <b>“별”</b>) 포함 유저가 <b>자동완성</b>으로 뜹니다(건수 포함).', target: function () { return q('#chatAC'); }, act: function () { var i = document.getElementById('chatSearchInput'); if (i) { i.value = '별'; i.dispatchEvent(new Event('input', { bubbles: true })); } } },
-        { tag: '유저 필터 · 건수', t: '선택 / Enter → <b>별빛캣</b> 메시지만 노출되고 상단에 <b>“메시지 N건”</b>이 표시됩니다.', target: function () { return q('#chatFilterStrip'); }, act: function () { var i = document.getElementById('chatSearchInput'); if (i) i.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })); } },
-        { tag: '실시간 복귀', t: '상단 <b>✕</b>를 누르면 다시 <b>실시간 채팅</b>으로 돌아옵니다.', target: function () { return q('#cfClose'); }, act: function () { var c = document.getElementById('cfClose'); if (c) c.click(); } }
-      ]
-    });
-
     var cur = 0;
     function feat() { return FEATURES[cur]; }
 
@@ -2130,7 +1888,6 @@
     function resetUI() {
       if (window.__gripSetMode) window.__gripSetMode(feat().demoMode || 'limited');
       ['#priceModal', '#failModal', '#deleteModal', '#upListModal', '#upMaxModal'].forEach(function (sel) { var m = q(sel); if (m) m.classList.remove('open'); });
-      if (window.__gripChatReset) window.__gripChatReset();
       var tw = document.getElementById('toastWrap'); if (tw) tw.innerHTML = '';
       if (window.__gripRestoreRows) window.__gripRestoreRows();
       Array.prototype.slice.call(rows()).forEach(function (r) { var cb = r.querySelector('.cbox'); if (cb && cb.classList.contains('checked')) cb.click(); });
