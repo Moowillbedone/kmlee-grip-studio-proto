@@ -25,7 +25,7 @@
 ### PRD 모드 = 기능 레지스트리 (컨트롤러 IIFE)
 - `var FEATURES = []` 배열. 각 원소:
   `{ id, demoMode:'limited'|'store', jira:'GRIPPGM-xxxx', name, overviewHTML, flowHTML, prd:[{n,target,title,tag,def,asis?,tobe?,features:[]}], steps:[{tag,t,target,act}] }`
-- 현재 3개: **price(GRIPPGM-3338)**, **delete(GRIPPGM-3357)**, **chat(GRIPPGM-3224)**.
+- 현재 **4개**: **price(GRIPPGM-3338)**, **delete(GRIPPGM-3357)**, **chat(GRIPPGM-3224)**, **qavis(GRIPPGM-3402, Q&A 라이브 노출 제어)**.
 - PRD 패널 상단 **기능 스위처**(`#pfsBtn`/`#pfsMenu`)로 전환 → 개요·검증플로우·명세·화면마커(`.prd-marker`)·자동데모(steps)가 통째로 교체(`renderFeature()`).
 - **새 과제 추가 = FEATURES 배열에 항목 하나 push** 하면 목록·마커·데모 자동 편입.
 - 자동 데모(`#tourOverlay`): 스포트라이트(box-shadow) + 콜아웃. **rebuild(idx): 매 렌더 0단계부터 재구성**(좌/우 화살표·자동진행 어디서 오든 깨끗). 스텝 target은 **항상 보이는 요소**여야 함(숨겨지는 요소면 콜아웃이 0,0으로 날아감 — 실제 겪은 버그). placeSpot은 240/460/700ms 다중 배치(모달 트랜지션 대비).
@@ -67,7 +67,9 @@
 가격 3단(정가/상시할인가/라이브가) 인라인+일괄 수정 & 200원 검증(3338) → 상품 삭제 + UP목록 동기화(3357) → UP 노출(최대5·순서·프리뷰 카드) → 판매모드 토글(한정/스토어) → 채팅(스트림·검색·음소거·답변/Q&A) → UP목록=한번이라도 UP된 상품 누적 → 채팅 답변 인라인화·프리뷰 겹침수정·배너삭제 → 컨플루언스 PRD 2건(삭제·채팅) + 플로우차트.
 (상세는 메모리 `project_grip_studio.md` 참조 — ~/.claude/projects/.../memory/)
 
-## 6. 진행 중인 과제: GRIPPGM-3402 — 채팅 답변 시 Q&A 미노출
+## 6. GRIPPGM-3402 — 채팅 답변 시 Q&A 미노출 ✅ (구현·배포 완료 2026-07-03)
+**구현됨:** 답변 인라인 박스(`#chatReply`)에 **"라이브(방송)에 노출" 토글(`#crLiveBox`, 기본 OFF)** 추가. `registerQA(m,a,live)`에 live 플래그. OFF→Q&A 탭 내부 기록만(프리뷰 띠지 X), ON→라이브 띠지 노출. Q&A 탭 각 항목에 **`.qa-live` 토글**(○ 비노출/● 노출중)로 사후 게시/취소. `updateOvQA()`는 `live===true`인 최신 항목만 표시. PRD 기능4 "qavis"(GRIPPGM-3402) + 자동 데모(시작→답변작성→토글 기본OFF→내부저장→검토후 게시) 등록. 검증: 기본OFF 답변→띠지 안뜸, Q&A 토글로 게시/취소, ON 답변→즉시 띠지. **후속 옵션:** "본인만 보기(1:1 답장)" 확장 가능. 컨플루언스 PRD는 요청 시(부모 2306867212, PIL 플로우차트).
+<details><summary>(원래 계획 — 참고용)</summary>
 - **ASIS:** 클릭메이트 등 그립 무관한 문의에 매니저가 실수로 답변하면 그 Q&A가 **라이브 방송에 고정 노출**됨.
 - **사용자 TOBE 아이디어:** 1) 답변 시 "Q&A 노출 안하기" 토글(작성 시점부터 노출 X) 2) "본인만 보기"(문의자에게만).
 - **Claude 권장안(더 나음 — 적용 예정):** "답변 작성"과 "라이브 노출"을 **분리**. 답변 인라인 박스(`#chatReply`)에 **"라이브에 노출" 토글(기본 OFF)** 추가.
@@ -78,6 +80,8 @@
   - 근거: 사용자 아이디어1은 기본이 노출ON이라 실수 여지 남음 → **기본 OFF(노출은 의도적 선택)**가 실수 원천차단 + 게시취소까지 되어 UIUX 우위. (아이디어2 "본인만 보기"=1:1 답장은 옵션으로 언급)
 - **구현 위치:** 채팅 IIFE의 `registerQA(m,a)` → `registerQA(m,a,live)`. 인라인 박스에 토글 추가. Q&A 항목 렌더에 라이브 토글. `updateOvQA()`는 live===true인 최신 항목만.
 - **추가:** PRD 모드 4번째 기능 "[스튜디오][채팅] Q&A 라이브 노출 제어"(GRIPPGM-3402) + 자동 데모. (컨플루언스 PRD는 요청 시)
+
+</details>
 
 ## 7. 자주 쓰는 검증/배포 루틴
 1. index.html 편집(문자열 치환 스크립트 or Edit).

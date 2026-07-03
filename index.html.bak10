@@ -798,16 +798,6 @@
   .ov-qa.on { display:inline-flex; }
   .ov-qa .ovq-q { background:#5b6ef5; color:#fff; font-weight:800; font-size:10px; padding:1px 6px; border-radius:9px; }
   .ov-qa .ovq-arr { margin-left:2px; opacity:.85; font-size:15px; }
-  /* 라이브 노출 토글(답변 박스) */
-  .cr-live { display:flex; align-items:center; gap:8px; margin-top:9px; font-size:12.5px; font-weight:600; color:#2b2d34; cursor:pointer; user-select:none; }
-  .cr-live-box { width:38px; height:22px; border-radius:11px; background:#cfd3da; position:relative; flex:0 0 auto; transition:background .15s; }
-  .cr-live-box::after { content:""; position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%; background:#fff; transition:left .15s; box-shadow:0 1px 2px rgba(0,0,0,.2); }
-  .cr-live-box.on { background:var(--grip); }
-  .cr-live-box.on::after { left:18px; }
-  .cr-live-hint { color:#8d919c; font-weight:500; }
-  /* Q&A 항목 라이브 노출 토글 */
-  .qa-live { border:0; border-radius:14px; padding:4px 9px; font-size:11px; font-weight:800; cursor:pointer; flex:0 0 auto; background:#eceef1; color:#8d919c; white-space:nowrap; }
-  .qa-live.on { background:var(--grip-soft); color:var(--grip); }
 </style>
 </head>
 <body>
@@ -1239,7 +1229,6 @@
         <div class="chat-reply" id="chatReply">
           <div class="cr-head"><span class="cr-qic">Q</span><span class="cr-qtext" id="crQText"></span><button class="cr-cancel" id="crCancel" aria-label="취소">✕</button></div>
           <div class="cr-input-row"><input class="cr-input" id="crInput" placeholder="답변을 입력하세요" /><button class="cr-submit" id="crSubmit">답변하기</button></div>
-          <label class="cr-live" id="crLiveLbl"><span class="cr-live-box" id="crLiveBox"></span> 라이브(방송)에 Q&amp;A로 노출 <span class="cr-live-hint">· 기본 꺼짐 — 켜면 시청자에게 표시</span></label>
         </div>
         <div class="chat-input-row">
           <button class="chat-gear">
@@ -1940,23 +1929,20 @@
     var crInput = document.getElementById('crInput');
     var crSubmit = document.getElementById('crSubmit');
     var crCancel = document.getElementById('crCancel');
-    var crLiveBox = document.getElementById('crLiveBox'), crLiveLbl = document.getElementById('crLiveLbl');
-    if (crLiveLbl) crLiveLbl.addEventListener('click', function (e) { e.preventDefault(); if (crLiveBox) crLiveBox.classList.toggle('on'); });
     var replyMsg = null;
-    function openReply(m) { replyMsg = m; var u = U[m.uid]; if (crQText) crQText.innerHTML = '<b style="color:' + u.c + '">' + u.n + '</b> ' + m.text; if (crInput) crInput.value = ''; if (crLiveBox) crLiveBox.classList.remove('on'); if (replyBox) replyBox.classList.add('on'); if (crInput) crInput.focus(); }
+    function openReply(m) { replyMsg = m; var u = U[m.uid]; if (crQText) crQText.innerHTML = '<b style="color:' + u.c + '">' + u.n + '</b> ' + m.text; if (crInput) crInput.value = ''; if (replyBox) replyBox.classList.add('on'); if (crInput) crInput.focus(); }
     function closeReply() { if (replyBox) replyBox.classList.remove('on'); replyMsg = null; }
-    function submitReply() { if (!replyMsg) return; var a = (crInput.value || '').trim(); if (!a) { toast('답변을 입력해 주세요.', false); if (crInput) crInput.focus(); return; } var live = !!(crLiveBox && crLiveBox.classList.contains('on')); registerQA(replyMsg, a, live); toast(live ? '라이브(방송)에 Q&A로 노출했습니다.' : 'Q&A에 저장했습니다 · 라이브 비노출.', true); closeReply(); }
+    function submitReply() { if (!replyMsg) return; var a = (crInput.value || '').trim(); if (!a) { toast('답변을 입력해 주세요.', false); if (crInput) crInput.focus(); return; } registerQA(replyMsg, a); toast('Q&A에 등록했습니다.', true); closeReply(); }
     if (crSubmit) crSubmit.addEventListener('click', submitReply);
     if (crInput) crInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); submitReply(); } });
     if (crCancel) crCancel.addEventListener('click', closeReply);
 
     // ---- Q&A ----
-    function registerQA(m, a, live) { qaList.push({ uid: m.uid, q: m.text, a: a || null, t: Date.now(), answering: false, live: !!live }); updateQADot(true); renderQA(); updateOvQA(); }
+    function registerQA(m, a) { qaList.push({ uid: m.uid, q: m.text, a: a || null, t: Date.now(), answering: false }); updateQADot(true); renderQA(); updateOvQA(); }
     function updateOvQA() {
       if (!ovQa) return;
-      var lives = qaList.filter(function (x) { return x.live; });
-      if (!lives.length) { ovQa.classList.remove('on'); ovQa.innerHTML = ''; return; }
-      var last = lives[lives.length - 1];
+      if (!qaList.length) { ovQa.classList.remove('on'); ovQa.innerHTML = ''; return; }
+      var last = qaList[qaList.length - 1];
       ovQa.innerHTML = '<span class="ovq-q">Q</span> ' + last.q + ' <span class="ovq-arr">›</span>';
       ovQa.classList.add('on');
     }
@@ -1969,8 +1955,7 @@
         var ansRow = it.answering
           ? '<div class="qa-ans-edit"><input class="qa-ans-input" data-i="' + i + '" placeholder="답변을 입력하세요" value="' + (it.a || '') + '"/><button class="qa-ans-ok" data-i="' + i + '">등록</button></div>'
           : (it.a ? '<div class="qa-row qa-a"><span class="qa-ic a">A</span><span class="qa-txt">' + it.a + '</span></div>' : '<div class="qa-row qa-a pending"><span class="qa-ic a">A</span><span class="qa-txt">답변 대기 중</span></div>');
-        var liveBtn = '<button class="qa-live' + (it.live ? ' on' : '') + '" data-live="' + i + '">' + (it.live ? '● 라이브 노출중' : '○ 라이브 비노출') + '</button>';
-        return '<div class="qa-item" data-i="' + i + '"><div class="qa-head"><div class="qa-rows"><div class="qa-row"><span class="qa-ic q">Q</span><span class="qa-txt"><b style="color:' + u.c + '">' + u.n + '</b> ' + it.q + '</span></div>' + ansRow + '</div>' + liveBtn + '<span class="qa-time">' + ago(it.t) + '</span><button class="qa-menu" data-i="' + i + '">⋮</button></div></div>';
+        return '<div class="qa-item" data-i="' + i + '"><div class="qa-head"><div class="qa-rows"><div class="qa-row"><span class="qa-ic q">Q</span><span class="qa-txt"><b style="color:' + u.c + '">' + u.n + '</b> ' + it.q + '</span></div>' + ansRow + '</div><span class="qa-time">' + ago(it.t) + '</span><button class="qa-menu" data-i="' + i + '">⋮</button></div></div>';
       }).join('');
     }
     // Q&A 아이템 메뉴
@@ -1979,8 +1964,6 @@
     if (qaPanel) qaPanel.addEventListener('click', function (e) {
       var mb = e.target.closest('.qa-menu');
       if (mb) { qmenuI = parseInt(mb.getAttribute('data-i'), 10); qmenu.innerHTML = '<button data-a="ans">답변하기</button><button data-a="del">삭제하기</button>'; var r = mb.getBoundingClientRect(); qmenu.style.top = (r.bottom + 4) + 'px'; qmenu.style.left = Math.min(r.left - 120, window.innerWidth - 142) + 'px'; qmenu.classList.add('on'); return; }
-      var lv = e.target.closest('.qa-live');
-      if (lv) { var li = parseInt(lv.getAttribute('data-live'), 10); qaList[li].live = !qaList[li].live; renderQA(); updateOvQA(); return; }
       var ok = e.target.closest('.qa-ans-ok');
       if (ok) { var i = parseInt(ok.getAttribute('data-i'), 10); var inp = qaPanel.querySelector('.qa-ans-input[data-i="' + i + '"]'); qaList[i].a = (inp.value || '').trim() || null; qaList[i].answering = false; renderQA(); updateOvQA(); return; }
     });
@@ -2217,51 +2200,6 @@
         { tag: '유사 자동완성', t: '닉네임 일부만 입력하면(예: <b>“별”</b>) 포함 유저가 <b>자동완성</b>으로 뜹니다(건수 포함).', target: function () { return q('#chatAC'); }, act: function () { var i = document.getElementById('chatSearchInput'); if (i) { i.value = '별'; i.dispatchEvent(new Event('input', { bubbles: true })); } } },
         { tag: '유저 필터 · 건수', t: '선택 / Enter → <b>별빛캣</b> 메시지만 노출되고 상단에 <b>“메시지 N건”</b>이 표시됩니다.', target: function () { return q('#chatFilterStrip'); }, act: function () { var i = document.getElementById('chatSearchInput'); if (i) i.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })); } },
         { tag: '실시간 복귀', t: '검색(<b>🔍</b>)을 닫으면 다시 <b>실시간 채팅</b>으로 — 최신 메시지로 자동 이동합니다.', target: function () { return q('#chatFeed'); }, act: function () { var sb = document.getElementById('chatSearchBar'), b = document.getElementById('chatSearchBtn'); if (b && sb && sb.classList.contains('on')) b.click(); else { var c = document.getElementById('cfClose'); if (c) c.click(); } } }
-      ]
-    });
-
-    // ===== 기능 4: 채팅 답변 Q&A 라이브 노출 제어 (GRIPPGM-3402) =====
-    FEATURES.push({
-      id: 'qavis', demoMode: 'limited', jira: 'GRIPPGM-3402', name: '[스튜디오] [채팅] 답변 시 Q&A 라이브 노출 제어',
-      overviewHTML:
-        '<div class="ov-title">🎯 과제 개요</div>' +
-        '<span class="prd-k2">과제의 목적</span>' +
-        '<p>매니저가 채팅에 답변하면 그 Q&amp;A가 <b>실시간 방송에 고정 노출</b>된다. 방송과 무관한 문의(예: 타 서비스 불만)에 실수로 답하면 라이브에 그대로 박제되는 문제를 막는다. (Jira <b>GRIPPGM-3402</b>)</p>' +
-        '<span class="prd-k2">배경 · 실제 문제</span>' +
-        '<p>“답변하기 = 라이브 노출”이 자동으로 묶여 있어, 무관/방해성 질문에 실수 답변 시 라이브 Q&amp;A로 노출되는 사고가 발생.</p>' +
-        '<span class="prd-k2">해결 (권장안)</span>' +
-        '<p><b>“답변 작성”과 “라이브 노출”을 분리.</b> 답변 박스에 <b>[라이브에 노출] 토글(기본 꺼짐)</b> 제공 — 끈 채로 답변하면 <b>Q&amp;A 탭(내부 기록)에만</b> 저장되고 라이브엔 안 뜬다. 검토 후 Q&amp;A 탭에서 <b>라이브 노출</b>을 켜야 방송에 표시(언제든 게시 취소). → 기본값이 안전(default-safe)이라 실수 원천 차단.</p>' +
-        '<span class="prd-k2">참고 · 대안 검토</span>' +
-        '<p>제안된 “Q&amp;A 노출 안하기” 토글은 기본이 노출 ON이라 실수 여지가 남고, “본인만 보기(1:1)”는 별도 답장 성격. 본 안은 <b>기본 OFF + 사후 게시/취소</b>로 실수 방지·유연성을 모두 확보. (1:1 답장은 후속 옵션으로 확장 가능)</p>',
-      flowHTML:
-        '<span class="prd-k2">검증 플로우 · 라이브 노출 제어</span>' +
-        '<div class="fpath">' +
-          '<div class="fpath-h"><span class="fpath-tag a">경로</span> 답변 작성 → 노출 선택</div>' +
-          '<div class="frow"><span class="fnode">유저 메시지 ⋮ · 답변하기</span><span class="farr">→</span><span class="fnode">답변 입력 + [라이브에 노출] 토글 (기본 OFF)</span></div>' +
-          '<div class="fdec">라이브에 노출 = ON ?</div>' +
-          '<div class="fbranch"><span class="fout ok">예 → 라이브 방송 Q&amp;A 띠지에 노출</span><span class="fout no">아니오(기본) → Q&amp;A 탭 내부 기록만 · 라이브 X</span></div>' +
-        '</div>' +
-        '<div class="fmerge">↓ 사후</div>' +
-        '<div class="fnode final">Q&amp;A 탭에서 항목별 [라이브 노출] 토글로 언제든 게시 / 게시 취소</div>',
-      prd: [
-        { n: 1, target: '#chatFeed', title: '답변 시 라이브 노출 토글', tag: '기본 OFF',
-          def: '답변 작성 박스에 [라이브에 노출] 토글 제공(기본 꺼짐).',
-          asis: ['답변하기 = 라이브 노출이 자동으로 묶여 실수 노출 발생.'],
-          tobe: ['답변 작성과 라이브 노출을 분리. 노출은 의도적 선택(기본 OFF).'],
-          features: ['답변 박스 하단 <b>[라이브에 노출]</b> 토글(기본 꺼짐).', 'OFF로 답변 → Q&amp;A 탭 내부 기록만, 라이브 방송 미노출.', 'ON으로 답변 → 라이브 방송 Q&amp;A 띠지에 노출.'] },
-        { n: 2, target: '.chat-tab[data-tab="qa"]', title: 'Q&A 탭 = 검토·게시 워크스페이스', tag: '게시/취소',
-          def: '답변은 Q&A 탭에 모이고, 항목별 라이브 노출을 켜고 끌 수 있다.',
-          features: ['각 Q&amp;A 항목에 <b>라이브 노출 / 비노출</b> 토글.', '검토 후 노출로 게시, 부적절하면 즉시 게시 취소.', '라이브 노출된 항목만 방송 프리뷰 Q&amp;A 띠지에 표시.'] },
-        { n: 3, target: '#chatSearchBtn', title: '실수 방지 (default-safe)', tag: '안전',
-          def: '기본값이 비노출이라 무관/방해성 질문에 실수로 답변해도 라이브에 뜨지 않는다.',
-          features: ['무관한 문의 답변이 자동으로 라이브에 박제되지 않음.', '라이브 노출은 항상 매니저의 의도적 선택.'] }
-      ],
-      steps: [
-        { tag: '시작', t: '채팅 답변이 <b>실수로 라이브에 노출</b>되는 것을 막는 흐름을 시연합니다. (Jira GRIPPGM-3402)', target: function () { return q('#chatFeed'); }, act: function () { resetUI(); } },
-        { tag: '답변 작성', t: '유저 메시지 <b>⋮ → 답변하기</b>로 답변 박스를 엽니다.', target: function () { return q('#chatReply'); }, act: function () { var cm = document.querySelector('#chatFeed .cm:not(.me)'); if (cm) { var b = cm.querySelector('.cm-menu'); if (b) b.click(); var am = document.querySelector('.chat-menu.on button[data-a="answer"]'); if (am) am.click(); } } },
-        { tag: '라이브 노출 토글 · 기본 OFF', t: '답변 박스 하단 <b>[라이브에 노출]</b> 토글은 <b>기본 꺼짐</b>. 끈 채로 답변하면 라이브엔 안 뜹니다.', target: function () { return q('#crLiveLbl'); }, act: function () { var i = document.getElementById('crInput'); if (i) i.value = '확인 후 개별 안내드리겠습니다'; } },
-        { tag: '내부 저장 (라이브 X)', t: '<b>답변하기</b> → Q&amp;A 탭(내부 기록)에만 저장되고 <b>라이브 방송엔 노출되지 않습니다</b>.', target: function () { return q('.chat-tab[data-tab="qa"]'); }, act: function () { var s = document.getElementById('crSubmit'); if (s) s.click(); } },
-        { tag: '검토 후 게시', t: 'Q&amp;A 탭에서 항목의 <b>[라이브 노출]</b>을 켜면 방송 프리뷰 Q&amp;A 띠지에 표시됩니다(언제든 취소 가능).', target: function () { return q('#qaPanel'); }, act: function () { var t = document.querySelector('.chat-tab[data-tab="qa"]'); if (t) t.click(); var lv = document.querySelector('#qaPanel .qa-live'); if (lv && !lv.classList.contains('on')) lv.click(); } }
       ]
     });
 
