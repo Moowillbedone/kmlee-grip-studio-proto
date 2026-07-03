@@ -804,7 +804,8 @@
   .cr-live-box::after { content:""; position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%; background:#fff; transition:left .15s; box-shadow:0 1px 2px rgba(0,0,0,.2); }
   .cr-live-box.on { background:var(--grip); }
   .cr-live-box.on::after { left:18px; }
-  .cr-live-hint { color:#8d919c; font-weight:500; }
+  .cr-live-title { white-space:nowrap; flex:0 0 auto; }
+  .cr-live-hint { color:#8d919c; font-weight:500; font-size:11px; line-height:1.3; flex:1; min-width:0; }
   /* Q&A 항목 라이브 노출 토글 */
   .qa-live { border:0; border-radius:14px; padding:4px 9px; font-size:11px; font-weight:800; cursor:pointer; flex:0 0 auto; background:#eceef1; color:#8d919c; white-space:nowrap; }
   .qa-live.on { background:var(--grip-soft); color:var(--grip); }
@@ -1239,7 +1240,7 @@
         <div class="chat-reply" id="chatReply">
           <div class="cr-head"><span class="cr-qic">Q</span><span class="cr-qtext" id="crQText"></span><button class="cr-cancel" id="crCancel" aria-label="취소">✕</button></div>
           <div class="cr-input-row"><input class="cr-input" id="crInput" placeholder="답변을 입력하세요" /><button class="cr-submit" id="crSubmit">답변하기</button></div>
-          <label class="cr-live" id="crLiveLbl"><span class="cr-live-box" id="crLiveBox"></span> 본인만 보기 <span class="cr-live-hint">· 켜면 문의한 본인에게만 노출 (기본 꺼짐 = 전체 공개)</span></label>
+          <label class="cr-live" id="crLiveLbl"><span class="cr-live-box" id="crLiveBox"></span> <span class="cr-live-title">본인만 보기</span> <span class="cr-live-hint">켜면 문의한 유저에게만 노출</span></label>
         </div>
         <div class="chat-input-row">
           <button class="chat-gear">
