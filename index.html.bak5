@@ -1491,8 +1491,7 @@
       };
     }
 
-    var upOrder = [];                 // 현재 UP(프리뷰 노출: 한정=1 / 스토어=최대5)
-    var everUp = [];                  // 한 번이라도 UP된 상품(UP한 상품 목록 모달용, UP한 순서로 누적)
+    var upOrder = [];                 // UP한 상품(누른 순서)
     var checked = {}, storeOn = {};   // 모달 체크/스토어 상태 (idx 기준)
 
     // ---- 모바일 프리뷰 가로 카드 ----
@@ -1528,11 +1527,9 @@
         if (mode === 'limited') {                 // 한정판매: 1개씩(단일 선택) — 이전 UP 자동 해제
           upOrder.forEach(function (x) { var b = x.querySelector('.btn-up'); if (b) b.classList.remove('on'); });
           upOrder = [r]; if (btn) btn.classList.add('on');
-          if (everUp.indexOf(r) < 0) everUp.push(r);
         } else {                                   // 스토어판매: 최대 5개
           if (upOrder.length >= maxUp()) { showUpMax(); return false; }
           upOrder.push(r); if (btn) btn.classList.add('on');
-          if (everUp.indexOf(r) < 0) everUp.push(r);
         }
       } else {
         var k = upOrder.indexOf(r); if (k >= 0) upOrder.splice(k, 1);
@@ -1552,9 +1549,9 @@
     });
 
     function resetUpState() {
-      upOrder = []; everUp = []; checked = {}; storeOn = {};
+      upOrder = []; checked = {}; storeOn = {};
       order.forEach(function (r) { var b = r.querySelector('.btn-up'); if (b) b.classList.remove('on'); });
-      DEFAULT_UP.forEach(function (i) { if (order[i]) { upOrder.push(order[i]); everUp.push(order[i]); var b = order[i].querySelector('.btn-up'); if (b) b.classList.add('on'); } });
+      DEFAULT_UP.forEach(function (i) { if (order[i]) { upOrder.push(order[i]); var b = order[i].querySelector('.btn-up'); if (b) b.classList.add('on'); } });
       renderPreview(); renderUpModal();
     }
 
@@ -1563,13 +1560,11 @@
     var upBody = document.getElementById('upListBody');
     var upCountLabel = document.getElementById('upCountLabel');
     var upAll = document.getElementById('upAll'), upAllBox = document.getElementById('upAllBox');
-    function updateAllBox() { var list = upList(); if (upAllBox) upAllBox.classList.toggle('on', list.length > 0 && list.every(function (r) { return checked[idxOf(r)]; })); }
-    function upList() { return everUp.filter(function (r) { return r.parentNode === listEl; }); }
+    function updateAllBox() { if (upAllBox) upAllBox.classList.toggle('on', upOrder.length > 0 && upOrder.every(function (r) { return checked[idxOf(r)]; })); }
     function renderUpModal() {
       if (!upBody) return;
-      var list = upList();
-      if (upCountLabel) upCountLabel.textContent = 'UP한 상품 ' + list.length;
-      upBody.innerHTML = list.length ? list.map(function (r) {
+      if (upCountLabel) upCountLabel.textContent = 'UP한 상품 ' + upOrder.length;
+      upBody.innerHTML = upOrder.length ? upOrder.map(function (r) {
         var d = readRow(r), i = idxOf(r);
         return '<li class="ul2" data-idx="' + i + '">' +
           '<span class="cbox2' + (checked[i] ? ' on' : '') + '" data-check="' + i + '"></span>' +
@@ -1586,13 +1581,12 @@
     }
     if (upAll) upAll.addEventListener('click', function (e) {
       e.preventDefault();
-      var list = upList();
-      var all = list.length > 0 && list.every(function (r) { return checked[idxOf(r)]; });
-      if (all) checked = {}; else list.forEach(function (r) { checked[idxOf(r)] = true; });
+      var all = upOrder.length > 0 && upOrder.every(function (r) { return checked[idxOf(r)]; });
+      if (all) checked = {}; else upOrder.forEach(function (r) { checked[idxOf(r)] = true; });
       renderUpModal();
     });
     function applyStore(on) {
-      var tgt = upList().filter(function (r) { return checked[idxOf(r)]; });
+      var tgt = upOrder.filter(function (r) { return checked[idxOf(r)]; });
       if (!tgt.length) { toast('상품을 선택해 주세요.', false); return; }
       tgt.forEach(function (r) { storeOn[idxOf(r)] = on; });
       toast('선택 상품을 스토어 ' + (on ? 'ON' : 'OFF') + ' 했습니다.', true);
@@ -1625,7 +1619,6 @@
     });
     function doRemove(row) {
       var k = upOrder.indexOf(row); if (k >= 0) upOrder.splice(k, 1);
-      var e = everUp.indexOf(row); if (e >= 0) everUp.splice(e, 1);   // UP한 상품 목록에서도 제거
       if (row && row.parentNode) row.parentNode.removeChild(row);
       renderPreview(); renderUpModal();
     }
@@ -1748,7 +1741,7 @@
 
     // ===== 기능 2: 방송 리스트에서 상품 삭제 =====
     FEATURES.push({
-      id: 'delete', demoMode: 'limited', jira: 'GRIPPGM-3357', name: '[스튜디오] 스튜디오에서 상품을 방송 리스트에서 빼는 기능 추가',
+      id: 'delete', demoMode: 'store', jira: 'GRIPPGM-3357', name: '[스튜디오] 스튜디오에서 상품을 방송 리스트에서 빼는 기능 추가',
       overviewHTML:
         '<div class="ov-title">🎯 과제 개요</div>' +
         '<span class="prd-k2">과제의 목적</span>' +
@@ -1773,21 +1766,20 @@
           asis: ['스튜디오에서는 상품 제거가 불가능.', '비즈센터 > 라이브 방송 상품 설정에서만 제거 가능.'],
           tobe: ['스튜디오 상품 리스트에서 상품 행마다 삭제 가능.', '삭제 시 확인 모달로 오조작 방지.'],
           features: ['각 상품 행 우측 <b>🗑 버튼</b>으로 제거.', '[제거] 확인 시 방송 리스트에서 즉시 삭제 · 성공 토스트.', '스튜디오 방송 노출 리스트에서만 제거.'] },
-        { n: 2, target: '#btnUpList', title: 'UP한 상품 목록 동기화', tag: '누적 · 자동 반영',
-          def: 'UP한 상품 목록에는 한 번이라도 UP된 상품이 모두 노출되며, 상품 삭제 시 이 목록에서도 제거된다.',
-          features: ['<b>UP한 상품 목록 = 한 번이라도 UP된 상품 전부</b>(현재 UP 여부와 무관, UP한 순서대로 누적).', '한정판매는 1개씩 노출되지만, 그동안 UP했던 상품이 목록에 쌓인다.', '스튜디오 리스트에서 상품 삭제 시 <b>UP한 상품 목록에서도 즉시 제거</b>.'] },
+        { n: 2, target: '#btnUpList', title: 'UP한 상품 목록 자동 동기화', tag: '자동 반영',
+          def: '상품 삭제 시 UP한 상품 목록에도 자동 반영.',
+          features: ['삭제된 상품이 UP 상태였다면 <b>UP한 상품 목록에서도 즉시 제거</b>.', '상단 [UP한 상품 목록]에서 현재 UP 상품 확인.', '별도 조작 없이 삭제와 동시에 동기화.'] },
         { n: 3, target: '.sales-title', title: '비즈센터 미반영 (연동 범위)', tag: '범위 · 주의',
           def: '스튜디오에서의 삭제는 비즈센터로 전파되지 않는다.',
           features: ['비즈센터(라이브 방송 상품 설정)는 <b>별도 어드민</b>으로 상품 유지.', '스튜디오 삭제 = 스튜디오 방송 노출만 제어.', '<strong>스튜디오 삭제가 비즈센터 상품을 삭제하지 않음.</strong>'] }
       ],
       steps: [
-        { tag: '시작', t: '스튜디오 <b>방송 리스트에서 상품을 빼는</b> 기능을 시연합니다. (Jira GRIPPGM-3357)', target: function () { return q('.product-list'); }, act: function () { resetUI(); } },
-        { tag: 'UP 누적', t: '한정판매는 1개씩 노출되지만, <b>UP한 상품 목록</b>에는 <b>한 번이라도 UP한 상품</b>이 모두 쌓입니다. 몇 개를 UP해 둡니다.', target: function () { return q('#btnUpList'); }, act: function () { [1, 2].forEach(function (i) { var r = rowN(i); var b = r && r.querySelector('.btn-up'); if (b && !b.classList.contains('on')) b.click(); }); } },
-        { tag: 'UP한 상품 목록', t: '<b>[UP한 상품 목록]</b>을 열면 UP했던 상품이 <b>모두</b> 보입니다(현재 노출 1개 + 이전에 UP한 상품).', target: function () { return q('#upListModal .modal'); }, act: function () { var b = document.getElementById('btnUpList'); if (b) b.click(); } },
-        { tag: '삭제 · 확인', t: '이제 상품을 방송 리스트에서 삭제합니다 — 행의 <b>🗑</b> → 확인 창(<b>비즈센터 상품은 유지</b>).', target: function () { return q('#deleteModal .modal'); }, act: function () { var u = document.getElementById('upListClose'); if (u) u.click(); var r = rowN(1); var b = r && r.querySelector('.pr-del'); if (b) b.click(); } },
-        { tag: '제거', t: '<b>[제거]</b> → 방송 리스트에서 상품이 사라지고 <b>성공 토스트</b>.', target: function () { return q('.product-list'); }, act: function () { var c = document.getElementById('delConfirm'); if (c) c.click(); } },
-        { tag: 'UP 목록에서도 제거', t: '다시 <b>[UP한 상품 목록]</b>을 열면 <b>삭제한 상품이 목록에서도 빠져</b> 있습니다.', target: function () { return q('#upListModal .modal'); }, act: function () { var b = document.getElementById('btnUpList'); if (b) b.click(); } },
-        { tag: '비즈센터 미반영', t: '단, <b>비즈센터(라이브 방송 상품 설정)</b>에서는 삭제되지 않습니다 — 스튜디오 노출만 제어합니다.', target: function () { return q('.head-btns'); }, act: function () { var u = document.getElementById('upListClose'); if (u) u.click(); } }
+        { tag: '시작', t: '스튜디오 <b>방송 리스트에서 상품을 직접 빼는</b> 기능을 시연합니다. (Jira GRIPPGM-3357)', target: function () { return rowN(1); }, act: function () { resetUI(); } },
+        { tag: '삭제 버튼', t: '각 상품 행 우측의 <b>🗑 삭제</b> 버튼으로 방송 리스트에서 뺄 수 있습니다.', target: function () { var r = rowN(1); return r ? r.querySelector('.pr-del') : null; } },
+        { tag: '삭제 · 확인', t: '삭제를 누르면 확인 창이 뜹니다 — <b>비즈센터 상품은 삭제되지 않는다</b>는 안내를 확인합니다.', target: function () { return q('#deleteModal .modal'); }, act: function () { var r = rowN(1); var b = r ? r.querySelector('.pr-del') : null; if (b) b.click(); } },
+        { tag: '제거', t: '<b>[제거]</b> → 방송 리스트에서 상품이 사라지고 <b>성공 토스트</b>가 표시됩니다.', target: function () { return q('.product-list'); }, act: function () { var c = document.getElementById('delConfirm'); if (c) c.click(); } },
+        { tag: 'UP 목록 자동 반영', t: '상단 <b>[UP한 상품 목록]</b>을 열면, 방금 제거한 상품이 <b>UP 목록에서도 자동으로</b> 빠져 있습니다.', target: function () { return q('#upListModal .modal'); }, act: function () { var b = document.getElementById('btnUpList'); if (b) b.click(); } },
+        { tag: '비즈센터 미반영', t: '단, <b>비즈센터(라이브 방송 상품 설정)</b>에서는 삭제되지 않습니다 — 스튜디오 방송 노출만 제어합니다.', target: function () { return q('.head-btns'); }, act: function () { var c = document.getElementById('upListClose'); if (c) c.click(); } }
       ]
     });
 
