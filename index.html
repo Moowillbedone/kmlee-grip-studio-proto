@@ -727,8 +727,10 @@
   .cm-nick:hover { text-decoration:underline; }
   .cm-text { color:#2b2d34; }
   .cm-ts { font-size:10.5px; color:#c0c4cc; margin-left:6px; }
-  .chat-newbar { display:none; position:absolute; left:50%; transform:translateX(-50%); bottom:10px; background:#1f2126; color:#fff; font-size:12px; font-weight:700; padding:8px 14px; border:0; border-radius:16px; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,.22); white-space:nowrap; }
-  .chat-newbar.on { display:block; }
+  .chat-newbar { display:none; align-items:center; justify-content:center; gap:6px; margin:0 2px 8px; padding:9px 12px; background:#1f2126; color:#fff; font-size:12.5px; font-weight:700; border:0; border-radius:9px; cursor:pointer; white-space:nowrap; }
+  .chat-newbar.on { display:flex; }
+  .chat-newbar::before { content:"↓"; font-weight:800; }
+  .chat-newbar:hover { background:#33363e; }
   .chat-scroll { display:none; position:absolute; right:8px; bottom:10px; width:30px; height:30px; border-radius:50%; background:#fff; border:1px solid #e3e4e8; color:#5c606b; cursor:pointer; box-shadow:0 3px 10px rgba(0,0,0,.14); font-size:15px; line-height:1; }
   .chat-scroll.on { display:block; }
   /* 프리뷰 채팅 오버레이 */
@@ -1167,9 +1169,9 @@
         </div>
         <div class="chat-feed-wrap">
           <div class="chat-feed" id="chatFeed"></div>
-          <button class="chat-newbar" id="chatNewBar"></button>
           <button class="chat-scroll" id="chatScrollBtn" aria-label="맨 아래로">↓</button>
         </div>
+        <button class="chat-newbar" id="chatNewBar"></button>
         <div class="chat-input-row">
           <button class="chat-gear">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 13a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V19a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7.2 17.5l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.6 1.6 0 0 0 4.6 12 1.6 1.6 0 0 0 3 11.2H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 5.4l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.6 1.6 0 0 0 10 1.6a2 2 0 1 1 4 0V2a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1A1.6 1.6 0 0 0 22 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity=".7"/></svg>
