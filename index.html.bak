@@ -623,30 +623,6 @@
   .tour-dots span.on { background: var(--grip); width: 16px; border-radius: 4px; }
   .tour-end { background: rgba(255,255,255,.14); color: #fff; border: 0; border-radius: 8px; padding: 8px 16px; font-size: 12.5px; font-weight: 700; cursor: pointer; flex: 0 0 auto; }
   .tour-end:hover { background: rgba(255,255,255,.24); }
-
-  /* 상품 삭제 버튼 (행) */
-  .pr-del { width:30px; height:30px; display:inline-flex; align-items:center; justify-content:center; border:1px solid transparent; border-radius:8px; background:transparent; color:#b0b4bd; cursor:pointer; flex-shrink:0; align-self:flex-start; transition:background .12s,color .12s,border-color .12s; }
-  .pr-del:hover { background:#fff2f4; color:var(--grip); border-color:#f6c6d0; }
-  /* UP 활성 상태 */
-  .btn-up.on { background:var(--grip); border-color:var(--grip); color:#fff; }
-  /* UP한 상품 목록 모달 */
-  .up-list { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px; max-height:340px; overflow:auto; }
-  .up-list li { display:flex; align-items:center; gap:10px; padding:11px 12px; border:1px solid #ececef; border-radius:10px; font-size:14px; color:#2b2d34; }
-  .up-list .ul-thumb { width:26px; height:26px; border-radius:6px; background:linear-gradient(135deg,#ffd9c0,#ffb38a); flex-shrink:0; }
-  .up-list .ul-name { flex:1; font-weight:600; }
-  .up-list .ul-badge { font-size:11px; font-weight:800; color:var(--grip); background:var(--grip-soft); padding:3px 8px; border-radius:6px; }
-  .up-list .ul-empty { justify-content:center; color:#8d919c; border-style:dashed; }
-  /* PRD 기능 스위처 */
-  .prd-feature-switch { position:relative; margin-top:12px; }
-  .pfs-btn { display:inline-flex; align-items:center; gap:7px; width:100%; padding:9px 12px; border:1px solid #e3e4e8; border-radius:9px; background:#f8f9fb; font-size:13.5px; font-weight:700; color:#2b2d34; cursor:pointer; }
-  .pfs-btn:hover { border-color:#c7cad1; }
-  .pfs-btn .pfs-caret { margin-left:auto; color:#8d919c; font-size:11px; }
-  .pfs-menu { display:none; position:absolute; top:calc(100% + 6px); left:0; right:0; background:#fff; border:1px solid #e3e4e8; border-radius:11px; box-shadow:0 12px 34px rgba(20,22,30,.16); padding:6px; z-index:20; }
-  .pfs-menu.open { display:block; }
-  .pfs-item { display:block; width:100%; text-align:left; padding:10px 11px; border:0; border-radius:8px; background:transparent; font-size:13.5px; color:#41444d; cursor:pointer; }
-  .pfs-item:hover { background:#f4f5f7; }
-  .pfs-item.on { background:var(--grip-soft-2); }
-  .pfs-item.on b { color:var(--grip); }
 </style>
 </head>
 <body>
@@ -771,7 +747,7 @@
         <div class="sales-head">
           <h1 class="sales-title">한정판매</h1>
           <div class="head-btns">
-            <button class="btn-ghost" id="btnUpList">UP한 상품 목록</button>
+            <button class="btn-ghost">UP한 상품 목록</button>
             <button class="btn-ghost">등록된 상품 가져오기</button>
             <button class="btn-ghost">플래시 상품 등록</button>
           </div>
@@ -825,7 +801,7 @@
                 </div>
               </div>
             </div>
-            <button class="pr-del" title="방송 리스트에서 삭제" aria-label="방송 리스트에서 삭제"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m1 0v12a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <span class="drag">≡</span>
           </div>
           <div class="pr-stats">
             <div class="stat-cell"><span class="lbl">장바구니 수량</span><span class="val">0</span></div>
@@ -861,7 +837,7 @@
                 </div>
               </div>
             </div>
-            <button class="pr-del" title="방송 리스트에서 삭제" aria-label="방송 리스트에서 삭제"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m1 0v12a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <span class="drag">≡</span>
           </div>
           <div class="pr-stats">
             <div class="stat-cell"><span class="lbl">장바구니 수량</span><span class="val">0</span></div>
@@ -897,7 +873,7 @@
                 </div>
               </div>
             </div>
-            <button class="pr-del" title="방송 리스트에서 삭제" aria-label="방송 리스트에서 삭제"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m1 0v12a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <span class="drag">≡</span>
           </div>
           <div class="pr-stats">
             <div class="stat-cell"><span class="lbl">장바구니 수량</span><span class="val">0</span></div>
@@ -933,7 +909,7 @@
                 </div>
               </div>
             </div>
-            <button class="pr-del" title="방송 리스트에서 삭제" aria-label="방송 리스트에서 삭제"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m1 0v12a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <span class="drag">≡</span>
           </div>
           <div class="pr-stats">
             <div class="stat-cell"><span class="lbl">장바구니 수량</span><span class="val">0</span></div>
@@ -969,7 +945,7 @@
                 </div>
               </div>
             </div>
-            <button class="pr-del" title="방송 리스트에서 삭제" aria-label="방송 리스트에서 삭제"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m1 0v12a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <span class="drag">≡</span>
           </div>
           <div class="pr-stats">
             <div class="stat-cell"><span class="lbl">장바구니 수량</span><span class="val">0</span></div>
@@ -1005,7 +981,7 @@
                 </div>
               </div>
             </div>
-            <button class="pr-del" title="방송 리스트에서 삭제" aria-label="방송 리스트에서 삭제"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m1 0v12a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <span class="drag">≡</span>
           </div>
           <div class="pr-stats">
             <div class="stat-cell"><span class="lbl">장바구니 수량</span><span class="val">0</span></div>
@@ -1119,52 +1095,63 @@
   </div>
 </div>
 
-
-<!-- 방송 리스트에서 상품 제거 확인 -->
-<div class="modal-overlay" id="deleteModal">
-  <div class="modal" role="dialog" aria-modal="true" aria-label="방송 리스트에서 상품 제거" style="max-width:440px;">
-    <div class="modal-title">방송 리스트에서 제거</div>
-    <div class="modal-body">
-      <p class="modal-lead"><b id="delName">상품</b> 을(를) 방송 리스트에서 제거합니다.</p>
-      <p style="font-size:13px;color:#5c606b;line-height:1.65;margin:12px 0 0;">· 스튜디오 방송 리스트에서만 제거되며, <b>UP한 상품 목록</b>에서도 자동으로 빠집니다.<br/>· <b>비즈센터(라이브 방송 상품 설정)</b>의 상품은 삭제되지 않습니다.</p>
-    </div>
-    <div class="modal-foot">
-      <button class="btn-close" id="delCancel">취소</button>
-      <button class="btn-apply" id="delConfirm" style="background:var(--grip);">제거</button>
-    </div>
-  </div>
-</div>
-
-<!-- UP한 상품 목록 -->
-<div class="modal-overlay" id="upListModal">
-  <div class="modal" role="dialog" aria-modal="true" aria-label="UP한 상품 목록" style="max-width:460px;">
-    <div class="modal-title">UP한 상품 목록 <span style="color:var(--grip);font-weight:800;">(<span id="upListCount">0</span>)</span></div>
-    <div class="modal-body">
-      <ul class="up-list" id="upListBody"></ul>
-    </div>
-    <div class="modal-foot" style="justify-content:flex-end;">
-      <button class="btn-apply" id="upListClose">확인</button>
-    </div>
-  </div>
-</div>
-
 <!-- PRD 모드 -->
 <button class="prd-toggle" id="prdToggle"><span class="dot"></span> PRD 모드</button>
 <aside class="prd-panel" id="prdPanel" aria-label="PRD 기능 명세">
   <div class="prd-head">
-    <div style="flex:1;min-width:0;">
+    <div>
       <h3>PRD · 기능 명세</h3>
       <div class="sub">그립 스튜디오 2.0 · 한정판매 라이브 콘솔</div>
-      <div class="prd-feature-switch" id="prdFeatureSwitch">
-        <button class="pfs-btn" id="pfsBtn" type="button"><span class="pfs-ic">📂</span><span id="pfsLabel">기능 선택</span><span class="pfs-caret">▾</span></button>
-        <div class="pfs-menu" id="pfsMenu"></div>
-      </div>
     </div>
     <button class="prd-close" id="prdClose" title="닫기">✕</button>
   </div>
   <div class="prd-list" id="prdList">
-    <button class="demo-launch" id="demoLaunch"><span class="pulse"></span> ▶ 자동 데모 보기</button>
-    <div id="prdBody"></div>
+    <button class="demo-launch" id="demoLaunch"><span class="pulse"></span> ▶ 자동 데모 보기 (검증 플로우 재생)</button>
+    <div class="prd-overview">
+      <div class="ov-title">🎯 과제 개요</div>
+      <span class="prd-k2">과제의 목적</span>
+      <p>비즈센터와 스튜디오는 한정판매 상품의 <b>가격 데이터를 연동·공유</b>한다. 스튜디오에서 막혀 있던 가격 수정 제약을 풀어, <b>정가·상시할인가·라이브가를 리스트에서 자유롭게(+일괄로) 수정</b>할 수 있게 하는 것이 목표.</p>
+      <span class="prd-k2">배경 · 실제 문제</span>
+      <p>비즈센터와 스튜디오에서 <b>정가(정상가) 수정이 막혀 있어</b>, 할인가·라이브가를 정가보다 높게 입력하면 <b>가격 방어 밸리데이션</b>에 걸려 수정이 불가했다.</p>
+      <span class="prd-k2">해결</span>
+      <p>비즈센터는 상품 가격 리스트에서 <b>정가·상시할인가·라이브가를 모두 인라인 수정</b> 가능하게 하고, <b>[가격 수정] 버튼으로 일괄 수정</b>까지 지원. 스튜디오도 같은 데이터를 연동하므로 동일 정책을 반영.</p>
+    </div>
+    <div class="prd-flow">
+      <span class="prd-k2">검증 플로우 · 2가지 수정 경로</span>
+      <div class="fpath">
+        <div class="fpath-h"><span class="fpath-tag a">경로 A</span> 리스트 직접 수정 <em>· 체크박스 불필요</em></div>
+        <div class="frow">
+          <span class="fnode">정가·상시할인가·라이브가 직접 입력</span>
+          <span class="farr">→</span>
+          <span class="fnode">Enter</span>
+          <span class="farr">→</span>
+          <span class="fnode">할인율 배지 자동계산 · 모바일 프리뷰 반영</span>
+        </div>
+        <div class="fdec">수정한 가격 ≥ 200원 ?</div>
+        <div class="fbranch">
+          <span class="fout ok">예 → 적용 + 성공 토스트</span>
+          <span class="fout no">아니오 → 미적용(되돌림) · 실패 토스트</span>
+        </div>
+      </div>
+      <div class="fpath">
+        <div class="fpath-h"><span class="fpath-tag b">경로 B</span> 일괄 수정 <em>· 체크 + [가격 수정]</em></div>
+        <div class="frow">
+          <span class="fnode">상품 1개+ 선택(체크)</span>
+          <span class="farr">→</span>
+          <span class="fnode">[가격 수정] 활성화 · 클릭</span>
+          <span class="farr">→</span>
+          <span class="fnode">팝업(전체선택) 대상·금액 입력 → 반영</span>
+        </div>
+        <div class="fdec">수정한 가격 ≥ 200원 ?</div>
+        <div class="fbranch">
+          <span class="fout ok">예 → 적용 + 성공 토스트</span>
+          <span class="fout no">아니오 → 실패 팝업 · 미적용 · 실패 토스트</span>
+        </div>
+      </div>
+      <div class="fmerge">↓ 두 경로 모두</div>
+      <div class="fnode final">🔗 변경 결과는 비즈센터 · 스튜디오 데이터와 연동 반영</div>
+    </div>
+    <div class="prd-section-label">기능 명세</div>
   </div>
 </aside>
 
@@ -1401,297 +1388,205 @@
     refresh();
   })();
 
-  // ============ 상품 삭제 + UP한 상품 목록 (GRIPPGM-3357) ============
+  // ============ PRD 모드 ============
   (function () {
-    var listEl = document.querySelector('.product-list');
-    if (!listEl) return;
-    var order = Array.prototype.slice.call(listEl.querySelectorAll('.product-row')); // 원래 순서(마스터)
-    function nameOf(r) { var n = r.querySelector('.pr-name-input'); return n ? n.value : '상품'; }
-    function toast(msg, ok) { if (window.__gripToast) window.__gripToast(msg, ok); }
+    var PRD = [
+      { n: 1, target: '.select-row', title: '상품 선택 & 일괄 제어', tag: '다중 선택',
+        def: '여러 상품을 한 번에 제어하기 위한 선택 진입점.',
+        features: [
+          '원형 체크박스(기본은 비활성 회색 체크 표시).',
+          '전체선택 시 모든 상품 선택, 선택 개수는 (n/총개수)로 표기.',
+          '1개 이상 선택 시 [가격 수정]·[스토어 ON]·[스토어 OFF] 버튼 활성화.'
+        ] },
+      { n: 2, target: '.pi-prices', title: '가격 정보', tag: '정가·상시·라이브',
+        def: '한 상품의 가격을 의미별 3단으로 분리 표기.',
+        asis: [
+          '정가·할인가·라이브가를 명확하게 구분해 알 수 없음.',
+          '정가·상시할인가 리스트에서 수정 불가.'
+        ],
+        tobe: [
+          '영역별 금액을 노출하여 가격 일괄 수정 내용 및 비즈센터 내용과 일치.',
+          '정가·상시할인가 리스트에서 수정 가능.'
+        ],
+        features: [
+          '정가·상시할인가·라이브가 모두 인라인 직접 수정(엔터로 반영, 성공 토스트).',
+          '반영 결과를 좌측 하단 토스트로 안내(200원 미만=실패 / 이상=성공).',
+          '상시할인가의 할인율 배지는 정가 대비 자동 계산·표기.',
+          '수정된 가격은 좌측 모바일 프리뷰에 실시간 반영.',
+          '<strong>변경된 가격은 &lt;비즈센터&gt;에도 연동되어 가격 반영됨.</strong>'
+        ] },
+      { n: 3, target: '#btnPriceEdit', title: '가격 일괄 수정', tag: '일괄 변경 · 검증',
+        def: '선택한 상품들의 가격을 한 번에 변경.',
+        features: [
+          '디폴트: 비활성화 (상품을 선택해야 활성화).',
+          '팝업에서 변경 대상(전체/정가/상시할인가/라이브가) 선택 후 금액 입력하여 반영.',
+          '정가·상시할인가·라이브가 중 하나라도 200원 미만이면 검증 실패(실패 내역 팝업·해당 상품 미적용).',
+          '반영 결과를 좌측 하단 토스트로 안내(200원 미만=실패 / 이상=성공).',
+          '팝업을 열 때는 무조건 체크박스 전체선택(전체·정가·상시할인가·라이브가).',
+          '<strong>변경된 가격은 &lt;비즈센터&gt;에도 연동되어 가격 반영됨.</strong>'
+        ] }
+    ];
 
-    // 기본 UP 상태: 앞 2개 상품 UP
-    order.forEach(function (r, i) { var up = r.querySelector('.btn-up'); if (up && i < 2) up.classList.add('on'); });
-    // UP 토글
-    order.forEach(function (r) {
-      var up = r.querySelector('.btn-up');
-      if (up) up.addEventListener('click', function () { up.classList.toggle('on'); renderUpList(); });
-    });
-
-    // ----- UP한 상품 목록 모달 -----
-    var upModal = document.getElementById('upListModal');
-    var upBody = document.getElementById('upListBody');
-    var upCount = document.getElementById('upListCount');
-    function currentUp() {
-      return Array.prototype.slice.call(listEl.querySelectorAll('.product-row')).filter(function (r) {
-        var u = r.querySelector('.btn-up'); return u && u.classList.contains('on');
-      });
-    }
-    function renderUpList() {
-      if (!upBody) return;
-      var ups = currentUp();
-      if (upCount) upCount.textContent = ups.length;
-      upBody.innerHTML = ups.length
-        ? ups.map(function (r) { return '<li><span class="ul-thumb"></span><span class="ul-name">' + nameOf(r) + '</span><span class="ul-badge">▲ UP</span></li>'; }).join('')
-        : '<li class="ul-empty">UP한 상품이 없습니다.</li>';
-    }
-    function openUp() { renderUpList(); if (upModal) upModal.classList.add('open'); }
-    function closeUp() { if (upModal) upModal.classList.remove('open'); }
-    var btnUp = document.getElementById('btnUpList');
-    if (btnUp) btnUp.addEventListener('click', openUp);
-    var upClose = document.getElementById('upListClose');
-    if (upClose) upClose.addEventListener('click', closeUp);
-    if (upModal) upModal.addEventListener('click', function (e) { if (e.target === upModal) closeUp(); });
-
-    // ----- 삭제 확인 모달 -----
-    var delModal = document.getElementById('deleteModal');
-    var delName = document.getElementById('delName');
-    var pending = null;
-    function askDelete(row) { pending = row; if (delName) delName.textContent = nameOf(row); if (delModal) delModal.classList.add('open'); }
-    function closeDel() { if (delModal) delModal.classList.remove('open'); pending = null; }
-    order.forEach(function (r) { var b = r.querySelector('.pr-del'); if (b) b.addEventListener('click', function () { askDelete(r); }); });
-    var delCancel = document.getElementById('delCancel'), delConfirm = document.getElementById('delConfirm');
-    if (delCancel) delCancel.addEventListener('click', closeDel);
-    if (delModal) delModal.addEventListener('click', function (e) { if (e.target === delModal) closeDel(); });
-    if (delConfirm) delConfirm.addEventListener('click', function () {
-      if (pending) { var nm = nameOf(pending); doRemove(pending); toast('‘' + nm + '’ 을(를) 방송 리스트에서 제거했습니다. (비즈센터 상품은 유지)', true); }
-      closeDel();
-    });
-
-    function doRemove(row) { if (row && row.parentNode) row.parentNode.removeChild(row); renderUpList(); }
-    // 데모 되감기용 — 모든 상품 원래 순서로 복원(노드 재삽입 → 리스너 보존)
-    function restoreRows() { order.forEach(function (n) { listEl.appendChild(n); }); renderUpList(); }
-    window.__gripRestoreRows = restoreRows;
-
-    renderUpList();
-  })();
-
-  // ============ PRD 모드 + 자동 데모 (기능별 전환) ============
-  (function () {
-    function q(s) { return document.querySelector(s); }
-    function rows() { return document.querySelectorAll('.product-row'); }
-    function rowN(i) { return rows()[i]; }
-    function input(el) { if (el) el.dispatchEvent(new Event('input', { bubbles: true })); }
-    function toast(msg, ok) { if (window.__gripToast) window.__gripToast(msg, ok); }
-
-    // prd 아이템 → HTML
-    function itemHTML(it) {
-      var mk = function (v) { return Array.isArray(v) ? '<ul>' + v.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul>' : '<p>' + v + '</p>'; };
-      var blocks = '<div class="prd-block"><span class="prd-k">정의</span><p>' + it.def + '</p></div>';
-      if (it.asis) blocks += '<div class="prd-block"><span class="prd-k prd-k-asis">AS-IS</span>' + mk(it.asis) + '</div>';
-      if (it.tobe) blocks += '<div class="prd-block"><span class="prd-k prd-k-tobe">TO-BE</span>' + mk(it.tobe) + '</div>';
-      blocks += '<div class="prd-block"><span class="prd-k">기능</span><ul>' + (it.features || []).map(function (f) { return '<li>' + f + '</li>'; }).join('') + '</ul></div>';
-      return '<div class="prd-item-head"><span class="prd-num">' + it.n + '</span><h4>' + it.title + '</h4></div>' + blocks + (it.tag ? '<span class="tag">' + it.tag + '</span>' : '');
-    }
-
-    // ---------- 기능 레지스트리 ----------
-    var FEATURES = [];
-
-    // ===== 기능 1: 가격 수정 =====
-    FEATURES.push({
-      id: 'price', name: '가격 수정 (인라인·일괄)',
-      overviewHTML:
-        '<div class="ov-title">🎯 과제 개요</div>' +
-        '<span class="prd-k2">과제의 목적</span>' +
-        '<p>비즈센터와 스튜디오는 한정판매 상품의 <b>가격 데이터를 연동·공유</b>한다. 스튜디오에서 막혀 있던 가격 수정 제약을 풀어, <b>정가·상시할인가·라이브가를 리스트에서 자유롭게(+일괄로) 수정</b>할 수 있게 하는 것이 목표.</p>' +
-        '<span class="prd-k2">배경 · 실제 문제</span>' +
-        '<p>비즈센터와 스튜디오에서 <b>정가(정상가) 수정이 막혀 있어</b>, 할인가·라이브가를 정가보다 높게 입력하면 <b>가격 방어 밸리데이션</b>에 걸려 수정이 불가했다.</p>' +
-        '<span class="prd-k2">해결</span>' +
-        '<p>비즈센터는 상품 가격 리스트에서 <b>정가·상시할인가·라이브가를 모두 인라인 수정</b> 가능하게 하고, <b>[가격 수정] 버튼으로 일괄 수정</b>까지 지원. 스튜디오도 같은 데이터를 연동하므로 동일 정책을 반영.</p>',
-      flowHTML:
-        '<span class="prd-k2">검증 플로우 · 2가지 수정 경로</span>' +
-        '<div class="fpath">' +
-          '<div class="fpath-h"><span class="fpath-tag a">경로 A</span> 리스트 직접 수정 <em>· 체크박스 불필요</em></div>' +
-          '<div class="frow"><span class="fnode">정가·상시할인가·라이브가 직접 입력</span><span class="farr">→</span><span class="fnode">Enter</span><span class="farr">→</span><span class="fnode">할인율 배지 자동계산 · 모바일 프리뷰 반영</span></div>' +
-          '<div class="fdec">수정한 가격 ≥ 200원 ?</div>' +
-          '<div class="fbranch"><span class="fout ok">예 → 적용 + 성공 토스트</span><span class="fout no">아니오 → 미적용(되돌림) · 실패 토스트</span></div>' +
-        '</div>' +
-        '<div class="fpath">' +
-          '<div class="fpath-h"><span class="fpath-tag b">경로 B</span> 일괄 수정 <em>· 체크 + [가격 수정]</em></div>' +
-          '<div class="frow"><span class="fnode">상품 1개+ 선택(체크)</span><span class="farr">→</span><span class="fnode">[가격 수정] 활성화 · 클릭</span><span class="farr">→</span><span class="fnode">팝업(전체선택) 대상·금액 입력 → 반영</span></div>' +
-          '<div class="fdec">수정한 가격 ≥ 200원 ?</div>' +
-          '<div class="fbranch"><span class="fout ok">예 → 적용 + 성공 토스트</span><span class="fout no">아니오 → 실패 팝업 · 미적용 · 실패 토스트</span></div>' +
-        '</div>' +
-        '<div class="fmerge">↓ 두 경로 모두</div>' +
-        '<div class="fnode final">🔗 변경 결과는 비즈센터 · 스튜디오 데이터와 연동 반영</div>',
-      prd: [
-        { n: 1, target: '.select-row', title: '상품 선택 & 일괄 제어', tag: '다중 선택',
-          def: '여러 상품을 한 번에 제어하기 위한 선택 진입점.',
-          features: ['원형 체크박스(기본은 비활성 회색 체크 표시).', '전체선택 시 모든 상품 선택, 선택 개수는 (n/총개수)로 표기.', '1개 이상 선택 시 [가격 수정]·[스토어 ON]·[스토어 OFF] 버튼 활성화.'] },
-        { n: 2, target: '.pi-prices', title: '가격 정보', tag: '정가·상시·라이브',
-          def: '한 상품의 가격을 의미별 3단으로 분리 표기.',
-          asis: ['정가·할인가·라이브가를 명확하게 구분해 알 수 없음.', '정가·상시할인가 리스트에서 수정 불가.'],
-          tobe: ['영역별 금액을 노출하여 가격 일괄 수정 내용 및 비즈센터 내용과 일치.', '정가·상시할인가 리스트에서 수정 가능.'],
-          features: ['정가·상시할인가·라이브가 모두 인라인 직접 수정(엔터로 반영, 성공 토스트).', '반영 결과를 좌측 하단 토스트로 안내(200원 미만=실패 / 이상=성공).', '상시할인가의 할인율 배지는 정가 대비 자동 계산·표기.', '수정된 가격은 좌측 모바일 프리뷰에 실시간 반영.', '<strong>변경된 가격은 &lt;비즈센터&gt;에도 연동되어 가격 반영됨.</strong>'] },
-        { n: 3, target: '#btnPriceEdit', title: '가격 일괄 수정', tag: '일괄 변경 · 검증',
-          def: '선택한 상품들의 가격을 한 번에 변경.',
-          features: ['디폴트: 비활성화 (상품을 선택해야 활성화).', '팝업에서 변경 대상(전체/정가/상시할인가/라이브가) 선택 후 금액 입력하여 반영.', '정가·상시할인가·라이브가 중 하나라도 200원 미만이면 검증 실패(실패 내역 팝업·해당 상품 미적용).', '반영 결과를 좌측 하단 토스트로 안내(200원 미만=실패 / 이상=성공).', '팝업을 열 때는 무조건 체크박스 전체선택(전체·정가·상시할인가·라이브가).', '<strong>변경된 가격은 &lt;비즈센터&gt;에도 연동되어 가격 반영됨.</strong>'] }
-      ],
-      steps: [
-        { tag: '시작', t: '리스트에서 상품 가격을 수정하는 <b>2가지 경로</b>를 실제 화면에서 자동 시연합니다.', target: function () { return rowN(0); }, act: function () { resetUI(); } },
-        { tag: '경로 A · 직접 수정', t: '체크 없이도 <b>정가·상시할인가·라이브가</b>를 리스트에서 바로 수정할 수 있습니다.', target: function () { return rowN(0).querySelector('.pi-prices'); } },
-        { tag: '경로 A · 성공', t: '라이브가에 <b>200원 이상</b> 입력 후 <b>Enter</b> → 상시할인가 할인율 배지 자동계산 · <b>성공 토스트</b>(좌측 하단).', target: function () { return rowN(0).querySelector('.pi-cell--live'); }, act: function () { var i = rowN(0).querySelector('.pi-live-input'); i.value = '2,500'; i.dataset.prev = '2,500'; input(i); toast('가격 수정에 성공하였습니다.', true); } },
-        { tag: '경로 A · 결과', t: '수정한 라이브가가 <b>좌측 모바일 라이브 화면</b>에 즉시 반영됩니다.', target: function () { return q('.product-overlay'); } },
-        { tag: '경로 A · 검증', t: '이번엔 라이브가에 <b>200원 미만(150)</b>을 입력해 봅니다.', target: function () { return rowN(0).querySelector('.pi-cell--live'); }, act: function () { var i = rowN(0).querySelector('.pi-live-input'); i.value = '150'; input(i); } },
-        { tag: '경로 A · 실패', t: '<b>Enter</b> → 200원 미만은 적용되지 않고 <b>이전 값(2,500원)으로 복원</b> · <b>실패 토스트</b>.', target: function () { return rowN(0).querySelector('.pi-cell--live'); }, act: function () { var i = rowN(0).querySelector('.pi-live-input'); i.value = (i.dataset.prev || '2,500'); input(i); toast('가격 수정에 실패하였습니다.', false); } },
-        { tag: '경로 B · 일괄 수정', t: '일괄 수정은 <b>상품을 1개 이상 선택(체크)</b>하는 것부터 시작합니다.', target: function () { return rowN(0).querySelector('.cbox'); } },
-        { tag: '경로 B · 일괄 수정', t: '선택하면 <b>[가격 수정]</b> 버튼이 활성화됩니다 → 클릭.', target: function () { return q('#btnPriceEdit'); }, act: function () { var cb = rowN(0).querySelector('.cbox'); if (!cb.classList.contains('checked')) cb.click(); } },
-        { tag: '경로 B · 일괄 수정', t: '팝업은 항상 <b>전체선택</b>으로 열립니다. 변경 대상 선택 후 금액을 입력합니다.', target: function () { return q('#priceModal .modal'); }, act: function () { q('#btnPriceEdit').click(); } },
-        { tag: '경로 B · 검증', t: '대상 가격이 <b>모두 ≥ 200원</b>이면 정상 반영됩니다. (예: 3,000원)', target: function () { return [q('#priceModal .modal-input-row'), q('#priceModal .modal-foot')]; }, act: function () { var p = document.getElementById('pmPrice'); if (p) p.value = '3,000'; } },
-        { tag: '경로 B · 성공', t: '<b>반영</b> → 선택 상품 가격이 일괄 변경되고 <b>성공 토스트</b>가 표시됩니다.', target: function () { return rowN(0).querySelector('.pi-prices'); }, act: function () { var a = document.getElementById('pmApply'); if (a) a.click(); } },
-        { tag: '경로 B · 검증', t: '이번엔 <b>200원 미만(150)</b>을 입력해 반영을 시도합니다.', target: function () { return q('#priceModal .modal'); }, act: function () { q('#btnPriceEdit').click(); var p = document.getElementById('pmPrice'); if (p) p.value = '150'; } },
-        { tag: '경로 B · 실패', t: '가격이 <b>200원 미만</b>이면 → <b>실패 내역 팝업</b> · 미적용 · 실패 토스트.', target: function () { return q('#failModal .modal'); }, act: function () { var a = document.getElementById('pmApply'); if (a) a.click(); } },
-        { tag: '공통', t: '변경 결과는 <b>비즈센터 · 스튜디오</b>와 데이터 연동되어 반영됩니다.', target: function () { return rowN(0).querySelector('.pi-prices'); }, act: function () { var f = document.getElementById('failOk'); if (f) f.click(); } }
-      ]
-    });
-
-    // ===== 기능 2: 방송 리스트에서 상품 삭제 =====
-    FEATURES.push({
-      id: 'delete', name: '방송 리스트에서 상품 삭제',
-      overviewHTML:
-        '<div class="ov-title">🎯 과제 개요</div>' +
-        '<span class="prd-k2">과제의 목적</span>' +
-        '<p>스튜디오 홈 <b>상품 리스트에서 직접 상품을 방송 리스트에서 뺄 수 있게</b> 한다. (Jira <b>GRIPPGM-3357</b> · 쓰리백 VOC / 함서영님 요청)</p>' +
-        '<span class="prd-k2">배경 · 실제 문제</span>' +
-        '<p>현재 스튜디오에서는 특정 상품을 리스트에서 제거할 수 없고, <b>비즈센터 &gt; 라이브 방송 상품 설정</b>에서만 가능하다. 방송 중 즉시 빼야 하는 상황에서 동선이 없다.</p>' +
-        '<span class="prd-k2">해결</span>' +
-        '<p>상품 행에서 바로 삭제 → 방송 리스트와 <b>UP한 상품 목록에서도 자동 반영</b>. 단, 비즈센터는 <b>별도 어드민</b>이므로 <b>스튜디오 삭제가 비즈센터로 전파되지 않는다.</b></p>',
-      flowHTML:
-        '<span class="prd-k2">검증 플로우 · 상품 삭제</span>' +
-        '<div class="fpath">' +
-          '<div class="fpath-h"><span class="fpath-tag a">경로</span> 상품 행에서 삭제</div>' +
-          '<div class="frow"><span class="fnode">상품 행 🗑 삭제</span><span class="farr">→</span><span class="fnode">확인 모달 · [제거]</span><span class="farr">→</span><span class="fnode">방송 리스트에서 제거 · 성공 토스트</span></div>' +
-          '<div class="fdec">삭제된 상품이 UP 상태였나?</div>' +
-          '<div class="fbranch"><span class="fout ok">예 → UP한 상품 목록에서도 자동 제거</span><span class="fout no">아니오 → 리스트에서만 제거</span></div>' +
-        '</div>' +
-        '<div class="fmerge">↓ 공통</div>' +
-        '<div class="fnode final">🔒 비즈센터(라이브 방송 상품 설정)에는 반영되지 않음 — 스튜디오 노출만 제어</div>',
-      prd: [
-        { n: 1, target: '.pr-del', title: '방송 리스트에서 상품 삭제', tag: '스튜디오 직접 제어',
-          def: '스튜디오 홈 상품 리스트에서 상품을 방송 리스트에서 직접 제거.',
-          asis: ['스튜디오에서는 상품 제거가 불가능.', '비즈센터 > 라이브 방송 상품 설정에서만 제거 가능.'],
-          tobe: ['스튜디오 상품 리스트에서 상품 행마다 삭제 가능.', '삭제 시 확인 모달로 오조작 방지.'],
-          features: ['각 상품 행 우측 <b>🗑 버튼</b>으로 제거.', '[제거] 확인 시 방송 리스트에서 즉시 삭제 · 성공 토스트.', '스튜디오 방송 노출 리스트에서만 제거.'] },
-        { n: 2, target: '#btnUpList', title: 'UP한 상품 목록 자동 동기화', tag: '자동 반영',
-          def: '상품 삭제 시 UP한 상품 목록에도 자동 반영.',
-          features: ['삭제된 상품이 UP 상태였다면 <b>UP한 상품 목록에서도 즉시 제거</b>.', '상단 [UP한 상품 목록]에서 현재 UP 상품 확인.', '별도 조작 없이 삭제와 동시에 동기화.'] },
-        { n: 3, target: '.sales-title', title: '비즈센터 미반영 (연동 범위)', tag: '범위 · 주의',
-          def: '스튜디오에서의 삭제는 비즈센터로 전파되지 않는다.',
-          features: ['비즈센터(라이브 방송 상품 설정)는 <b>별도 어드민</b>으로 상품 유지.', '스튜디오 삭제 = 스튜디오 방송 노출만 제어.', '<strong>스튜디오 삭제가 비즈센터 상품을 삭제하지 않음.</strong>'] }
-      ],
-      steps: [
-        { tag: '시작', t: '스튜디오 <b>방송 리스트에서 상품을 직접 빼는</b> 기능을 시연합니다. (Jira GRIPPGM-3357)', target: function () { return rowN(1); }, act: function () { resetUI(); } },
-        { tag: '삭제 버튼', t: '각 상품 행 우측의 <b>🗑 삭제</b> 버튼으로 방송 리스트에서 뺄 수 있습니다.', target: function () { var r = rowN(1); return r ? r.querySelector('.pr-del') : null; } },
-        { tag: '삭제 · 확인', t: '삭제를 누르면 확인 창이 뜹니다 — <b>비즈센터 상품은 삭제되지 않는다</b>는 안내를 확인합니다.', target: function () { return q('#deleteModal .modal'); }, act: function () { var r = rowN(1); var b = r ? r.querySelector('.pr-del') : null; if (b) b.click(); } },
-        { tag: '제거', t: '<b>[제거]</b> → 방송 리스트에서 상품이 사라지고 <b>성공 토스트</b>가 표시됩니다.', target: function () { return q('.product-list'); }, act: function () { var c = document.getElementById('delConfirm'); if (c) c.click(); } },
-        { tag: 'UP 목록 자동 반영', t: '상단 <b>[UP한 상품 목록]</b>을 열면, 방금 제거한 상품이 <b>UP 목록에서도 자동으로</b> 빠져 있습니다.', target: function () { return q('#upListModal .modal'); }, act: function () { var b = document.getElementById('btnUpList'); if (b) b.click(); } },
-        { tag: '비즈센터 미반영', t: '단, <b>비즈센터(라이브 방송 상품 설정)</b>에서는 삭제되지 않습니다 — 스튜디오 방송 노출만 제어합니다.', target: function () { return q('.head-btns'); }, act: function () { var c = document.getElementById('upListClose'); if (c) c.click(); } }
-      ]
-    });
-
-    var cur = 0;
-    function feat() { return FEATURES[cur]; }
-
-    // ---------- refs ----------
     var list = document.getElementById('prdList');
-    var bodyEl = document.getElementById('prdBody');
     var toggleBtn = document.getElementById('prdToggle');
     var closeBtn = document.getElementById('prdClose');
-    if (!list || !bodyEl || !toggleBtn) return;
-    var overlay = document.getElementById('tourOverlay');
-    var launch = document.getElementById('demoLaunch');
-    var endBtn = document.getElementById('tourEnd');
-    var spot = document.getElementById('tourSpot'), callout = document.getElementById('tourCallout');
-    var tcStep = document.getElementById('tcStep'), tcText = document.getElementById('tcText'), dotsWrap = document.getElementById('tourDots');
-    var pfsBtn = document.getElementById('pfsBtn'), pfsLabel = document.getElementById('pfsLabel'), menuEl = document.getElementById('pfsMenu');
-    var switchWrap = document.getElementById('prdFeatureSwitch');
-
-    var on = false;
+    if (!list || !toggleBtn) return;
     var markers = {}, items = {};
-    var steps = [], dotEls = [];
 
-    function setActive(n) { Object.keys(items).forEach(function (k) { items[k].classList.toggle('active', k === String(n)); }); }
+    function setActive(n) {
+      Object.keys(items).forEach(function (k) { items[k].classList.toggle('active', k === String(n)); });
+    }
     function flash(m) { m.classList.add('glow'); setTimeout(function () { m.classList.remove('glow'); }, 1300); }
-    function clearMarkers() { Object.keys(markers).forEach(function (k) { if (markers[k].parentNode) markers[k].parentNode.removeChild(markers[k]); }); markers = {}; items = {}; }
+
+    PRD.forEach(function (it) {
+      var div = document.createElement('div');
+      div.className = 'prd-item';
+      div.setAttribute('data-prd', it.n);
+      var feats = (it.features || []).map(function (f) { return '<li>' + f + '</li>'; }).join('');
+      var body = function (v) { return Array.isArray(v) ? '<ul>' + v.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul>' : '<p>' + v + '</p>'; };
+      var blocks = '<div class="prd-block"><span class="prd-k">정의</span><p>' + it.def + '</p></div>';
+      if (it.asis) blocks += '<div class="prd-block"><span class="prd-k prd-k-asis">AS-IS</span>' + body(it.asis) + '</div>';
+      if (it.tobe) blocks += '<div class="prd-block"><span class="prd-k prd-k-tobe">TO-BE</span>' + body(it.tobe) + '</div>';
+      blocks += '<div class="prd-block"><span class="prd-k">기능</span><ul>' + feats + '</ul></div>';
+      div.innerHTML =
+        '<div class="prd-item-head"><span class="prd-num">' + it.n + '</span><h4>' + it.title + '</h4></div>' +
+        blocks +
+        (it.tag ? '<span class="tag">' + it.tag + '</span>' : '');
+      list.appendChild(div);
+      items[it.n] = div;
+
+      var m = document.createElement('button');
+      m.type = 'button';
+      m.className = 'prd-marker';
+      m.setAttribute('data-prd', it.n);
+      m.textContent = it.n;
+      document.body.appendChild(m);
+      markers[it.n] = m;
+
+      // 패널 항목 → 화면 라벨 빛남 / 클릭 시 화면 요소로 이동
+      div.addEventListener('mouseenter', function () { m.classList.add('glow'); });
+      div.addEventListener('mouseleave', function () { m.classList.remove('glow'); });
+      div.addEventListener('click', function () {
+        var el = document.querySelector(it.target);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setActive(it.n); flash(m);
+      });
+      // 화면 라벨 → 패널 항목으로 스크롤 이동 / hover 시 항목 강조
+      m.addEventListener('mouseenter', function () { div.classList.add('hl'); });
+      m.addEventListener('mouseleave', function () { div.classList.remove('hl'); });
+      m.addEventListener('click', function () {
+        div.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setActive(it.n); flash(m);
+      });
+    });
 
     function place() {
-      feat().prd.forEach(function (it) {
-        var el = q(it.target), m = markers[it.n];
+      PRD.forEach(function (it) {
+        var el = document.querySelector(it.target);
+        var m = markers[it.n];
         if (!el || !m) return;
         var r = el.getBoundingClientRect();
         m.style.top = (r.top + window.scrollY - 12) + 'px';
         m.style.left = (r.left + window.scrollX - 12) + 'px';
       });
     }
-    function placeSoon() { place(); requestAnimationFrame(place); setTimeout(place, 120); setTimeout(place, 320); setTimeout(place, 520); }
 
-    function buildDots() { if (!dotsWrap) return; dotsWrap.innerHTML = ''; dotEls = steps.map(function () { var s = document.createElement('span'); dotsWrap.appendChild(s); return s; }); }
-
-    function renderFeature() {
-      var f = feat();
-      clearMarkers();
-      bodyEl.innerHTML =
-        '<div class="prd-overview">' + f.overviewHTML + '</div>' +
-        '<div class="prd-flow">' + f.flowHTML + '</div>' +
-        '<div class="prd-section-label">기능 명세</div>' +
-        f.prd.map(function (it) { return '<div class="prd-item" data-prd="' + it.n + '">' + itemHTML(it) + '</div>'; }).join('');
-      f.prd.forEach(function (it) {
-        var div = bodyEl.querySelector('.prd-item[data-prd="' + it.n + '"]');
-        items[it.n] = div;
-        var m = document.createElement('button');
-        m.type = 'button'; m.className = 'prd-marker'; m.setAttribute('data-prd', it.n); m.textContent = it.n;
-        document.body.appendChild(m); markers[it.n] = m;
-        div.addEventListener('mouseenter', function () { m.classList.add('glow'); });
-        div.addEventListener('mouseleave', function () { m.classList.remove('glow'); });
-        div.addEventListener('click', function () { var el = q(it.target); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); setActive(it.n); flash(m); });
-        m.addEventListener('mouseenter', function () { div.classList.add('hl'); });
-        m.addEventListener('mouseleave', function () { div.classList.remove('hl'); });
-        m.addEventListener('click', function () { div.scrollIntoView({ behavior: 'smooth', block: 'center' }); setActive(it.n); flash(m); });
-      });
-      steps = f.steps; buildDots();
-      if (pfsLabel) pfsLabel.textContent = f.name;
-      if (menuEl) Array.prototype.slice.call(menuEl.children).forEach(function (b, i) { b.classList.toggle('on', i === cur); });
-      if (on) placeSoon();
-    }
-
-    // ---------- 기능 스위처 ----------
-    function buildMenu() {
-      if (!menuEl) return;
-      menuEl.innerHTML = FEATURES.map(function (f, i) { return '<button type="button" class="pfs-item' + (i === cur ? ' on' : '') + '" data-i="' + i + '"><b>' + (i + 1) + '. ' + f.name + '</b></button>'; }).join('');
-      Array.prototype.slice.call(menuEl.children).forEach(function (b) { b.addEventListener('click', function () { setFeature(parseInt(b.getAttribute('data-i'), 10)); closeMenu(); }); });
-    }
-    function openMenu() { if (menuEl) menuEl.classList.add('open'); }
-    function closeMenu() { if (menuEl) menuEl.classList.remove('open'); }
-    if (pfsBtn) pfsBtn.addEventListener('click', function (e) { e.stopPropagation(); (menuEl && menuEl.classList.contains('open')) ? closeMenu() : openMenu(); });
-    document.addEventListener('click', function (e) { if (switchWrap && !switchWrap.contains(e.target)) closeMenu(); });
-    function setFeature(i) {
-      if (isNaN(i) || i === cur || i < 0 || i >= FEATURES.length) return;
-      if (overlay && overlay.classList.contains('on')) stop();
-      cur = i; renderFeature(); if (list) list.scrollTop = 0;
-    }
-
-    // ---------- PRD 모드 토글 ----------
+    var on = false;
     var appEl = document.querySelector('.app');
-    function setMode(v) { on = v; document.body.classList.toggle('prd-on', on); if (on) placeSoon(); }
+    function setMode(v) {
+      on = v;
+      document.body.classList.toggle('prd-on', on);
+      if (on) { place(); requestAnimationFrame(place); setTimeout(place, 120); setTimeout(place, 320); setTimeout(place, 520); }
+    }
+    // 레이아웃 시프트(.app margin) 완료 후 정확히 재배치
     if (appEl) appEl.addEventListener('transitionend', function (e) { if (on && e.propertyName === 'margin-right') place(); });
     toggleBtn.addEventListener('click', function () { setMode(true); });
     if (closeBtn) closeBtn.addEventListener('click', function () { setMode(false); });
     window.addEventListener('resize', function () { if (on) place(); });
     window.addEventListener('scroll', function () { if (on) place(); }, { passive: true });
+  })();
 
-    // ---------- 데모 (풀스크린 가이드 투어) ----------
+  // ============ 자동 데모 — 풀스크린 가이드 투어 (실제 화면 자동 조작) ============
+  (function () {
+    var overlay = document.getElementById('tourOverlay');
+    var launch = document.getElementById('demoLaunch');
+    var endBtn = document.getElementById('tourEnd');
+    if (!overlay || !launch) return;
+    var spot = document.getElementById('tourSpot'), callout = document.getElementById('tourCallout');
+    var tcStep = document.getElementById('tcStep'), tcText = document.getElementById('tcText'), dotsWrap = document.getElementById('tourDots');
+    var prdClose = document.getElementById('prdClose');
+
+    function q(s) { return document.querySelector(s); }
+    function row1() { return document.querySelectorAll('.product-row')[0]; }
+    function input(el) { if (el) el.dispatchEvent(new Event('input', { bubbles: true })); }
+    function enter(el) { if (el) el.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })); }
+
     var snap = null;
-    function snapshot() { var r = rowN(0); if (r) snap = { reg: r.querySelector('.pi-regular-input').value, dis: r.querySelector('.pi-discount-input').value, live: r.querySelector('.pi-live-input').value }; }
+    function snapshot() {
+      var r = row1();
+      snap = { reg: r.querySelector('.pi-regular-input').value, dis: r.querySelector('.pi-discount-input').value, live: r.querySelector('.pi-live-input').value };
+    }
     function resetUI() {
-      ['#priceModal', '#failModal', '#deleteModal', '#upListModal'].forEach(function (sel) { var m = q(sel); if (m) m.classList.remove('open'); });
-      var tw = document.getElementById('toastWrap'); if (tw) tw.innerHTML = '';
-      if (window.__gripRestoreRows) window.__gripRestoreRows();
-      Array.prototype.slice.call(rows()).forEach(function (r) { var cb = r.querySelector('.cbox'); if (cb && cb.classList.contains('checked')) cb.click(); });
-      var r0 = rowN(0);
-      if (snap && r0) { r0.querySelector('.pi-regular-input').value = snap.reg; r0.querySelector('.pi-discount-input').value = snap.dis; r0.querySelector('.pi-live-input').value = snap.live; input(r0.querySelector('.pi-live-input')); }
+      var pm = q('#priceModal'), fm = q('#failModal'), tw = document.getElementById('toastWrap');
+      if (fm && fm.classList.contains('open')) { var f = document.getElementById('failOk'); f ? f.click() : fm.classList.remove('open'); }
+      if (pm && pm.classList.contains('open')) { var c = document.getElementById('pmClose'); c ? c.click() : pm.classList.remove('open'); }
+      if (tw) tw.innerHTML = '';
+      var r = row1(), cb = r.querySelector('.cbox');
+      if (cb.classList.contains('checked')) cb.click();
+      if (snap) {
+        r.querySelector('.pi-regular-input').value = snap.reg;
+        r.querySelector('.pi-discount-input').value = snap.dis;
+        r.querySelector('.pi-live-input').value = snap.live;
+        input(r.querySelector('.pi-live-input'));
+      }
     }
 
-    function placeSpot(t) {
-      var els = Array.isArray(t) ? t.filter(Boolean) : (t ? [t] : []);
+    var steps = [
+      { tag: '시작', t: '리스트에서 상품 가격을 수정하는 <b>2가지 경로</b>를 실제 화면에서 자동 시연합니다.',
+        target: function () { return row1(); }, act: function () { resetUI(); } },
+      { tag: '경로 A · 직접 수정', t: '체크 없이도 <b>정가·상시할인가·라이브가</b>를 리스트에서 바로 수정할 수 있습니다.',
+        target: function () { return row1().querySelector('.pi-prices'); } },
+      { tag: '경로 A · 성공', t: '라이브가에 <b>200원 이상</b> 입력 후 <b>Enter</b> → 상시할인가 할인율 배지 자동계산 · <b>성공 토스트</b>(좌측 하단).',
+        target: function () { return row1().querySelector('.pi-cell--live'); },
+        act: function () { var i = row1().querySelector('.pi-live-input'); i.value = '2,500'; i.dataset.prev = '2,500'; input(i); if (window.__gripToast) window.__gripToast('가격 수정에 성공하였습니다.', true); } },
+      { tag: '경로 A · 결과', t: '수정한 라이브가가 <b>좌측 모바일 라이브 화면</b>에 즉시 반영됩니다.',
+        target: function () { return q('.product-overlay'); } },
+      { tag: '경로 A · 검증', t: '이번엔 라이브가에 <b>200원 미만(150)</b>을 입력해 봅니다.',
+        target: function () { return row1().querySelector('.pi-cell--live'); },
+        act: function () { var i = row1().querySelector('.pi-live-input'); i.value = '150'; input(i); } },
+      { tag: '경로 A · 실패', t: '<b>Enter</b> → 200원 미만은 적용되지 않고 <b>이전 값(2,500원)으로 복원</b> · <b>실패 토스트</b>.',
+        target: function () { return row1().querySelector('.pi-cell--live'); },
+        act: function () { var i = row1().querySelector('.pi-live-input'); i.value = (i.dataset.prev || '2,500'); input(i); if (window.__gripToast) window.__gripToast('가격 수정에 실패하였습니다.', false); } },
+      { tag: '경로 B · 일괄 수정', t: '일괄 수정은 <b>상품을 1개 이상 선택(체크)</b>하는 것부터 시작합니다.',
+        target: function () { return row1().querySelector('.cbox'); } },
+      { tag: '경로 B · 일괄 수정', t: '선택하면 <b>[가격 수정]</b> 버튼이 활성화됩니다 → 클릭.',
+        target: function () { return q('#btnPriceEdit'); },
+        act: function () { var cb = row1().querySelector('.cbox'); if (!cb.classList.contains('checked')) cb.click(); } },
+      { tag: '경로 B · 일괄 수정', t: '팝업은 항상 <b>전체선택</b>으로 열립니다. 변경 대상 선택 후 금액을 입력합니다.',
+        target: function () { return q('#priceModal .modal'); },
+        act: function () { q('#btnPriceEdit').click(); } },
+      { tag: '경로 B · 검증', t: '대상 가격이 <b>모두 ≥ 200원</b>이면 정상 반영됩니다. (예: 3,000원)',
+        target: function () { return [q('#priceModal .modal-input-row'), q('#priceModal .modal-foot')]; },   // 금액 입력란 ~ 반영 버튼을 한 영역으로
+        act: function () { var p = document.getElementById('pmPrice'); if (p) p.value = '3,000'; } },
+      { tag: '경로 B · 성공', t: '<b>반영</b> → 선택 상품 가격이 일괄 변경되고 <b>성공 토스트</b>가 표시됩니다.',
+        target: function () { return row1().querySelector('.pi-prices'); },
+        act: function () { var a = document.getElementById('pmApply'); if (a) a.click(); } },
+      { tag: '경로 B · 검증', t: '이번엔 <b>200원 미만(150)</b>을 입력해 반영을 시도합니다.',
+        target: function () { return q('#priceModal .modal'); },
+        act: function () { q('#btnPriceEdit').click(); var p = document.getElementById('pmPrice'); if (p) p.value = '150'; } },
+      { tag: '경로 B · 실패', t: '가격이 <b>200원 미만</b>이면 → <b>실패 내역 팝업</b> · 미적용 · 실패 토스트.',
+        target: function () { return q('#failModal .modal'); },
+        act: function () { var a = document.getElementById('pmApply'); if (a) a.click(); } },
+      { tag: '공통', t: '변경 결과는 <b>비즈센터 · 스튜디오</b>와 데이터 연동되어 반영됩니다.',
+        target: function () { return row1().querySelector('.pi-prices'); },
+        act: function () { var f = document.getElementById('failOk'); if (f) f.click(); } }
+    ];
+
+    dotsWrap.innerHTML = '';
+    var dotEls = steps.map(function () { var s = document.createElement('span'); dotsWrap.appendChild(s); return s; });
+
+    function place(t) {
+      var els = Array.isArray(t) ? t.filter(Boolean) : (t ? [t] : []);   // 단일 요소 또는 여러 요소(합집합 영역)
       if (!els.length) { spot.style.opacity = '0'; return; }
       spot.style.opacity = '1';
       var top = Infinity, left = Infinity, right = -Infinity, bottom = -Infinity;
@@ -1706,41 +1601,41 @@
     }
 
     var idx = 0, timer = null;
+    // 0→현재 단계까지 절대 상태로 재구성한다. 좌/우 화살표·자동진행 어디서 오든 동일하고 깨끗한 화면이 되어
+    // 이전 모달·팝업·토스트가 남지 않는다(특히 ← 이전 이동 시 매끄러운 연결).
     function rebuild(target) {
-      window.__tourSilent = true;
-      for (var k = 0; k < target; k++) { var st = steps[k]; if (st && st.act) { try { st.act(); } catch (e) {} } }
+      window.__tourSilent = true;                                 // 재구성 중 토스트 억제
+      for (var k = 0; k < target; k++) { var st = steps[k]; if (st.act) { try { st.act(); } catch (e) {} } }
       window.__tourSilent = false;
-      var c = steps[target]; if (c && c.act) { try { c.act(); } catch (e) {} }
+      var cur = steps[target]; if (cur && cur.act) { try { cur.act(); } catch (e) {} }   // 현재 단계만 토스트 노출
     }
-    function renderStep() {
-      var s = steps[idx], ci = idx;
+    function render() {
+      var s = steps[idx], cur = idx;
       rebuild(idx);
       tcStep.textContent = s.tag; tcText.innerHTML = s.t;
       dotEls.forEach(function (d, i) { d.classList.toggle('on', i === idx); });
-      [240, 460, 700].forEach(function (d) { setTimeout(function () { if (idx === ci) placeSpot(s.target ? s.target() : null); }, d); });
+      // 모달 열림 트랜지션이 끝난 뒤 좌표가 확정되므로 여러 시점에 재배치(마지막이 정착값). 단계가 바뀌면 무시.
+      [240, 460, 700].forEach(function (d) { setTimeout(function () { if (idx === cur) place(s.target ? s.target() : null); }, d); });
     }
-    function arm() { clearInterval(timer); timer = setInterval(function () { go(1); }, 3200); }
-    function go(delta) { idx = (idx + delta + steps.length) % steps.length; renderStep(); arm(); }
+    function arm() { clearInterval(timer); timer = setInterval(function () { go(1); }, 3000); }
+    function go(delta) { idx = (idx + delta + steps.length) % steps.length; render(); arm(); } // 수동 이동 시 타이머 리셋
     function start() {
-      if (document.body.classList.contains('prd-on') && closeBtn) closeBtn.click();
+      if (document.body.classList.contains('prd-on') && prdClose) prdClose.click(); // 풀 화면(비 PRD)으로
       snapshot(); spot.style.opacity = '0'; overlay.classList.add('on');
-      idx = 0; renderStep(); arm();
+      idx = 0; render(); arm();
     }
-    function stop() { clearInterval(timer); timer = null; if (overlay) overlay.classList.remove('on'); resetUI(); }
-    if (launch) launch.addEventListener('click', start);
+    function stop() { clearInterval(timer); timer = null; overlay.classList.remove('on'); resetUI(); }
+
+    launch.addEventListener('click', start);
     if (endBtn) endBtn.addEventListener('click', stop);
+    // 화살표 ←/→ 로 즉시 이전/다음 (대기 없음), Esc 종료
     document.addEventListener('keydown', function (e) {
-      if (!overlay || !overlay.classList.contains('on')) return;
+      if (!overlay.classList.contains('on')) return;
       if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
       else if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
       else if (e.key === 'Escape') { e.preventDefault(); stop(); }
     });
-
-    // ---------- 초기화 ----------
-    buildMenu();
-    renderFeature();
   })();
-
 </script>
 </body>
 </html>
