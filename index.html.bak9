@@ -651,8 +651,7 @@
   .pfs-item.on b { color:var(--grip); }
 
   /* 모바일 프리뷰 UP 카드 가로 스트립 */
-  .ov-bottom { position:absolute; left:12px; right:12px; bottom:12px; display:flex; flex-direction:column; gap:8px; align-items:flex-start; pointer-events:none; }
-  .po-strip { width:100%; display:flex; gap:8px; overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; padding-bottom:3px; pointer-events:auto; }
+  .po-strip { position:absolute; left:12px; right:12px; bottom:12px; display:flex; gap:8px; overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; padding-bottom:3px; }
   .po-strip::-webkit-scrollbar { height:4px; }
   .po-strip::-webkit-scrollbar-thumb { background:rgba(255,255,255,.55); border-radius:3px; }
   .po-strip .product-overlay { position:static; left:auto; right:auto; bottom:auto; flex:0 0 92%; scroll-snap-align:start; }
@@ -728,20 +727,14 @@
   .cm-nick:hover { text-decoration:underline; }
   .cm-text { color:#2b2d34; }
   .cm-ts { font-size:10.5px; color:#c0c4cc; margin-left:6px; }
-  .chat-reply { display:none; margin:0 2px 8px; border:1px solid #f6c6d0; border-radius:11px; background:var(--grip-soft-2); padding:9px 10px; }
-  .chat-reply.on { display:block; }
-  .cr-head { display:flex; align-items:center; gap:6px; font-size:12.5px; margin-bottom:8px; }
-  .cr-qic { background:#5b6ef5; color:#fff; font-size:10px; font-weight:800; padding:1px 6px; border-radius:9px; flex:0 0 auto; }
-  .cr-qtext { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#2b2d34; }
-  .cr-cancel { border:0; background:none; color:#8d919c; cursor:pointer; font-size:13px; flex:0 0 auto; }
-  .cr-input-row { display:flex; gap:6px; }
-  .cr-input { flex:1; min-width:0; border:1px solid #e3e4e8; border-radius:8px; padding:9px 11px; font-size:13.5px; outline:none; background:#fff; }
-  .cr-input:focus { border-color:var(--grip); }
-  .cr-submit { flex:0 0 auto; border:0; background:var(--grip); color:#fff; border-radius:8px; padding:0 14px; font-size:13.5px; font-weight:700; cursor:pointer; }
+  .chat-newbar { display:none; align-items:center; justify-content:center; gap:6px; margin:0 2px 8px; padding:9px 12px; background:#1f2126; color:#fff; font-size:12.5px; font-weight:700; border:0; border-radius:9px; cursor:pointer; white-space:nowrap; }
+  .chat-newbar.on { display:flex; }
+  .chat-newbar::before { content:"↓"; font-weight:800; }
+  .chat-newbar:hover { background:#33363e; }
   .chat-scroll { display:none; position:absolute; right:8px; bottom:10px; width:30px; height:30px; border-radius:50%; background:#fff; border:1px solid #e3e4e8; color:#5c606b; cursor:pointer; box-shadow:0 3px 10px rgba(0,0,0,.14); font-size:15px; line-height:1; }
   .chat-scroll.on { display:block; }
   /* 프리뷰 채팅 오버레이 */
-  .ov-chat { max-width:100%; display:flex; flex-direction:column; gap:3px; }
+  .ov-chat { position:absolute; left:12px; bottom:104px; width:74%; display:flex; flex-direction:column; gap:3px; pointer-events:none; }
   .ovc-line { font-size:11.5px; line-height:1.4; color:#f2f3f5; text-shadow:0 1px 3px rgba(0,0,0,.75); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .ovc-line b { font-weight:800; margin-right:4px; }
   /* GNB 접기 */
@@ -794,7 +787,7 @@
   .qa-ans-ok { border:0; background:var(--grip); color:#fff; border-radius:7px; padding:0 12px; font-size:13px; font-weight:700; cursor:pointer; flex:0 0 auto; }
   .tab-empty { display:none; flex:1; align-items:center; justify-content:center; color:#bcbfc7; font-size:13px; }
   /* 프리뷰 Q&A 띠지 */
-  .ov-qa { display:none; max-width:100%; align-items:center; gap:6px; background:rgba(20,22,30,.55); color:#fff; font-size:12px; font-weight:600; padding:7px 11px; border-radius:18px; }
+  .ov-qa { display:none; position:absolute; left:12px; bottom:78px; max-width:78%; align-items:center; gap:6px; background:rgba(20,22,30,.55); color:#fff; font-size:12px; font-weight:600; padding:7px 11px; border-radius:18px; }
   .ov-qa.on { display:inline-flex; }
   .ov-qa .ovq-q { background:#5b6ef5; color:#fff; font-weight:800; font-size:10px; padding:1px 6px; border-radius:9px; }
   .ov-qa .ovq-arr { margin-left:2px; opacity:.85; font-size:15px; }
@@ -893,11 +886,9 @@
             <button title="채팅"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9l-4 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/></svg></button>
           </div>
 
-          <div class="ov-bottom">
-            <div class="ov-chat"></div>
-            <div class="ov-qa" id="ovQa"></div>
-            <div class="po-strip" id="poStrip"></div>
-          </div>
+          <div class="ov-chat"></div>
+          <div class="ov-qa" id="ovQa"></div>
+          <div class="po-strip" id="poStrip"></div>
         </div>
 
         <div class="action-bar">
@@ -1226,10 +1217,7 @@
         </div>
         <div class="qa-panel" id="qaPanel"></div>
         <div class="tab-empty" id="tabEmpty">등록된 내용이 없습니다.</div>
-        <div class="chat-reply" id="chatReply">
-          <div class="cr-head"><span class="cr-qic">Q</span><span class="cr-qtext" id="crQText"></span><button class="cr-cancel" id="crCancel" aria-label="취소">✕</button></div>
-          <div class="cr-input-row"><input class="cr-input" id="crInput" placeholder="답변을 입력하세요" /><button class="cr-submit" id="crSubmit">답변하기</button></div>
-        </div>
+        <button class="chat-newbar" id="chatNewBar"></button>
         <div class="chat-input-row">
           <button class="chat-gear">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 13a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V19a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7.2 17.5l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.6 1.6 0 0 0 4.6 12 1.6 1.6 0 0 0 3 11.2H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 5.4l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.6 1.6 0 0 0 10 1.6a2 2 0 1 1 4 0V2a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1A1.6 1.6 0 0 0 22 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity=".7"/></svg>
@@ -1886,6 +1874,7 @@
       if (activeTab !== 'chat') return;
       if (filterUser !== null) {
         if (m.uid === filterUser) { feed.appendChild(cmNode(m)); scrollBottom(); }
+        else { newCount++; newBar.textContent = '전체 채팅 +' + newCount + '개의 새 메시지'; newBar.classList.add('on'); }
       } else { feed.appendChild(cmNode(m)); if (atBottom) scrollBottom(); }
     }
     function liveMsg() { addMsg({ uid: rand(U.length - 1), text: MSGS[rand(MSGS.length)], time: now() }); }
@@ -1912,7 +1901,7 @@
       var b = e.target.closest('button'); if (!b || !menuMsg) return;
       var a = b.getAttribute('data-a'), m = menuMsg, u = U[m.uid];
       if (a === 'mute-end' || a === 'mute-5') { muted[m.uid] = true; toast('‘' + u.n + '’ 님을 ' + (a === 'mute-5' ? '5분간' : '방송 끝까지') + ' 음소거했습니다.', true); renderAll(); renderOverlay(); }
-      else if (a === 'answer') { openReply(m); }
+      else if (a === 'answer') { registerQA(m); toast('Q&A에 질문을 등록했습니다.', true); }
       closeMenu();
     });
     feed.addEventListener('click', function (e) {
@@ -1923,22 +1912,8 @@
     });
     document.addEventListener('click', function (e) { if (!cmenu.contains(e.target) && !(e.target.closest && e.target.closest('.cm-menu'))) closeMenu(); });
 
-    // ---- 인라인 답변 작성 → Q&A 한 번에 등록 ----
-    var replyBox = document.getElementById('chatReply');
-    var crQText = document.getElementById('crQText');
-    var crInput = document.getElementById('crInput');
-    var crSubmit = document.getElementById('crSubmit');
-    var crCancel = document.getElementById('crCancel');
-    var replyMsg = null;
-    function openReply(m) { replyMsg = m; var u = U[m.uid]; if (crQText) crQText.innerHTML = '<b style="color:' + u.c + '">' + u.n + '</b> ' + m.text; if (crInput) crInput.value = ''; if (replyBox) replyBox.classList.add('on'); if (crInput) crInput.focus(); }
-    function closeReply() { if (replyBox) replyBox.classList.remove('on'); replyMsg = null; }
-    function submitReply() { if (!replyMsg) return; var a = (crInput.value || '').trim(); if (!a) { toast('답변을 입력해 주세요.', false); if (crInput) crInput.focus(); return; } registerQA(replyMsg, a); toast('Q&A에 등록했습니다.', true); closeReply(); }
-    if (crSubmit) crSubmit.addEventListener('click', submitReply);
-    if (crInput) crInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); submitReply(); } });
-    if (crCancel) crCancel.addEventListener('click', closeReply);
-
     // ---- Q&A ----
-    function registerQA(m, a) { qaList.push({ uid: m.uid, q: m.text, a: a || null, t: Date.now(), answering: false }); updateQADot(true); renderQA(); updateOvQA(); }
+    function registerQA(m) { qaList.push({ uid: m.uid, q: m.text, a: null, t: Date.now(), answering: false }); updateQADot(true); renderQA(); updateOvQA(); }
     function updateOvQA() {
       if (!ovQa) return;
       if (!qaList.length) { ovQa.classList.remove('on'); ovQa.innerHTML = ''; return; }
@@ -2192,14 +2167,14 @@
           features: ['입력 텍스트 포함(like) 유저 목록 노출(예: “별” → 별빛캣).', '항목마다 <b>현재까지 메시지 건수</b> 표기.', '선택 또는 Enter로 필터 적용.'] },
         { n: 3, target: '#chatInput', title: '유저 필터 · 건수 · 복귀', tag: '필터 · 복귀',
           def: '선택 유저의 메시지만 일시 노출하고 총 건수를 안내, ✕로 실시간 복귀.',
-          features: ['해당 유저가 작성한 메시지만 일시 노출.', '상단 스트립에 <b>“메시지 N건”</b> 한 줄 요약.', '검색을 닫으면 자동으로 <b>최신 메시지로 이동</b>.', '<b>✕</b> 클릭 → 다시 실시간 채팅으로 이동.'] }
+          features: ['해당 유저가 작성한 메시지만 일시 노출.', '상단 스트립에 <b>“메시지 N건”</b> 한 줄 요약.', '필터 중 새 메시지는 “전체 채팅 +N” 배너로 안내.', '<b>✕</b> 클릭 → 다시 실시간 채팅으로 이동.'] }
       ],
       steps: [
         { tag: '시작', t: '라이브 채팅은 여러 유저의 메시지가 <b>실시간</b>으로 올라옵니다. (좌측 프리뷰에도 노출)', target: function () { return q('#chatFeed'); }, act: function () { resetUI(); } },
         { tag: '검색 열기', t: '채팅 탭 상단 <b>🔍</b>로 닉네임 검색을 엽니다. (닉네임 클릭으로도 바로 필터)', target: function () { return q('#chatSearchBtn'); }, act: function () { var b = document.getElementById('chatSearchBtn'); if (b && !(document.getElementById('chatSearchBar') || {}).classList.contains('on')) b.click(); } },
         { tag: '유사 자동완성', t: '닉네임 일부만 입력하면(예: <b>“별”</b>) 포함 유저가 <b>자동완성</b>으로 뜹니다(건수 포함).', target: function () { return q('#chatAC'); }, act: function () { var i = document.getElementById('chatSearchInput'); if (i) { i.value = '별'; i.dispatchEvent(new Event('input', { bubbles: true })); } } },
         { tag: '유저 필터 · 건수', t: '선택 / Enter → <b>별빛캣</b> 메시지만 노출되고 상단에 <b>“메시지 N건”</b>이 표시됩니다.', target: function () { return q('#chatFilterStrip'); }, act: function () { var i = document.getElementById('chatSearchInput'); if (i) i.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })); } },
-        { tag: '실시간 복귀', t: '상단 <b>✕</b>(검색 닫기)를 누르면 다시 <b>실시간 채팅</b>으로 — 최신 메시지로 자동 이동합니다.', target: function () { return q('#cfClose'); }, act: function () { var c = document.getElementById('cfClose'); if (c) c.click(); } }
+        { tag: '실시간 복귀', t: '상단 <b>✕</b>를 누르면 다시 <b>실시간 채팅</b>으로 돌아옵니다.', target: function () { return q('#cfClose'); }, act: function () { var c = document.getElementById('cfClose'); if (c) c.click(); } }
       ]
     });
 
