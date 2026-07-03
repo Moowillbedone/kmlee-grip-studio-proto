@@ -1309,7 +1309,7 @@
     <div class="modal-title">방송 리스트에서 제거</div>
     <div class="modal-body">
       <p class="modal-lead"><b id="delName">상품</b> 을(를) 방송 리스트에서 제거합니다.</p>
-      <p id="delDetail" style="font-size:13px;color:#5c606b;line-height:1.65;margin:12px 0 0;">· 스튜디오 방송 리스트에서만 제거되며, <b>UP한 상품 목록</b>에서도 자동으로 빠집니다.<br/>· <b>비즈센터(라이브 방송 상품 설정)</b>의 상품은 삭제되지 않습니다.</p>
+      <p style="font-size:13px;color:#5c606b;line-height:1.65;margin:12px 0 0;">· 스튜디오 방송 리스트에서만 제거되며, <b>UP한 상품 목록</b>에서도 자동으로 빠집니다.<br/>· <b>비즈센터(라이브 방송 상품 설정)</b>의 상품은 삭제되지 않습니다.</p>
     </div>
     <div class="modal-foot">
       <button class="btn-close" id="delCancel">취소</button>
@@ -1774,7 +1774,7 @@
     var delModal = document.getElementById('deleteModal');
     var delName = document.getElementById('delName');
     var pending = null;
-    function askDelete(row) { pending = row; if (delName) delName.textContent = (row.querySelector('.pr-name-input') || {}).value || '상품'; var dd = document.getElementById('delDetail'); if (dd) dd.innerHTML = (mode === 'store') ? '· 스튜디오 방송 리스트에서만 제거됩니다.<br/>· <b>비즈센터(라이브 방송 상품 설정)</b>의 상품은 삭제되지 않습니다.' : '· 스튜디오 방송 리스트에서만 제거되며, <b>UP한 상품 목록</b>에서도 자동으로 빠집니다.<br/>· <b>비즈센터(라이브 방송 상품 설정)</b>의 상품은 삭제되지 않습니다.'; if (delModal) delModal.classList.add('open'); }
+    function askDelete(row) { pending = row; if (delName) delName.textContent = (row.querySelector('.pr-name-input') || {}).value || '상품'; if (delModal) delModal.classList.add('open'); }
     function closeDel() { if (delModal) delModal.classList.remove('open'); pending = null; }
     order.forEach(function (r) { var b = r.querySelector('.pr-del'); if (b) b.addEventListener('click', function () { askDelete(r); }); });
     var delCancel = document.getElementById('delCancel'), delConfirm = document.getElementById('delConfirm');
@@ -2141,19 +2141,14 @@
         '<span class="prd-k2">배경 · 실제 문제</span>' +
         '<p>현재 스튜디오에서는 특정 상품을 리스트에서 제거할 수 없고, <b>비즈센터 &gt; 라이브 방송 상품 설정</b>에서만 가능하다. 방송 중 즉시 빼야 하는 상황에서 동선이 없다.</p>' +
         '<span class="prd-k2">해결</span>' +
-        '<p>상품 행에서 바로 삭제 → 방송 리스트에서 제거. <b>한정판매</b>는 UP한 상품 목록·프리뷰에도 자동 반영되고 확인 모달에 “UP한 상품 목록에서도 제거” 안내가 뜬다. <b>스토어판매</b>는 UP한 상품 목록 기능이 없어 그 안내가 빠진다. 단, 비즈센터는 <b>별도 어드민</b>이므로 <b>스튜디오 삭제가 비즈센터로 전파되지 않는다.</b></p>',
+        '<p>상품 행에서 바로 삭제 → 방송 리스트와 <b>UP한 상품 목록에서도 자동 반영</b>. 단, 비즈센터는 <b>별도 어드민</b>이므로 <b>스튜디오 삭제가 비즈센터로 전파되지 않는다.</b></p>',
       flowHTML:
-        '<span class="prd-k2">검증 플로우 · 상품 삭제 (판매 모드별)</span>' +
+        '<span class="prd-k2">검증 플로우 · 상품 삭제</span>' +
         '<div class="fpath">' +
-          '<div class="fpath-h"><span class="fpath-tag a">경로</span> 상품 행 삭제 → 판매 모드별 확인 모달</div>' +
-          '<div class="frow"><span class="fnode">상품 행 🗑 삭제</span><span class="farr">→</span><span class="fnode">확인 모달</span></div>' +
-          '<div class="fdec">현재 판매 모드는?</div>' +
-          '<div class="fbranch"><span class="fout ok">한정판매 → <b>UP한 상품 목록</b>에서도 제거 안내 포함 · 비즈센터 유지</span><span class="fout no">스토어판매 → <b>UP 목록 문구 없음</b>(기능 없음) · 비즈센터 유지</span></div>' +
-        '</div>' +
-        '<div class="fmerge">↓ [제거] → 방송 리스트에서 삭제 · 성공 토스트</div>' +
-        '<div class="fpath">' +
-          '<div class="fdec">한정판매: 삭제 상품이 UP 상태였나?</div>' +
-          '<div class="fbranch"><span class="fout ok">예 → UP한 상품 목록·프리뷰에서도 자동 제거</span><span class="fout no">아니오 → 리스트에서만 제거</span></div>' +
+          '<div class="fpath-h"><span class="fpath-tag a">경로</span> 상품 행에서 삭제</div>' +
+          '<div class="frow"><span class="fnode">상품 행 🗑 삭제</span><span class="farr">→</span><span class="fnode">확인 모달 · [제거]</span><span class="farr">→</span><span class="fnode">방송 리스트에서 제거 · 성공 토스트</span></div>' +
+          '<div class="fdec">삭제된 상품이 UP 상태였나?</div>' +
+          '<div class="fbranch"><span class="fout ok">예 → UP한 상품 목록에서도 자동 제거</span><span class="fout no">아니오 → 리스트에서만 제거</span></div>' +
         '</div>' +
         '<div class="fmerge">↓ 공통</div>' +
         '<div class="fnode final">🔒 비즈센터(라이브 방송 상품 설정)에는 반영되지 않음 — 스튜디오 노출만 제어</div>',
@@ -2162,14 +2157,11 @@
           def: '스튜디오 홈 상품 리스트에서 상품을 방송 리스트에서 직접 제거.',
           asis: ['스튜디오에서는 상품 제거가 불가능.', '비즈센터 > 라이브 방송 상품 설정에서만 제거 가능.'],
           tobe: ['스튜디오 상품 리스트에서 상품 행마다 삭제 가능.', '삭제 시 확인 모달로 오조작 방지.'],
-          features: ['각 상품 행 우측 <b>🗑 버튼</b>으로 제거.', '[제거] 확인 시 방송 리스트에서 즉시 삭제 · 성공 토스트.', '확인 모달 문구는 <b>판매 모드별로 분기</b>(2번 참고).'] },
-        { n: 2, target: '.mode-toggle', title: '판매 모드별 삭제 확인 문구', tag: '한정 / 스토어 분기',
-          def: '삭제 확인 모달의 안내 문구가 현재 판매 모드에 따라 달라진다.',
-          features: ['<b>한정판매:</b> “방송 리스트 + <b>UP한 상품 목록</b>에서도 제거” 안내.', '<b>스토어판매:</b> UP한 상품 목록 문구 <b>제외</b> — 스토어엔 <b>[UP한 상품 목록] 버튼 자체가 없음</b>.', '<b>공통:</b> “비즈센터(라이브 방송 상품 설정) 상품은 유지” 문구는 두 모드 동일.'] },
-        { n: 3, target: '#btnUpList', title: 'UP한 상품 목록 동기화 (한정판매)', tag: '누적 · 자동 반영',
-          def: '(한정판매) UP한 상품 목록에는 한 번이라도 UP된 상품이 모두 노출되며, 상품 삭제 시 이 목록에서도 제거된다.',
-          features: ['<b>UP한 상품 목록 = 한 번이라도 UP된 상품 전부</b>(현재 UP 여부와 무관, UP한 순서대로 누적).', '한정판매는 1개씩 노출되지만, 그동안 UP했던 상품이 목록에 쌓인다.', '스튜디오 리스트에서 상품 삭제 시 <b>UP한 상품 목록에서도 즉시 제거</b>.', '<b>스토어판매에는 이 목록(버튼)이 없음.</b>'] },
-        { n: 4, target: '.sales-title', title: '비즈센터 미반영 (연동 범위)', tag: '범위 · 주의',
+          features: ['각 상품 행 우측 <b>🗑 버튼</b>으로 제거.', '[제거] 확인 시 방송 리스트에서 즉시 삭제 · 성공 토스트.', '스튜디오 방송 노출 리스트에서만 제거.'] },
+        { n: 2, target: '#btnUpList', title: 'UP한 상품 목록 동기화', tag: '누적 · 자동 반영',
+          def: 'UP한 상품 목록에는 한 번이라도 UP된 상품이 모두 노출되며, 상품 삭제 시 이 목록에서도 제거된다.',
+          features: ['<b>UP한 상품 목록 = 한 번이라도 UP된 상품 전부</b>(현재 UP 여부와 무관, UP한 순서대로 누적).', '한정판매는 1개씩 노출되지만, 그동안 UP했던 상품이 목록에 쌓인다.', '스튜디오 리스트에서 상품 삭제 시 <b>UP한 상품 목록에서도 즉시 제거</b>.'] },
+        { n: 3, target: '.sales-title', title: '비즈센터 미반영 (연동 범위)', tag: '범위 · 주의',
           def: '스튜디오에서의 삭제는 비즈센터로 전파되지 않는다.',
           features: ['비즈센터(라이브 방송 상품 설정)는 <b>별도 어드민</b>으로 상품 유지.', '스튜디오 삭제 = 스튜디오 방송 노출만 제어.', '<strong>스튜디오 삭제가 비즈센터 상품을 삭제하지 않음.</strong>'] }
       ],
@@ -2180,9 +2172,7 @@
         { tag: '삭제 · 확인', t: '이제 상품을 방송 리스트에서 삭제합니다 — 행의 <b>🗑</b> → 확인 창(<b>비즈센터 상품은 유지</b>).', target: function () { return q('#deleteModal .modal'); }, act: function () { var u = document.getElementById('upListClose'); if (u) u.click(); var r = rowN(1); var b = r && r.querySelector('.pr-del'); if (b) b.click(); } },
         { tag: '제거', t: '<b>[제거]</b> → 방송 리스트에서 상품이 사라지고 <b>성공 토스트</b>.', target: function () { return q('.product-list'); }, act: function () { var c = document.getElementById('delConfirm'); if (c) c.click(); } },
         { tag: 'UP 목록에서도 제거', t: '다시 <b>[UP한 상품 목록]</b>을 열면 <b>삭제한 상품이 목록에서도 빠져</b> 있습니다.', target: function () { return q('#upListModal .modal'); }, act: function () { var b = document.getElementById('btnUpList'); if (b) b.click(); } },
-        { tag: '비즈센터 미반영', t: '단, <b>비즈센터(라이브 방송 상품 설정)</b>에서는 삭제되지 않습니다 — 스튜디오 노출만 제어합니다.', target: function () { return q('.head-btns'); }, act: function () { var u = document.getElementById('upListClose'); if (u) u.click(); } },
-        { tag: '스토어판매 분기', t: '<b>스토어판매</b>로 바꾸고 삭제해 보면 — 확인 창에 <b>“UP한 상품 목록” 문구가 없습니다</b>(스토어엔 UP 목록 버튼 자체가 없음). “비즈센터 유지” 안내는 동일합니다.', target: function () { return q('#deleteModal .modal'); }, act: function () { if (window.__gripSetMode) window.__gripSetMode('store'); var r = rowN(0); var b = r && r.querySelector('.pr-del'); if (b) b.click(); } },
-        { tag: '정리', t: '판매 모드에 맞춘 안내로 <b>오해 없이</b> 삭제할 수 있습니다. (한정 = UP 목록 포함 / 스토어 = 제외, 비즈센터는 공통 유지)', target: function () { return q('.product-list'); }, act: function () { var x = document.getElementById('delCancel'); if (x) x.click(); if (window.__gripSetMode) window.__gripSetMode('limited'); } }
+        { tag: '비즈센터 미반영', t: '단, <b>비즈센터(라이브 방송 상품 설정)</b>에서는 삭제되지 않습니다 — 스튜디오 노출만 제어합니다.', target: function () { return q('.head-btns'); }, act: function () { var u = document.getElementById('upListClose'); if (u) u.click(); } }
       ]
     });
 
