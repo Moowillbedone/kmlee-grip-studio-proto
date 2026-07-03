@@ -1239,7 +1239,7 @@
         <div class="chat-reply" id="chatReply">
           <div class="cr-head"><span class="cr-qic">Q</span><span class="cr-qtext" id="crQText"></span><button class="cr-cancel" id="crCancel" aria-label="취소">✕</button></div>
           <div class="cr-input-row"><input class="cr-input" id="crInput" placeholder="답변을 입력하세요" /><button class="cr-submit" id="crSubmit">답변하기</button></div>
-          <label class="cr-live" id="crLiveLbl"><span class="cr-live-box" id="crLiveBox"></span> 본인만 보기 <span class="cr-live-hint">· 켜면 문의한 본인에게만 노출 (기본 꺼짐 = 전체 공개)</span></label>
+          <label class="cr-live" id="crLiveLbl"><span class="cr-live-box" id="crLiveBox"></span> 라이브(방송)에 Q&amp;A로 노출 <span class="cr-live-hint">· 기본 꺼짐 — 켜면 시청자에게 표시</span></label>
         </div>
         <div class="chat-input-row">
           <button class="chat-gear">
@@ -1945,18 +1945,18 @@
     var replyMsg = null;
     function openReply(m) { replyMsg = m; var u = U[m.uid]; if (crQText) crQText.innerHTML = '<b style="color:' + u.c + '">' + u.n + '</b> ' + m.text; if (crInput) crInput.value = ''; if (crLiveBox) crLiveBox.classList.remove('on'); if (replyBox) replyBox.classList.add('on'); if (crInput) crInput.focus(); }
     function closeReply() { if (replyBox) replyBox.classList.remove('on'); replyMsg = null; }
-    function submitReply() { if (!replyMsg) return; var a = (crInput.value || '').trim(); if (!a) { toast('답변을 입력해 주세요.', false); if (crInput) crInput.focus(); return; } var priv = !!(crLiveBox && crLiveBox.classList.contains('on')); registerQA(replyMsg, a, priv); toast(priv ? '‘' + U[replyMsg.uid].n + '’ 본인에게만 노출합니다 (다른 유저 미노출).' : 'Q&A에 전체 공개로 노출했습니다.', true); closeReply(); }
+    function submitReply() { if (!replyMsg) return; var a = (crInput.value || '').trim(); if (!a) { toast('답변을 입력해 주세요.', false); if (crInput) crInput.focus(); return; } var live = !!(crLiveBox && crLiveBox.classList.contains('on')); registerQA(replyMsg, a, live); toast(live ? '라이브(방송)에 Q&A로 노출했습니다.' : 'Q&A에 저장했습니다 · 라이브 비노출.', true); closeReply(); }
     if (crSubmit) crSubmit.addEventListener('click', submitReply);
     if (crInput) crInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); submitReply(); } });
     if (crCancel) crCancel.addEventListener('click', closeReply);
 
     // ---- Q&A ----
-    function registerQA(m, a, priv) { qaList.push({ uid: m.uid, q: m.text, a: a || null, t: Date.now(), answering: false, priv: !!priv }); updateQADot(true); renderQA(); updateOvQA(); }
+    function registerQA(m, a, live) { qaList.push({ uid: m.uid, q: m.text, a: a || null, t: Date.now(), answering: false, live: !!live }); updateQADot(true); renderQA(); updateOvQA(); }
     function updateOvQA() {
       if (!ovQa) return;
-      var pubs = qaList.filter(function (x) { return !x.priv; });
-      if (!pubs.length) { ovQa.classList.remove('on'); ovQa.innerHTML = ''; return; }
-      var last = pubs[pubs.length - 1];
+      var lives = qaList.filter(function (x) { return x.live; });
+      if (!lives.length) { ovQa.classList.remove('on'); ovQa.innerHTML = ''; return; }
+      var last = lives[lives.length - 1];
       ovQa.innerHTML = '<span class="ovq-q">Q</span> ' + last.q + ' <span class="ovq-arr">›</span>';
       ovQa.classList.add('on');
     }
@@ -1969,8 +1969,8 @@
         var ansRow = it.answering
           ? '<div class="qa-ans-edit"><input class="qa-ans-input" data-i="' + i + '" placeholder="답변을 입력하세요" value="' + (it.a || '') + '"/><button class="qa-ans-ok" data-i="' + i + '">등록</button></div>'
           : (it.a ? '<div class="qa-row qa-a"><span class="qa-ic a">A</span><span class="qa-txt">' + it.a + '</span></div>' : '<div class="qa-row qa-a pending"><span class="qa-ic a">A</span><span class="qa-txt">답변 대기 중</span></div>');
-        var visBtn = '<button class="qa-live' + (it.priv ? ' on' : '') + '" data-priv="' + i + '">' + (it.priv ? '🔒 본인만 · ' + U[it.uid].n : '🌐 전체 공개') + '</button>';
-        return '<div class="qa-item" data-i="' + i + '"><div class="qa-head"><div class="qa-rows"><div class="qa-row"><span class="qa-ic q">Q</span><span class="qa-txt"><b style="color:' + u.c + '">' + u.n + '</b> ' + it.q + '</span></div>' + ansRow + '</div>' + visBtn + '<span class="qa-time">' + ago(it.t) + '</span><button class="qa-menu" data-i="' + i + '">⋮</button></div></div>';
+        var liveBtn = '<button class="qa-live' + (it.live ? ' on' : '') + '" data-live="' + i + '">' + (it.live ? '● 라이브 노출중' : '○ 라이브 비노출') + '</button>';
+        return '<div class="qa-item" data-i="' + i + '"><div class="qa-head"><div class="qa-rows"><div class="qa-row"><span class="qa-ic q">Q</span><span class="qa-txt"><b style="color:' + u.c + '">' + u.n + '</b> ' + it.q + '</span></div>' + ansRow + '</div>' + liveBtn + '<span class="qa-time">' + ago(it.t) + '</span><button class="qa-menu" data-i="' + i + '">⋮</button></div></div>';
       }).join('');
     }
     // Q&A 아이템 메뉴
@@ -1980,7 +1980,7 @@
       var mb = e.target.closest('.qa-menu');
       if (mb) { qmenuI = parseInt(mb.getAttribute('data-i'), 10); qmenu.innerHTML = '<button data-a="ans">답변하기</button><button data-a="del">삭제하기</button>'; var r = mb.getBoundingClientRect(); qmenu.style.top = (r.bottom + 4) + 'px'; qmenu.style.left = Math.min(r.left - 120, window.innerWidth - 142) + 'px'; qmenu.classList.add('on'); return; }
       var lv = e.target.closest('.qa-live');
-      if (lv) { var li = parseInt(lv.getAttribute('data-priv'), 10); qaList[li].priv = !qaList[li].priv; renderQA(); updateOvQA(); return; }
+      if (lv) { var li = parseInt(lv.getAttribute('data-live'), 10); qaList[li].live = !qaList[li].live; renderQA(); updateOvQA(); return; }
       var ok = e.target.closest('.qa-ans-ok');
       if (ok) { var i = parseInt(ok.getAttribute('data-i'), 10); var inp = qaPanel.querySelector('.qa-ans-input[data-i="' + i + '"]'); qaList[i].a = (inp.value || '').trim() || null; qaList[i].answering = false; renderQA(); updateOvQA(); return; }
     });
@@ -2220,48 +2220,48 @@
       ]
     });
 
-    // ===== 기능 4: 채팅 답변 Q&A 노출 범위 · 본인만 보기 (GRIPPGM-3402) =====
+    // ===== 기능 4: 채팅 답변 Q&A 라이브 노출 제어 (GRIPPGM-3402) =====
     FEATURES.push({
-      id: 'qavis', demoMode: 'limited', jira: 'GRIPPGM-3402', name: '[스튜디오] [채팅] 답변 시 Q&A 노출 범위 (전체/본인만)',
+      id: 'qavis', demoMode: 'limited', jira: 'GRIPPGM-3402', name: '[스튜디오] [채팅] 답변 시 Q&A 라이브 노출 제어',
       overviewHTML:
         '<div class="ov-title">🎯 과제 개요</div>' +
         '<span class="prd-k2">과제의 목적</span>' +
-        '<p>매니저가 채팅에 답변하면 그 Q&amp;A가 <b>모든 유저·방송에 노출</b>된다. 방송과 무관한 문의(예: 타 서비스 불만)에 답할 때는, 다른 유저에게는 보이지 않고 <b>문의한 본인에게만</b> 답을 전달할 수 있어야 한다. (Jira <b>GRIPPGM-3402</b>)</p>' +
+        '<p>매니저가 채팅에 답변하면 그 Q&amp;A가 <b>실시간 방송에 고정 노출</b>된다. 방송과 무관한 문의(예: 타 서비스 불만)에 실수로 답하면 라이브에 그대로 박제되는 문제를 막는다. (Jira <b>GRIPPGM-3402</b>)</p>' +
         '<span class="prd-k2">배경 · 실제 문제</span>' +
-        '<p>“답변 = 전체 공개”만 있어, 무관/방해성 질문에 답하면 그대로 전체 Q&amp;A·방송에 박제되어 방송 흐름을 해친다.</p>' +
-        '<span class="prd-k2">해결 (정책)</span>' +
-        '<p>답변 박스에 <b>[본인만 보기] 토글</b> 제공.<br/>· <b>OFF(기본) = 전체 공개</b>: <b>모든 유저</b>의 Q&amp;A에 노출 + 방송 프리뷰 띠지 노출.<br/>· <b>ON = 본인만</b>: <b>문의한 본인에게만</b> Q&amp;A로 노출, <b>다른 유저·방송에는 노출 안 됨</b>.<br/>Q&amp;A 탭에서 항목별로 전체/본인만을 사후 전환할 수 있다.</p>' +
-        '<span class="prd-k2">참고</span>' +
-        '<p>후속으로 “작성 시점부터 Q&amp;A 미노출(완전 비공개)” 옵션도 확장 가능.</p>',
+        '<p>“답변하기 = 라이브 노출”이 자동으로 묶여 있어, 무관/방해성 질문에 실수 답변 시 라이브 Q&amp;A로 노출되는 사고가 발생.</p>' +
+        '<span class="prd-k2">해결 (권장안)</span>' +
+        '<p><b>“답변 작성”과 “라이브 노출”을 분리.</b> 답변 박스에 <b>[라이브에 노출] 토글(기본 꺼짐)</b> 제공 — 끈 채로 답변하면 <b>Q&amp;A 탭(내부 기록)에만</b> 저장되고 라이브엔 안 뜬다. 검토 후 Q&amp;A 탭에서 <b>라이브 노출</b>을 켜야 방송에 표시(언제든 게시 취소). → 기본값이 안전(default-safe)이라 실수 원천 차단.</p>' +
+        '<span class="prd-k2">참고 · 대안 검토</span>' +
+        '<p>제안된 “Q&amp;A 노출 안하기” 토글은 기본이 노출 ON이라 실수 여지가 남고, “본인만 보기(1:1)”는 별도 답장 성격. 본 안은 <b>기본 OFF + 사후 게시/취소</b>로 실수 방지·유연성을 모두 확보. (1:1 답장은 후속 옵션으로 확장 가능)</p>',
       flowHTML:
-        '<span class="prd-k2">검증 플로우 · 노출 범위</span>' +
+        '<span class="prd-k2">검증 플로우 · 라이브 노출 제어</span>' +
         '<div class="fpath">' +
-          '<div class="fpath-h"><span class="fpath-tag a">경로</span> 답변 작성 → 노출 범위 선택</div>' +
-          '<div class="frow"><span class="fnode">유저 메시지 ⋮ · 답변하기</span><span class="farr">→</span><span class="fnode">답변 입력 + [본인만 보기] 토글 (기본 OFF)</span></div>' +
-          '<div class="fdec">본인만 보기 = ON ?</div>' +
-          '<div class="fbranch"><span class="fout no">아니오(기본) → 전체 공개: 모든 유저 Q&amp;A + 방송 띠지</span><span class="fout ok">예 → 본인만: 문의자에게만 · 다른 유저·방송 미노출</span></div>' +
+          '<div class="fpath-h"><span class="fpath-tag a">경로</span> 답변 작성 → 노출 선택</div>' +
+          '<div class="frow"><span class="fnode">유저 메시지 ⋮ · 답변하기</span><span class="farr">→</span><span class="fnode">답변 입력 + [라이브에 노출] 토글 (기본 OFF)</span></div>' +
+          '<div class="fdec">라이브에 노출 = ON ?</div>' +
+          '<div class="fbranch"><span class="fout ok">예 → 라이브 방송 Q&amp;A 띠지에 노출</span><span class="fout no">아니오(기본) → Q&amp;A 탭 내부 기록만 · 라이브 X</span></div>' +
         '</div>' +
         '<div class="fmerge">↓ 사후</div>' +
-        '<div class="fnode final">Q&amp;A 탭에서 항목별 [전체 공개 ↔ 본인만] 언제든 전환</div>',
+        '<div class="fnode final">Q&amp;A 탭에서 항목별 [라이브 노출] 토글로 언제든 게시 / 게시 취소</div>',
       prd: [
-        { n: 1, target: '#chatFeed', title: '답변 시 노출 범위 토글', tag: '전체/본인만',
-          def: '답변 작성 박스에 [본인만 보기] 토글 제공(기본 꺼짐 = 전체 공개).',
-          asis: ['답변 = 전체 공개만 있어 무관 문의도 전체 Q&amp;A·방송에 박제.'],
-          tobe: ['답변 시 노출 범위를 선택. 기본은 전체 공개, 필요 시 본인만.'],
-          features: ['<b>OFF(기본) = 전체 공개</b>: 모든 유저 Q&amp;A + 방송 프리뷰 띠지 노출.', '<b>ON = 본인만</b>: 문의한 본인에게만 노출.', '토글은 답변 박스 하단에 위치.'] },
-        { n: 2, target: '.chat-tab[data-tab="qa"]', title: '본인만 = 다른 유저 미노출', tag: '핵심',
-          def: '본인만 보기로 답하면 문의한 유저에게만 Q&A로 노출되고 다른 유저·방송에는 노출되지 않는다.',
-          features: ['문의자 본인 Q&amp;A에만 답변 표시.', '<b>다른 유저 Q&amp;A·방송 프리뷰에는 노출 안 됨.</b>', '무관/방해성 문의 대응에 사용.'] },
-        { n: 3, target: '#chatSearchBtn', title: 'Q&A 탭 사후 전환', tag: '전환',
-          def: '등록된 Q&A 항목의 노출 범위를 언제든 전체/본인만으로 바꾼다.',
-          features: ['각 Q&amp;A 항목에 <b>🌐 전체 공개 / 🔒 본인만</b> 토글.', '전체 공개 항목만 방송 프리뷰 띠지에 표시.'] }
+        { n: 1, target: '#chatFeed', title: '답변 시 라이브 노출 토글', tag: '기본 OFF',
+          def: '답변 작성 박스에 [라이브에 노출] 토글 제공(기본 꺼짐).',
+          asis: ['답변하기 = 라이브 노출이 자동으로 묶여 실수 노출 발생.'],
+          tobe: ['답변 작성과 라이브 노출을 분리. 노출은 의도적 선택(기본 OFF).'],
+          features: ['답변 박스 하단 <b>[라이브에 노출]</b> 토글(기본 꺼짐).', 'OFF로 답변 → Q&amp;A 탭 내부 기록만, 라이브 방송 미노출.', 'ON으로 답변 → 라이브 방송 Q&amp;A 띠지에 노출.'] },
+        { n: 2, target: '.chat-tab[data-tab="qa"]', title: 'Q&A 탭 = 검토·게시 워크스페이스', tag: '게시/취소',
+          def: '답변은 Q&A 탭에 모이고, 항목별 라이브 노출을 켜고 끌 수 있다.',
+          features: ['각 Q&amp;A 항목에 <b>라이브 노출 / 비노출</b> 토글.', '검토 후 노출로 게시, 부적절하면 즉시 게시 취소.', '라이브 노출된 항목만 방송 프리뷰 Q&amp;A 띠지에 표시.'] },
+        { n: 3, target: '#chatSearchBtn', title: '실수 방지 (default-safe)', tag: '안전',
+          def: '기본값이 비노출이라 무관/방해성 질문에 실수로 답변해도 라이브에 뜨지 않는다.',
+          features: ['무관한 문의 답변이 자동으로 라이브에 박제되지 않음.', '라이브 노출은 항상 매니저의 의도적 선택.'] }
       ],
       steps: [
-        { tag: '시작', t: '채팅 답변의 <b>노출 범위(전체/본인만)</b>를 제어하는 흐름을 시연합니다. (Jira GRIPPGM-3402)', target: function () { return q('#chatFeed'); }, act: function () { resetUI(); } },
+        { tag: '시작', t: '채팅 답변이 <b>실수로 라이브에 노출</b>되는 것을 막는 흐름을 시연합니다. (Jira GRIPPGM-3402)', target: function () { return q('#chatFeed'); }, act: function () { resetUI(); } },
         { tag: '답변 작성', t: '유저 메시지 <b>⋮ → 답변하기</b>로 답변 박스를 엽니다.', target: function () { return q('#chatReply'); }, act: function () { var cm = document.querySelector('#chatFeed .cm:not(.me)'); if (cm) { var b = cm.querySelector('.cm-menu'); if (b) b.click(); var am = document.querySelector('.chat-menu.on button[data-a="answer"]'); if (am) am.click(); } } },
-        { tag: '노출 범위 토글', t: '답변 박스 하단 <b>[본인만 보기]</b> 토글 — <b>기본 꺼짐 = 전체 공개</b>.', target: function () { return q('#crLiveLbl'); }, act: function () { var i = document.getElementById('crInput'); if (i) i.value = '재입고되면 안내드릴게요'; } },
-        { tag: '전체 공개 (기본)', t: '기본(전체 공개)으로 답변 → <b>모든 유저 Q&amp;A + 방송 프리뷰 띠지</b>에 노출됩니다.', target: function () { return q('#ovQa'); }, act: function () { var s = document.getElementById('crSubmit'); if (s) s.click(); } },
-        { tag: '본인만 보기', t: '무관/방해성 문의는 <b>[본인만 보기]</b>를 켜서 답변 → <b>문의자에게만</b> 노출, 다른 유저·방송에는 노출 안 됨.', target: function () { return q('#qaPanel'); }, act: function () { var cms = document.querySelectorAll('#chatFeed .cm:not(.me)'); var cm = cms[1] || cms[0]; if (cm) { var b = cm.querySelector('.cm-menu'); if (b) b.click(); var am = document.querySelector('.chat-menu.on button[data-a="answer"]'); if (am) am.click(); } var i = document.getElementById('crInput'); if (i) i.value = '개별적으로 안내드릴게요'; var lb = document.getElementById('crLiveBox'); if (lb && !lb.classList.contains('on')) lb.click(); var s = document.getElementById('crSubmit'); if (s) s.click(); var t = document.querySelector('.chat-tab[data-tab="qa"]'); if (t) t.click(); } }
+        { tag: '라이브 노출 토글 · 기본 OFF', t: '답변 박스 하단 <b>[라이브에 노출]</b> 토글은 <b>기본 꺼짐</b>. 끈 채로 답변하면 라이브엔 안 뜹니다.', target: function () { return q('#crLiveLbl'); }, act: function () { var i = document.getElementById('crInput'); if (i) i.value = '확인 후 개별 안내드리겠습니다'; } },
+        { tag: '내부 저장 (라이브 X)', t: '<b>답변하기</b> → Q&amp;A 탭(내부 기록)에만 저장되고 <b>라이브 방송엔 노출되지 않습니다</b>.', target: function () { return q('.chat-tab[data-tab="qa"]'); }, act: function () { var s = document.getElementById('crSubmit'); if (s) s.click(); } },
+        { tag: '검토 후 게시', t: 'Q&amp;A 탭에서 항목의 <b>[라이브 노출]</b>을 켜면 방송 프리뷰 Q&amp;A 띠지에 표시됩니다(언제든 취소 가능).', target: function () { return q('#qaPanel'); }, act: function () { var t = document.querySelector('.chat-tab[data-tab="qa"]'); if (t) t.click(); var lv = document.querySelector('#qaPanel .qa-live'); if (lv && !lv.classList.contains('on')) lv.click(); } }
       ]
     });
 
