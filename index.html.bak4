@@ -678,15 +678,6 @@
   .mode-toggle { display:flex; gap:4px; margin-top:12px; background:#eceef1; border-radius:11px; padding:4px; }
   .mode-seg { flex:1; border:0; background:transparent; border-radius:8px; padding:10px; font-size:13.5px; font-weight:700; color:#6b6f78; cursor:pointer; transition:background .15s,color .15s,box-shadow .15s; }
   .mode-seg.on { background:#fff; color:var(--grip); box-shadow:0 1px 4px rgba(20,22,30,.12); }
-  /* PRD 지라 티켓 링크 */
-  .prd-jira { display:inline-flex; align-items:center; gap:6px; margin:0 0 14px; padding:8px 12px; background:#eef2ff; color:#3b5bdb; border:1px solid #dbe4ff; border-radius:8px; font-size:13px; font-weight:800; text-decoration:none; }
-  .prd-jira:hover { background:#dbe4ff; }
-  .prd-jira .pj-ext { font-size:11px; opacity:.7; }
-  /* 긴 과제명 대응 스위처 */
-  .pfs-btn { align-items:flex-start; }
-  .pfs-btn #pfsLabel { flex:1; white-space:normal; line-height:1.45; text-align:left; }
-  .pfs-btn .pfs-caret { margin-top:2px; }
-  .pfs-item { line-height:1.45; }
 </style>
 </head>
 <body>
@@ -1683,7 +1674,7 @@
 
     // ===== 기능 1: 가격 수정 =====
     FEATURES.push({
-      id: 'price', demoMode: 'limited', jira: 'GRIPPGM-3338', name: '[스튜디오] 히어로 셀러 대응_한정판매 판매가,상시 할인가, 라이브가 수정 기능',
+      id: 'price', demoMode: 'limited', name: '가격 수정 (인라인·일괄)',
       overviewHTML:
         '<div class="ov-title">🎯 과제 개요</div>' +
         '<span class="prd-k2">과제의 목적</span>' +
@@ -1741,7 +1732,7 @@
 
     // ===== 기능 2: 방송 리스트에서 상품 삭제 =====
     FEATURES.push({
-      id: 'delete', demoMode: 'store', jira: 'GRIPPGM-3357', name: '[스튜디오] 스튜디오에서 상품을 방송 리스트에서 빼는 기능 추가',
+      id: 'delete', demoMode: 'store', name: '방송 리스트에서 상품 삭제',
       overviewHTML:
         '<div class="ov-title">🎯 과제 개요</div>' +
         '<span class="prd-k2">과제의 목적</span>' +
@@ -1780,6 +1771,92 @@
         { tag: '제거', t: '<b>[제거]</b> → 방송 리스트에서 상품이 사라지고 <b>성공 토스트</b>가 표시됩니다.', target: function () { return q('.product-list'); }, act: function () { var c = document.getElementById('delConfirm'); if (c) c.click(); } },
         { tag: 'UP 목록 자동 반영', t: '상단 <b>[UP한 상품 목록]</b>을 열면, 방금 제거한 상품이 <b>UP 목록에서도 자동으로</b> 빠져 있습니다.', target: function () { return q('#upListModal .modal'); }, act: function () { var b = document.getElementById('btnUpList'); if (b) b.click(); } },
         { tag: '비즈센터 미반영', t: '단, <b>비즈센터(라이브 방송 상품 설정)</b>에서는 삭제되지 않습니다 — 스튜디오 방송 노출만 제어합니다.', target: function () { return q('.head-btns'); }, act: function () { var c = document.getElementById('upListClose'); if (c) c.click(); } }
+      ]
+    });
+
+    // ===== 기능 3: UP 상품 노출·관리 =====
+    FEATURES.push({
+      id: 'up', demoMode: 'store', name: 'UP 상품 노출·관리 (최대 5개)',
+      overviewHTML:
+        '<div class="ov-title">🎯 과제 개요</div>' +
+        '<span class="prd-k2">과제의 목적</span>' +
+        '<p>셀러가 방송 화면에 노출할 상품을 <b>UP</b>으로 지정하고, <b>UP한 순서대로</b> 모바일 프리뷰에 노출한다. 노출 상품은 <b>최대 5개</b>.</p>' +
+        '<span class="prd-k2">동작 정의</span>' +
+        '<p>① 상품 행의 <b>▲ UP</b> 버튼으로 노출 지정(토글) · ② UP한 상품은 <b>좌측 모바일 프리뷰</b>에 반영 · ③ <b>최대 5개</b>, UP한 순서대로 <b>가로 카드 + 가로 스크롤</b>로 노출 · ④ <b>[UP한 상품 목록]</b> 모달에 UP 순서대로 이미지·상품번호·수량과 함께 표시.</p>' +
+        '<span class="prd-k2">비고</span>' +
+        '<p>상품을 방송 리스트에서 삭제하면 UP 목록·프리뷰에서도 자동 제거된다(→ 기능: 상품 삭제).</p>',
+      flowHTML:
+        '<span class="prd-k2">검증 플로우 · UP 노출</span>' +
+        '<div class="fpath">' +
+          '<div class="fpath-h"><span class="fpath-tag a">경로</span> 상품 UP → 프리뷰 노출</div>' +
+          '<div class="frow"><span class="fnode">상품 행 ▲ UP</span><span class="farr">→</span><span class="fnode">활성화(코랄)</span><span class="farr">→</span><span class="fnode">모바일 프리뷰에 UP 순서대로 카드 추가</span></div>' +
+          '<div class="fdec">현재 UP한 상품 &lt; 5개 ?</div>' +
+          '<div class="fbranch"><span class="fout ok">예 → UP 반영(가로 스크롤로 확인)</span><span class="fout no">아니오 → UP 불가 · 안내 토스트(최대 5개)</span></div>' +
+        '</div>' +
+        '<div class="fmerge">↓ 공통</div>' +
+        '<div class="fnode final">🗂 [UP한 상품 목록] 모달 = UP한 순서대로 이미지·상품번호·점유/주문/재고 표시 + 스토어 ON/OFF 일괄 제어</div>',
+      prd: [
+        { n: 1, target: '.btn-up', title: 'UP 지정 & 프리뷰 노출', tag: '노출 · 최대 5개',
+          def: '상품을 방송 화면에 노출하도록 UP으로 지정.',
+          features: ['상품 행 <b>▲ UP</b> 버튼 토글로 노출 지정(활성 시 코랄).', 'UP한 상품은 <b>좌측 모바일 프리뷰</b>에 <b>UP한 순서대로</b> 노출.', '프리뷰는 <b>가로 카드 + 가로 스크롤</b>, <b>최대 5개</b>.', '6개째 UP 시도 시 제한 · 안내 토스트.'] },
+        { n: 2, target: '#btnUpList', title: 'UP한 상품 목록', tag: '순서 · 관리',
+          def: 'UP한 상품을 순서대로 확인·관리하는 모달.',
+          features: ['<b>UP한 순서대로</b> 상품 이미지·상품명·상품번호·점유/주문/재고 표시.', '전체 선택 + 항목 체크.', '<b>스토어 ON / 스토어 OFF</b>로 선택 상품 일괄 제어.'] },
+        { n: 3, target: '.sales-title', title: '노출 순서·정합', tag: '정합',
+          def: '리스트·프리뷰·모달의 UP 상태가 항상 일치.',
+          features: ['UP 토글·삭제 즉시 프리뷰와 목록에 동시 반영.', '상품 삭제 시 UP 목록·프리뷰에서도 자동 제거.'] }
+      ],
+      steps: [
+        { tag: '시작', t: '방송에 상품을 노출하는 <b>UP</b> 로직을 시연합니다 — 최대 5개 · UP한 순서대로 노출.', target: function () { return q('#poStrip'); }, act: function () { resetUI(); } },
+        { tag: 'UP 지정', t: '상품 행의 <b>▲ UP</b> 버튼으로 방송에 노출할 상품을 지정합니다.', target: function () { var r = rowN(3); return r ? r.querySelector('.btn-up') : null; } },
+        { tag: '프리뷰 반영', t: 'UP하면 좌측 <b>모바일 프리뷰</b>에 상품 카드가 <b>UP한 순서대로</b> 추가됩니다.', target: function () { return q('#poStrip'); }, act: function () { var r = rowN(3); var b = r ? r.querySelector('.btn-up') : null; if (b && !b.classList.contains('on')) b.click(); } },
+        { tag: '가로 스크롤 · 최대 5개', t: 'UP한 상품은 <b>최대 5개</b>, 프리뷰에서 <b>가로 스크롤</b>로 순서대로 확인합니다.', target: function () { return q('#poStrip'); }, act: function () { var r = rowN(4); var b = r ? r.querySelector('.btn-up') : null; if (b && !b.classList.contains('on')) b.click(); var s = q('#poStrip'); if (s) s.scrollLeft = s.scrollWidth; } },
+        { tag: '최대 5개 제한', t: '6개째 UP을 시도하면 <b>최대 5개</b> 제한으로 막히고 안내 토스트가 뜹니다.', target: function () { var r = rowN(5); return r ? r.querySelector('.btn-up') : null; }, act: function () { var r = rowN(5); var b = r ? r.querySelector('.btn-up') : null; if (b && !b.classList.contains('on')) b.click(); } },
+        { tag: 'UP한 상품 목록', t: '상단 <b>[UP한 상품 목록]</b>에는 <b>UP한 순서대로</b> 상품이 이미지·상품번호·수량과 함께 표시됩니다.', target: function () { return q('#upListModal .modal'); }, act: function () { var b = document.getElementById('btnUpList'); if (b) b.click(); } },
+        { tag: '스토어 일괄 제어', t: '목록에서 상품을 선택해 <b>스토어 ON / OFF</b>로 일괄 제어할 수 있습니다.', target: function () { return q('#upListModal .modal-foot'); }, act: function () { var f = document.getElementById('upListClose'); /* keep open */ } }
+      ]
+    });
+
+    // ===== 기능 4: 판매 모드(한정판매/스토어판매) =====
+    FEATURES.push({
+      id: 'mode', demoMode: 'limited', name: '판매 모드 (한정/스토어)',
+      overviewHTML:
+        '<div class="ov-title">🎯 과제 개요</div>' +
+        '<span class="prd-k2">과제의 목적</span>' +
+        '<p>스튜디오는 <b>한정판매</b>와 <b>스토어판매</b> 두 모드로 운영되며, 모드에 따라 <b>UP 정책·노출 UI</b>가 다르다. 좌측 하단 토글로 전환한다.</p>' +
+        '<span class="prd-k2">모드별 차이</span>' +
+        '<p><b>한정판매</b> — 상품 1개씩만 판매, <b>UP도 1개씩</b>(다른 상품 UP 시 이전 UP 자동 해제), [UP한 상품 목록] 버튼 노출.<br/><b>스토어판매</b> — <b>UP 최대 5개</b>(6개째 팝업 제한), [UP한 상품 목록] 버튼 숨김, “판매종료·품절 시 UP 자동 해제” 안내.</p>' +
+        '<span class="prd-k2">공통</span>' +
+        '<p>[등록된 상품 가져오기]·[플래시 상품 등록]은 두 모드 공통. 판매종료·품절 시 UP 자동 해제도 공통.</p>',
+      flowHTML:
+        '<span class="prd-k2">검증 플로우 · 판매 모드</span>' +
+        '<div class="fpath">' +
+          '<div class="fpath-h"><span class="fpath-tag a">토글</span> 좌측 하단 [한정판매 | 스토어판매]</div>' +
+          '<div class="frow"><span class="fnode">모드 선택</span><span class="farr">→</span><span class="fnode">제목·안내문구·헤더버튼·UP 정책 전환</span></div>' +
+          '<div class="fdec">스토어판매 모드 ?</div>' +
+          '<div class="fbranch"><span class="fout ok">예 → UP 최대 5개 · UP목록 버튼 숨김</span><span class="fout no">아니오(한정) → UP 1개씩 · UP목록 버튼 노출</span></div>' +
+        '</div>' +
+        '<div class="fmerge">↓ 공통</div>' +
+        '<div class="fnode final">🔁 판매종료·품절 시 UP 자동 해제 · [가져오기]/[플래시] 공통</div>',
+      prd: [
+        { n: 1, target: '.sales-title', title: '판매 모드 전환 토글', tag: '한정 · 스토어',
+          def: '좌측 하단 토글로 한정판매/스토어판매를 전환. 제목·안내·헤더 버튼·UP 정책이 함께 바뀐다.',
+          features: ['좌측 하단 <b>[한정판매 | 스토어판매]</b> 세그먼트 토글.', '전환 시 상단 제목·안내 문구·헤더 버튼·UP 정책 즉시 반영.'] },
+        { n: 2, target: '.sales-note', title: '한정판매 모드', tag: 'UP 1개씩',
+          def: '상품을 1개씩만 판매하는 모드.',
+          features: ['안내: “한정판매 상품은 1개씩만 판매 가능합니다.”', '<b>UP은 1개씩</b> — 다른 상품 UP 시 이전 UP 자동 해제(프리뷰도 교체).', '[UP한 상품 목록] 버튼 노출.'] },
+        { n: 3, target: '.head-btns', title: '스토어판매 모드', tag: 'UP 최대 5개',
+          def: '여러 상품을 노출하는 모드.',
+          features: ['안내: “방송 화면에 노출할 상품을 UP 해주세요.(최대 5개) · 판매종료·품절 시 UP 자동 해제.”', '<b>UP 최대 5개</b> — 6개째 시도 시 <b>팝업</b> 제한.', '[UP한 상품 목록] 버튼 숨김.'] }
+      ],
+      steps: [
+        { tag: '시작', t: '스튜디오는 <b>한정판매 / 스토어판매</b> 두 모드로 운영됩니다. 좌측 하단 토글로 전환합니다.', target: function () { return q('.mode-toggle'); }, act: function () { resetUI(); } },
+        { tag: '한정판매 모드', t: '현재 <b>한정판매</b> — 상품 1개씩 판매, UP도 <b>1개씩</b>이고 [UP한 상품 목록] 버튼이 있습니다.', target: function () { return q('.sales-note'); } },
+        { tag: 'UP 단일', t: '한정판매에서 다른 상품을 UP하면 <b>이전 UP이 자동 해제</b>됩니다(프리뷰도 교체).', target: function () { return q('#poStrip'); }, act: function () { var r = rowN(2); var b = r && r.querySelector('.btn-up'); if (b && !b.classList.contains('on')) b.click(); } },
+        { tag: '스토어판매 전환', t: '<b>스토어판매</b>로 전환 → UP <b>최대 5개</b>, [UP한 상품 목록] 버튼이 숨겨지고 안내 문구가 바뀝니다.', target: function () { return q('.mode-toggle'); }, act: function () { if (window.__gripSetMode) window.__gripSetMode('store'); } },
+        { tag: '스토어 · 최대 5개', t: '스토어판매에서는 <b>최대 5개</b>까지 UP할 수 있습니다.', target: function () { return q('#poStrip'); }, act: function () { [3, 4].forEach(function (i) { var r = rowN(i); var b = r && r.querySelector('.btn-up'); if (b && !b.classList.contains('on')) b.click(); }); var s = q('#poStrip'); if (s) s.scrollLeft = s.scrollWidth; } },
+        { tag: '6개째 제한', t: '6개째 UP을 시도하면 <b>팝업</b>으로 제한됩니다.', target: function () { return q('#upMaxModal .modal'); }, act: function () { var r = rowN(5); var b = r && r.querySelector('.btn-up'); if (b && !b.classList.contains('on')) b.click(); } },
+        { tag: '공통', t: '판매종료·품절 시 UP 자동 해제, [등록된 상품 가져오기]/[플래시 상품 등록]은 두 모드 공통입니다.', target: function () { return q('.head-btns'); }, act: function () { var f = document.getElementById('upMaxOk'); if (f) f.click(); } }
       ]
     });
 
@@ -1825,7 +1902,6 @@
       var f = feat();
       clearMarkers();
       bodyEl.innerHTML =
-        (f.jira ? '<a class="prd-jira" href="https://gripcorp.atlassian.net/browse/' + f.jira + '" target="_blank" rel="noopener">🎫 ' + f.jira + ' <span class="pj-ext">↗</span></a>' : '') +
         '<div class="prd-overview">' + f.overviewHTML + '</div>' +
         '<div class="prd-flow">' + f.flowHTML + '</div>' +
         '<div class="prd-section-label">기능 명세</div>' +
