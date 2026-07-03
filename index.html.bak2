@@ -647,33 +647,6 @@
   .pfs-item:hover { background:#f4f5f7; }
   .pfs-item.on { background:var(--grip-soft-2); }
   .pfs-item.on b { color:var(--grip); }
-
-  /* 모바일 프리뷰 UP 카드 가로 스트립 */
-  .po-strip { position:absolute; left:12px; right:12px; bottom:12px; display:flex; gap:8px; overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; padding-bottom:3px; }
-  .po-strip::-webkit-scrollbar { height:4px; }
-  .po-strip::-webkit-scrollbar-thumb { background:rgba(255,255,255,.55); border-radius:3px; }
-  .po-strip .product-overlay { position:static; left:auto; right:auto; bottom:auto; flex:0 0 92%; scroll-snap-align:start; }
-  .po-empty { flex:1; text-align:center; color:#fff; font-size:12px; line-height:1.6; background:rgba(0,0,0,.4); border-radius:12px; padding:16px 12px; }
-  /* UP한 상품 목록 모달(리치) */
-  .up2-head { display:flex; align-items:center; justify-content:space-between; padding:2px 2px 12px; border-bottom:1px solid #ececef; margin-bottom:6px; }
-  .up2-all { display:flex; align-items:center; gap:9px; font-size:14px; font-weight:600; color:#2b2d34; cursor:pointer; user-select:none; }
-  .up2-count { font-size:13px; color:#8d919c; font-weight:600; }
-  .cbox2 { width:20px; height:20px; border-radius:6px; border:1.6px solid #cfd3da; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; flex:0 0 auto; }
-  .cbox2.on { background:var(--grip); border-color:var(--grip); }
-  .cbox2.on::after { content:"✓"; color:#fff; font-size:12px; font-weight:900; }
-  .up-list2 { list-style:none; margin:0; padding:0; max-height:52vh; overflow:auto; }
-  .ul2 { display:flex; align-items:center; gap:12px; padding:13px 2px; border-bottom:1px solid #f2f3f5; }
-  .ul2-thumb { width:52px; height:52px; border-radius:8px; background:#f1f2f4 center/cover no-repeat; flex:0 0 auto; }
-  .ul2-info { flex:1; min-width:0; }
-  .ul2-name { font-size:14px; font-weight:700; color:#20222a; }
-  .ul2-code { font-size:12px; color:#8d919c; margin-top:2px; }
-  .ul2-stat { font-size:12px; color:#5c606b; margin-top:3px; }
-  .ul2-stat b { color:#2b2d34; font-weight:700; }
-  .ul2-store { font-size:12.5px; font-weight:700; color:#a0a4ad; flex:0 0 auto; align-self:flex-start; }
-  .ul2-store.on { color:var(--grip); }
-  .btn-storeoff2 { flex:1; background:#eceef1; color:#41444d; border:0; border-radius:9px; padding:12px; font-size:14px; font-weight:700; cursor:pointer; }
-  .btn-storeon2 { flex:1; background:var(--grip-soft); color:var(--grip); border:0; border-radius:9px; padding:12px; font-size:14px; font-weight:800; cursor:pointer; }
-  .btn-storeoff2:hover { background:#e3e5e9; } .btn-storeon2:hover { background:#ffdbe3; }
 </style>
 </head>
 <body>
@@ -769,7 +742,17 @@
             <button title="채팅"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9l-4 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/></svg></button>
           </div>
 
-          <div class="po-strip" id="poStrip"></div>
+          <div class="product-overlay">
+            <span class="po-thumb"><span class="po-badge">한정상품</span></span>
+            <span class="po-info">
+              <div class="po-name">미니 대표 선크림</div>
+              <div class="po-price"><span class="pct">91%</span><span class="won">1,000원</span></div>
+            </span>
+            <span class="po-stock">
+              <div><span class="k">판매가능</span> <span class="sell">999+</span></div>
+              <div><span class="k">재고</span> <span class="v">999+</span></div>
+            </span>
+          </div>
         </div>
 
         <div class="action-bar">
@@ -1154,19 +1137,13 @@
 
 <!-- UP한 상품 목록 -->
 <div class="modal-overlay" id="upListModal">
-  <div class="modal" role="dialog" aria-modal="true" aria-label="UP한 상품 목록" style="max-width:640px;">
-    <div class="modal-title">UP한 상품 목록</div>
+  <div class="modal" role="dialog" aria-modal="true" aria-label="UP한 상품 목록" style="max-width:460px;">
+    <div class="modal-title">UP한 상품 목록 <span style="color:var(--grip);font-weight:800;">(<span id="upListCount">0</span>)</span></div>
     <div class="modal-body">
-      <div class="up2-head">
-        <label class="up2-all" id="upAll"><span class="cbox2" id="upAllBox"></span> 전체 선택</label>
-        <span class="up2-count" id="upCountLabel">UP한 상품 0</span>
-      </div>
-      <ul class="up-list2" id="upListBody"></ul>
+      <ul class="up-list" id="upListBody"></ul>
     </div>
-    <div class="modal-foot">
-      <button class="btn-close" id="upListClose">닫기</button>
-      <button class="btn-storeoff2" id="upStoreOff">스토어 OFF</button>
-      <button class="btn-storeon2" id="upStoreOn">스토어 ON</button>
+    <div class="modal-foot" style="justify-content:flex-end;">
+      <button class="btn-apply" id="upListClose">확인</button>
     </div>
   </div>
 </div>
@@ -1424,144 +1401,40 @@
     refresh();
   })();
 
-  // ============ UP 상품(노출) + 방송 리스트 삭제 (GRIPPGM-3357) ============
+  // ============ 상품 삭제 + UP한 상품 목록 (GRIPPGM-3357) ============
   (function () {
     var listEl = document.querySelector('.product-list');
     if (!listEl) return;
     var order = Array.prototype.slice.call(listEl.querySelectorAll('.product-row')); // 원래 순서(마스터)
-    var strip = document.getElementById('poStrip');
-    var MAX_UP = 5;
-    var DEFAULT_UP = [0, 1, 2];
-    // 상품별 메타(이미지·상품번호)
-    var META = [
-      { img: 'p1.png', code: 'npyp6441' },
-      { img: 'p2.png', code: 'nyjy9e10' },
-      { img: 'p3.png', code: 'dcln0021' },
-      { img: 'p4.png', code: 'vtmc7788' },
-      { img: 'p5.png', code: 'mstc3345' },
-      { img: 'p6.png', code: 'lipb2set' }
-    ];
+    function nameOf(r) { var n = r.querySelector('.pr-name-input'); return n ? n.value : '상품'; }
     function toast(msg, ok) { if (window.__gripToast) window.__gripToast(msg, ok); }
-    function idxOf(r) { return order.indexOf(r); }
-    function num(s) { return parseInt(String(s).replace(/[^0-9]/g, ''), 10) || 0; }
-    function meta(r) { return META[idxOf(r)] || { img: 'product.png', code: '' }; }
-    function readRow(r) {
-      var jeong = num((r.querySelector('.pi-regular-input') || {}).value);
-      var live = num((r.querySelector('.pi-live-input') || {}).value);
-      var pct = jeong > 0 ? Math.max(0, Math.round((jeong - live) / jeong * 100)) : 0;
-      var stockEl = r.querySelector('.val-box');
-      var stats = r.querySelectorAll('.pr-stats .stat-cell .val');
-      var m = meta(r);
-      return {
-        name: (r.querySelector('.pr-name-input') || {}).value || '',
-        pct: pct, live: live,
-        stock: stockEl ? stockEl.value : '0',
-        occupy: stats[0] ? stats[0].textContent.trim() : '0',
-        ordered: stats[1] ? stats[1].textContent.trim() : '0',
-        img: m.img, code: m.code
-      };
-    }
 
-    var upOrder = [];                 // UP한 상품(누른 순서)
-    var checked = {}, storeOn = {};   // 모달 체크/스토어 상태 (idx 기준)
-
-    // ---- 모바일 프리뷰 가로 카드 ----
-    function renderPreview() {
-      if (!strip) return;
-      if (!upOrder.length) { strip.innerHTML = '<div class="po-empty">UP한 상품이 없습니다.<br/>상품의 ▲ UP 버튼으로 노출하세요.</div>'; return; }
-      strip.innerHTML = upOrder.map(function (r) {
-        var d = readRow(r);
-        return '<div class="product-overlay" data-idx="' + idxOf(r) + '">' +
-          '<span class="po-thumb" style="background-image:url(' + d.img + ')"><span class="po-badge">한정상품</span></span>' +
-          '<span class="po-info"><div class="po-name">' + d.name + '</div><div class="po-price"><span class="pct">' + d.pct + '%</span><span class="won">' + d.live.toLocaleString('en-US') + '원</span></div></span>' +
-          '<span class="po-stock"><div><span class="k">판매가능</span> <span class="sell">' + d.stock + '</span></div><div><span class="k">재고</span> <span class="v">999+</span></div></span>' +
-          '</div>';
-      }).join('');
-    }
-    function updateCard(r) {
-      if (!strip) return;
-      var card = strip.querySelector('.product-overlay[data-idx="' + idxOf(r) + '"]');
-      if (!card) return;
-      var d = readRow(r);
-      var el;
-      if ((el = card.querySelector('.po-name'))) el.textContent = d.name;
-      if ((el = card.querySelector('.pct'))) el.textContent = d.pct + '%';
-      if ((el = card.querySelector('.won'))) el.textContent = d.live.toLocaleString('en-US') + '원';
-      if ((el = card.querySelector('.po-stock .sell'))) el.textContent = d.stock;
-    }
-
-    // ---- UP 토글 ----
-    function setUp(r, on) {
-      var btn = r.querySelector('.btn-up');
-      if (on) {
-        if (upOrder.indexOf(r) >= 0) return true;
-        if (upOrder.length >= MAX_UP) { toast('UP은 최대 ' + MAX_UP + '개까지 가능합니다.', false); return false; }
-        upOrder.push(r); if (btn) btn.classList.add('on');
-      } else {
-        var k = upOrder.indexOf(r); if (k >= 0) upOrder.splice(k, 1);
-        if (btn) btn.classList.remove('on');
-      }
-      renderPreview(); renderUpModal(); return true;
-    }
+    // 기본 UP 상태: 앞 2개 상품 UP
+    order.forEach(function (r, i) { var up = r.querySelector('.btn-up'); if (up && i < 2) up.classList.add('on'); });
+    // UP 토글
     order.forEach(function (r) {
-      var btn = r.querySelector('.btn-up');
-      if (btn) btn.addEventListener('click', function () { setUp(r, upOrder.indexOf(r) < 0); });
-      // 가격/이름/재고 편집 → 프리뷰 카드 즉시 반영
-      ['.pi-regular-input', '.pi-discount-input', '.pi-live-input', '.pr-name-input', '.val-box'].forEach(function (sel) {
-        var el = r.querySelector(sel); if (el) el.addEventListener('input', function () { updateCard(r); });
-      });
-      // 썸네일 이미지 적용
-      var t = r.querySelector('.pr-thumb'); var m = meta(r); if (t && m.img) t.style.backgroundImage = 'url(' + m.img + ')';
+      var up = r.querySelector('.btn-up');
+      if (up) up.addEventListener('click', function () { up.classList.toggle('on'); renderUpList(); });
     });
 
-    function resetUpState() {
-      upOrder = []; checked = {}; storeOn = {};
-      order.forEach(function (r) { var b = r.querySelector('.btn-up'); if (b) b.classList.remove('on'); });
-      DEFAULT_UP.forEach(function (i) { if (order[i]) { upOrder.push(order[i]); var b = order[i].querySelector('.btn-up'); if (b) b.classList.add('on'); } });
-      renderPreview(); renderUpModal();
-    }
-
-    // ---- UP한 상품 목록 모달 ----
+    // ----- UP한 상품 목록 모달 -----
     var upModal = document.getElementById('upListModal');
     var upBody = document.getElementById('upListBody');
-    var upCountLabel = document.getElementById('upCountLabel');
-    var upAll = document.getElementById('upAll'), upAllBox = document.getElementById('upAllBox');
-    function updateAllBox() { if (upAllBox) upAllBox.classList.toggle('on', upOrder.length > 0 && upOrder.every(function (r) { return checked[idxOf(r)]; })); }
-    function renderUpModal() {
-      if (!upBody) return;
-      if (upCountLabel) upCountLabel.textContent = 'UP한 상품 ' + upOrder.length;
-      upBody.innerHTML = upOrder.length ? upOrder.map(function (r) {
-        var d = readRow(r), i = idxOf(r);
-        return '<li class="ul2" data-idx="' + i + '">' +
-          '<span class="cbox2' + (checked[i] ? ' on' : '') + '" data-check="' + i + '"></span>' +
-          '<span class="ul2-thumb" style="background-image:url(' + d.img + ')"></span>' +
-          '<span class="ul2-info"><div class="ul2-name">' + d.name + '</div><div class="ul2-code">상품번호: ' + d.code + '</div>' +
-          '<div class="ul2-stat">점유수량 <b>' + d.occupy + '</b> · 주문수량 <b>' + d.ordered + '</b> · 재고 <b>' + d.stock + '</b></div></span>' +
-          '<span class="ul2-store' + (storeOn[i] ? ' on' : '') + '">' + (storeOn[i] ? '스토어 ON' : '스토어 OFF') + '</span>' +
-          '</li>';
-      }).join('') : '<li class="ul-empty">UP한 상품이 없습니다.</li>';
-      updateAllBox();
-      Array.prototype.slice.call(upBody.querySelectorAll('.cbox2')).forEach(function (cb) {
-        cb.addEventListener('click', function () { var i = parseInt(cb.getAttribute('data-check'), 10); checked[i] = !checked[i]; renderUpModal(); });
+    var upCount = document.getElementById('upListCount');
+    function currentUp() {
+      return Array.prototype.slice.call(listEl.querySelectorAll('.product-row')).filter(function (r) {
+        var u = r.querySelector('.btn-up'); return u && u.classList.contains('on');
       });
     }
-    if (upAll) upAll.addEventListener('click', function (e) {
-      e.preventDefault();
-      var all = upOrder.length > 0 && upOrder.every(function (r) { return checked[idxOf(r)]; });
-      if (all) checked = {}; else upOrder.forEach(function (r) { checked[idxOf(r)] = true; });
-      renderUpModal();
-    });
-    function applyStore(on) {
-      var tgt = upOrder.filter(function (r) { return checked[idxOf(r)]; });
-      if (!tgt.length) { toast('상품을 선택해 주세요.', false); return; }
-      tgt.forEach(function (r) { storeOn[idxOf(r)] = on; });
-      toast('선택 상품을 스토어 ' + (on ? 'ON' : 'OFF') + ' 했습니다.', true);
-      renderUpModal();
+    function renderUpList() {
+      if (!upBody) return;
+      var ups = currentUp();
+      if (upCount) upCount.textContent = ups.length;
+      upBody.innerHTML = ups.length
+        ? ups.map(function (r) { return '<li><span class="ul-thumb"></span><span class="ul-name">' + nameOf(r) + '</span><span class="ul-badge">▲ UP</span></li>'; }).join('')
+        : '<li class="ul-empty">UP한 상품이 없습니다.</li>';
     }
-    var upStoreOn = document.getElementById('upStoreOn'), upStoreOff = document.getElementById('upStoreOff');
-    if (upStoreOn) upStoreOn.addEventListener('click', function () { applyStore(true); });
-    if (upStoreOff) upStoreOff.addEventListener('click', function () { applyStore(false); });
-    function openUp() { renderUpModal(); if (upModal) upModal.classList.add('open'); }
+    function openUp() { renderUpList(); if (upModal) upModal.classList.add('open'); }
     function closeUp() { if (upModal) upModal.classList.remove('open'); }
     var btnUp = document.getElementById('btnUpList');
     if (btnUp) btnUp.addEventListener('click', openUp);
@@ -1569,31 +1442,27 @@
     if (upClose) upClose.addEventListener('click', closeUp);
     if (upModal) upModal.addEventListener('click', function (e) { if (e.target === upModal) closeUp(); });
 
-    // ---- 삭제 확인 모달 ----
+    // ----- 삭제 확인 모달 -----
     var delModal = document.getElementById('deleteModal');
     var delName = document.getElementById('delName');
     var pending = null;
-    function askDelete(row) { pending = row; if (delName) delName.textContent = (row.querySelector('.pr-name-input') || {}).value || '상품'; if (delModal) delModal.classList.add('open'); }
+    function askDelete(row) { pending = row; if (delName) delName.textContent = nameOf(row); if (delModal) delModal.classList.add('open'); }
     function closeDel() { if (delModal) delModal.classList.remove('open'); pending = null; }
     order.forEach(function (r) { var b = r.querySelector('.pr-del'); if (b) b.addEventListener('click', function () { askDelete(r); }); });
     var delCancel = document.getElementById('delCancel'), delConfirm = document.getElementById('delConfirm');
     if (delCancel) delCancel.addEventListener('click', closeDel);
     if (delModal) delModal.addEventListener('click', function (e) { if (e.target === delModal) closeDel(); });
     if (delConfirm) delConfirm.addEventListener('click', function () {
-      if (pending) { var nm = (pending.querySelector('.pr-name-input') || {}).value || '상품'; doRemove(pending); toast('‘' + nm + '’ 을(를) 방송 리스트에서 제거했습니다. (비즈센터 상품은 유지)', true); }
+      if (pending) { var nm = nameOf(pending); doRemove(pending); toast('‘' + nm + '’ 을(를) 방송 리스트에서 제거했습니다. (비즈센터 상품은 유지)', true); }
       closeDel();
     });
-    function doRemove(row) {
-      var k = upOrder.indexOf(row); if (k >= 0) upOrder.splice(k, 1);
-      if (row && row.parentNode) row.parentNode.removeChild(row);
-      renderPreview(); renderUpModal();
-    }
 
-    // ---- 데모 되감기용 전체 복원 ----
-    function restoreRows() { order.forEach(function (n) { listEl.appendChild(n); }); resetUpState(); }
+    function doRemove(row) { if (row && row.parentNode) row.parentNode.removeChild(row); renderUpList(); }
+    // 데모 되감기용 — 모든 상품 원래 순서로 복원(노드 재삽입 → 리스너 보존)
+    function restoreRows() { order.forEach(function (n) { listEl.appendChild(n); }); renderUpList(); }
     window.__gripRestoreRows = restoreRows;
 
-    resetUpState();   // 초기: 기본 UP(앞 3개) + 프리뷰/모달 렌더
+    renderUpList();
   })();
 
   // ============ PRD 모드 + 자동 데모 (기능별 전환) ============
@@ -1716,49 +1585,6 @@
         { tag: '제거', t: '<b>[제거]</b> → 방송 리스트에서 상품이 사라지고 <b>성공 토스트</b>가 표시됩니다.', target: function () { return q('.product-list'); }, act: function () { var c = document.getElementById('delConfirm'); if (c) c.click(); } },
         { tag: 'UP 목록 자동 반영', t: '상단 <b>[UP한 상품 목록]</b>을 열면, 방금 제거한 상품이 <b>UP 목록에서도 자동으로</b> 빠져 있습니다.', target: function () { return q('#upListModal .modal'); }, act: function () { var b = document.getElementById('btnUpList'); if (b) b.click(); } },
         { tag: '비즈센터 미반영', t: '단, <b>비즈센터(라이브 방송 상품 설정)</b>에서는 삭제되지 않습니다 — 스튜디오 방송 노출만 제어합니다.', target: function () { return q('.head-btns'); }, act: function () { var c = document.getElementById('upListClose'); if (c) c.click(); } }
-      ]
-    });
-
-    // ===== 기능 3: UP 상품 노출·관리 =====
-    FEATURES.push({
-      id: 'up', name: 'UP 상품 노출·관리 (최대 5개)',
-      overviewHTML:
-        '<div class="ov-title">🎯 과제 개요</div>' +
-        '<span class="prd-k2">과제의 목적</span>' +
-        '<p>셀러가 방송 화면에 노출할 상품을 <b>UP</b>으로 지정하고, <b>UP한 순서대로</b> 모바일 프리뷰에 노출한다. 노출 상품은 <b>최대 5개</b>.</p>' +
-        '<span class="prd-k2">동작 정의</span>' +
-        '<p>① 상품 행의 <b>▲ UP</b> 버튼으로 노출 지정(토글) · ② UP한 상품은 <b>좌측 모바일 프리뷰</b>에 반영 · ③ <b>최대 5개</b>, UP한 순서대로 <b>가로 카드 + 가로 스크롤</b>로 노출 · ④ <b>[UP한 상품 목록]</b> 모달에 UP 순서대로 이미지·상품번호·수량과 함께 표시.</p>' +
-        '<span class="prd-k2">비고</span>' +
-        '<p>상품을 방송 리스트에서 삭제하면 UP 목록·프리뷰에서도 자동 제거된다(→ 기능: 상품 삭제).</p>',
-      flowHTML:
-        '<span class="prd-k2">검증 플로우 · UP 노출</span>' +
-        '<div class="fpath">' +
-          '<div class="fpath-h"><span class="fpath-tag a">경로</span> 상품 UP → 프리뷰 노출</div>' +
-          '<div class="frow"><span class="fnode">상품 행 ▲ UP</span><span class="farr">→</span><span class="fnode">활성화(코랄)</span><span class="farr">→</span><span class="fnode">모바일 프리뷰에 UP 순서대로 카드 추가</span></div>' +
-          '<div class="fdec">현재 UP한 상품 &lt; 5개 ?</div>' +
-          '<div class="fbranch"><span class="fout ok">예 → UP 반영(가로 스크롤로 확인)</span><span class="fout no">아니오 → UP 불가 · 안내 토스트(최대 5개)</span></div>' +
-        '</div>' +
-        '<div class="fmerge">↓ 공통</div>' +
-        '<div class="fnode final">🗂 [UP한 상품 목록] 모달 = UP한 순서대로 이미지·상품번호·점유/주문/재고 표시 + 스토어 ON/OFF 일괄 제어</div>',
-      prd: [
-        { n: 1, target: '.btn-up', title: 'UP 지정 & 프리뷰 노출', tag: '노출 · 최대 5개',
-          def: '상품을 방송 화면에 노출하도록 UP으로 지정.',
-          features: ['상품 행 <b>▲ UP</b> 버튼 토글로 노출 지정(활성 시 코랄).', 'UP한 상품은 <b>좌측 모바일 프리뷰</b>에 <b>UP한 순서대로</b> 노출.', '프리뷰는 <b>가로 카드 + 가로 스크롤</b>, <b>최대 5개</b>.', '6개째 UP 시도 시 제한 · 안내 토스트.'] },
-        { n: 2, target: '#btnUpList', title: 'UP한 상품 목록', tag: '순서 · 관리',
-          def: 'UP한 상품을 순서대로 확인·관리하는 모달.',
-          features: ['<b>UP한 순서대로</b> 상품 이미지·상품명·상품번호·점유/주문/재고 표시.', '전체 선택 + 항목 체크.', '<b>스토어 ON / 스토어 OFF</b>로 선택 상품 일괄 제어.'] },
-        { n: 3, target: '.sales-title', title: '노출 순서·정합', tag: '정합',
-          def: '리스트·프리뷰·모달의 UP 상태가 항상 일치.',
-          features: ['UP 토글·삭제 즉시 프리뷰와 목록에 동시 반영.', '상품 삭제 시 UP 목록·프리뷰에서도 자동 제거.'] }
-      ],
-      steps: [
-        { tag: '시작', t: '방송에 상품을 노출하는 <b>UP</b> 로직을 시연합니다 — 최대 5개 · UP한 순서대로 노출.', target: function () { return q('#poStrip'); }, act: function () { resetUI(); } },
-        { tag: 'UP 지정', t: '상품 행의 <b>▲ UP</b> 버튼으로 방송에 노출할 상품을 지정합니다.', target: function () { var r = rowN(3); return r ? r.querySelector('.btn-up') : null; } },
-        { tag: '프리뷰 반영', t: 'UP하면 좌측 <b>모바일 프리뷰</b>에 상품 카드가 <b>UP한 순서대로</b> 추가됩니다.', target: function () { return q('#poStrip'); }, act: function () { var r = rowN(3); var b = r ? r.querySelector('.btn-up') : null; if (b && !b.classList.contains('on')) b.click(); } },
-        { tag: '가로 스크롤 · 최대 5개', t: 'UP한 상품은 <b>최대 5개</b>, 프리뷰에서 <b>가로 스크롤</b>로 순서대로 확인합니다.', target: function () { return q('#poStrip'); }, act: function () { var r = rowN(4); var b = r ? r.querySelector('.btn-up') : null; if (b && !b.classList.contains('on')) b.click(); var s = q('#poStrip'); if (s) s.scrollLeft = s.scrollWidth; } },
-        { tag: '최대 5개 제한', t: '6개째 UP을 시도하면 <b>최대 5개</b> 제한으로 막히고 안내 토스트가 뜹니다.', target: function () { var r = rowN(5); return r ? r.querySelector('.btn-up') : null; }, act: function () { var r = rowN(5); var b = r ? r.querySelector('.btn-up') : null; if (b && !b.classList.contains('on')) b.click(); } },
-        { tag: 'UP한 상품 목록', t: '상단 <b>[UP한 상품 목록]</b>에는 <b>UP한 순서대로</b> 상품이 이미지·상품번호·수량과 함께 표시됩니다.', target: function () { return q('#upListModal .modal'); }, act: function () { var b = document.getElementById('btnUpList'); if (b) b.click(); } },
-        { tag: '스토어 일괄 제어', t: '목록에서 상품을 선택해 <b>스토어 ON / OFF</b>로 일괄 제어할 수 있습니다.', target: function () { return q('#upListModal .modal-foot'); }, act: function () { var f = document.getElementById('upListClose'); /* keep open */ } }
       ]
     });
 
