@@ -2199,7 +2199,7 @@
         { tag: '검색 열기', t: '채팅 탭 상단 <b>🔍</b>로 닉네임 검색을 엽니다. (닉네임 클릭으로도 바로 필터)', target: function () { return q('#chatSearchBtn'); }, act: function () { var b = document.getElementById('chatSearchBtn'); if (b && !(document.getElementById('chatSearchBar') || {}).classList.contains('on')) b.click(); } },
         { tag: '유사 자동완성', t: '닉네임 일부만 입력하면(예: <b>“별”</b>) 포함 유저가 <b>자동완성</b>으로 뜹니다(건수 포함).', target: function () { return q('#chatAC'); }, act: function () { var i = document.getElementById('chatSearchInput'); if (i) { i.value = '별'; i.dispatchEvent(new Event('input', { bubbles: true })); } } },
         { tag: '유저 필터 · 건수', t: '선택 / Enter → <b>별빛캣</b> 메시지만 노출되고 상단에 <b>“메시지 N건”</b>이 표시됩니다.', target: function () { return q('#chatFilterStrip'); }, act: function () { var i = document.getElementById('chatSearchInput'); if (i) i.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })); } },
-        { tag: '실시간 복귀', t: '상단 <b>✕</b>(검색 닫기)를 누르면 다시 <b>실시간 채팅</b>으로 — 최신 메시지로 자동 이동합니다.', target: function () { return q('#cfClose'); }, act: function () { var c = document.getElementById('cfClose'); if (c) c.click(); } }
+        { tag: '실시간 복귀', t: '검색(<b>🔍</b>)을 닫으면 다시 <b>실시간 채팅</b>으로 — 최신 메시지로 자동 이동합니다.', target: function () { return q('#chatFeed'); }, act: function () { var sb = document.getElementById('chatSearchBar'), b = document.getElementById('chatSearchBtn'); if (b && sb && sb.classList.contains('on')) b.click(); else { var c = document.getElementById('cfClose'); if (c) c.click(); } } }
       ]
     });
 
