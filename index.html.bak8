@@ -748,49 +748,6 @@
   .sidebar.collapsed .sidebar-bottom .nav-item { padding:10px 0; }
   .sidebar.collapsed .profile { justify-content:center; }
   .sidebar.collapsed .profile-meta { display:none; }
-  /* ===== 채팅 메시지 박스 + ⋮ 메뉴 (운영 화면형) ===== */
-  .chat-feed { gap:7px; }
-  .cm { display:flex; align-items:center; gap:8px; background:#f7f8fa; border-radius:9px; padding:9px 11px; font-size:13.5px; }
-  .cm.me { background:var(--grip-soft-2); }
-  .cm-line { flex:1; min-width:0; line-height:1.45; }
-  .cm-nick { font-weight:800; margin-right:6px; cursor:pointer; }
-  .cm-nick:hover { text-decoration:underline; }
-  .cm-text { color:#2b2d34; }
-  .cm-ts { font-size:10.5px; color:#b6bac2; flex:0 0 auto; }
-  .cm-menu { flex:0 0 auto; width:22px; height:22px; border:0; background:none; color:#b6bac2; font-size:16px; line-height:1; cursor:pointer; border-radius:5px; padding:0; }
-  .cm-menu:hover { background:#eceef1; color:#5c606b; }
-  /* 공용 팝업 메뉴 (메시지 ⋮ / Q&A ⋮) */
-  .chat-menu { display:none; position:fixed; z-index:120; background:#fff; border:1px solid #e3e4e8; border-radius:11px; box-shadow:0 12px 34px rgba(20,22,30,.18); padding:5px; min-width:150px; }
-  .chat-menu.on { display:block; }
-  .chat-menu button { display:block; width:100%; text-align:left; border:0; background:none; padding:11px 13px; font-size:14px; color:#2b2d34; cursor:pointer; border-radius:7px; white-space:nowrap; }
-  .chat-menu button:hover { background:#f4f5f7; }
-  .chat-menu button[data-a="del"] { color:var(--grip); }
-  /* 탭 알림 점 */
-  .tab-dot { display:none; position:absolute; top:-1px; right:-9px; width:6px; height:6px; border-radius:50%; background:var(--grip); }
-  .tab-dot.on { display:block; }
-  /* Q&A 패널 */
-  .qa-panel { display:none; flex:1; min-height:0; overflow-y:auto; padding:6px 2px; flex-direction:column; gap:9px; }
-  .qa-empty { margin:auto; text-align:center; color:#bcbfc7; font-size:13px; line-height:1.7; }
-  .qa-item { background:#f7f8fa; border-radius:10px; padding:11px 12px; }
-  .qa-head { display:flex; align-items:flex-start; gap:8px; }
-  .qa-rows { flex:1; min-width:0; display:flex; flex-direction:column; gap:6px; }
-  .qa-row { display:flex; align-items:flex-start; gap:8px; font-size:13.5px; }
-  .qa-ic { width:20px; height:20px; border-radius:6px; flex:0 0 auto; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:#fff; }
-  .qa-ic.q { background:#5b6ef5; } .qa-ic.a { background:#3b3f47; }
-  .qa-txt { color:#2b2d34; line-height:1.45; }
-  .qa-a.pending .qa-txt { color:#a0a4ad; }
-  .qa-time { font-size:11px; color:#b6bac2; flex:0 0 auto; }
-  .qa-menu { border:0; background:none; color:#b6bac2; font-size:16px; cursor:pointer; padding:0 2px; flex:0 0 auto; }
-  .qa-ans-edit { display:flex; gap:6px; }
-  .qa-ans-input { flex:1; min-width:0; border:1px solid #e3e4e8; border-radius:7px; padding:7px 9px; font-size:13px; outline:none; }
-  .qa-ans-input:focus { border-color:var(--grip); }
-  .qa-ans-ok { border:0; background:var(--grip); color:#fff; border-radius:7px; padding:0 12px; font-size:13px; font-weight:700; cursor:pointer; flex:0 0 auto; }
-  .tab-empty { display:none; flex:1; align-items:center; justify-content:center; color:#bcbfc7; font-size:13px; }
-  /* 프리뷰 Q&A 띠지 */
-  .ov-qa { display:none; position:absolute; left:12px; bottom:78px; max-width:78%; align-items:center; gap:6px; background:rgba(20,22,30,.55); color:#fff; font-size:12px; font-weight:600; padding:7px 11px; border-radius:18px; }
-  .ov-qa.on { display:inline-flex; }
-  .ov-qa .ovq-q { background:#5b6ef5; color:#fff; font-weight:800; font-size:10px; padding:1px 6px; border-radius:9px; }
-  .ov-qa .ovq-arr { margin-left:2px; opacity:.85; font-size:15px; }
 </style>
 </head>
 <body>
@@ -887,7 +844,6 @@
           </div>
 
           <div class="ov-chat"></div>
-          <div class="ov-qa" id="ovQa"></div>
           <div class="po-strip" id="poStrip"></div>
         </div>
 
@@ -1186,11 +1142,11 @@
 
       <div class="card chat-card">
         <div class="chat-tabs">
-          <button class="chat-tab active" data-tab="chat">채팅</button>
-          <button class="chat-tab" data-tab="notice">공지</button>
-          <button class="chat-tab" data-tab="qa">Q&amp;A<span class="tab-dot" id="qaDot"></span></button>
-          <button class="chat-tab" data-tab="faq">FAQ</button>
-          <button class="chat-tab" data-tab="memo">메모</button>
+          <button class="chat-tab active">채팅</button>
+          <button class="chat-tab">공지</button>
+          <button class="chat-tab">Q&amp;A</button>
+          <button class="chat-tab">FAQ</button>
+          <button class="chat-tab">메모</button>
           <button class="chat-search-btn" id="chatSearchBtn" title="채팅 검색" aria-label="채팅 검색">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.2-3.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           </button>
@@ -1215,8 +1171,6 @@
           <div class="chat-feed" id="chatFeed"></div>
           <button class="chat-scroll" id="chatScrollBtn" aria-label="맨 아래로">↓</button>
         </div>
-        <div class="qa-panel" id="qaPanel"></div>
-        <div class="tab-empty" id="tabEmpty">등록된 내용이 없습니다.</div>
         <button class="chat-newbar" id="chatNewBar"></button>
         <div class="chat-input-row">
           <button class="chat-gear">
@@ -1804,22 +1758,32 @@
     applyMode('limited');   // 초기: 한정판매 모드
   })();
 
-  // ============ 채팅 — 실시간 스트림 + 닉네임 검색 + 음소거/답변(Q&A) (GRIPPGM-3224 외) ============
+  // ============ 채팅 — 실시간 스트림 + 닉네임 검색 (GRIPPGM-3224) ============
   (function () {
     var feed = document.getElementById('chatFeed');
     if (!feed) return;
     var U = [
-      { n: '치즈치즈', c: '#2f6bd6' }, { n: '민수킴', c: '#2f6bd6' }, { n: '하늘이', c: '#2f6bd6' },
-      { n: '준영파크', c: '#2f6bd6' }, { n: '소윤최', c: '#2f6bd6' }, { n: '템즈', c: '#2f6bd6' },
-      { n: '서준박', c: '#2f6bd6' }, { n: '유나리', c: '#2f6bd6' }, { n: '별빛캣', c: '#2f6bd6' },
-      { n: '찐빵', c: '#2f6bd6' }, { n: '모니터를좋아해', c: '#e0264a', me: true }
+      { n: '치즈치즈', b: '구매자', bc: '#3B82F6', bb: '#EEF4FF', c: '#534AB7' },
+      { n: '민수킴', c: '#0F6E56' },
+      { n: '하늘이', b: 'VIP', bc: '#DB2777', bb: '#FDF2F8', c: '#993C1D' },
+      { n: '준영파크', c: '#185FA5' },
+      { n: '소윤최', c: '#534AB7' },
+      { n: '도윤이', c: '#92400E' },
+      { n: '서준박', c: '#185FA5' },
+      { n: '유나리', b: 'VIP', bc: '#DB2777', bb: '#FDF2F8', c: '#993556' },
+      { n: '별빛캣', c: '#166534' },
+      { n: '찐빵', b: '구매자', bc: '#3B82F6', bb: '#EEF4FF', c: '#92400E' },
+      { n: '나', b: '관리자', bc: '#fff', bb: '#f5375b', c: '#c0264a', me: true }
     ];
     var ME = U.length - 1;
     var MSGS = [
-      '이거 얼마예요?', '좀만 싸게요', '재입고 언제요?', '품절이에요?', '예뻐요 ㅠㅠ', '배송 빠른가요?',
-      '색상 뭐뭐 있어요?', '지금 주문하면 언제 와요?', '쿠폰 되나요?', '사이즈 있어요?', '실물이 더 낫네요',
-      '찜했어요', '가격 착하다', '재구매합니다', '다음 방송 언제요?', '튜눞', 'ㅋㅋㅋ', '좀만 더요',
-      '이거 세트로도 팔아요?', '리뷰 보고 왔어요', '방금 결제했어요', '교환 되나요?', '적립금 써도 돼요?', '득템!'
+      '한정 특가 판매 주문 성공!', '배송 언제 출발하나요?', '교환 신청 가능한가요?', '사이즈 교환 접수 확인 부탁드려요',
+      '색상 교환 가능 여부 문의', '이전 주문 잘 받았습니다 감사해요', '재입고 알림 아직 안 왔어요', '결제 완료! 주문 확인 부탁요',
+      '상품 너무 좋았어요 추천합니다', '반품 접수 방법 알려주세요', '다음 특가 일정 궁금합니다', '포인트 적립 확인 부탁드려요',
+      '품절 상품 재입고 언제쯤?', '택배 송장번호 알려주세요', '주문 색상이 다른 것 같아요', '적립금 사용법이 궁금해요',
+      '오늘 라이브 특가 있나요?', '구매 인증합니다!', '혹시 세트 할인 있어요?', '사이즈 추천 부탁드려요',
+      '이거 리뷰 보고 왔어요', '가격이 너무 착해요', '빠른 배송 감사합니다', '색상 실물이 더 이쁘네요',
+      '재구매합니다 역시 좋아요', '품절되기 전에 득템!', '친구한테도 추천했어요', '스트리머님 추천 믿어요'
     ];
 
     var searchBtn = document.getElementById('chatSearchBtn');
@@ -1833,147 +1797,63 @@
     var input = document.getElementById('chatInput');
     var sendBtn = document.getElementById('chatSend');
     var ov = document.querySelector('.ov-chat');
-    var ovQa = document.getElementById('ovQa');
-    var feedWrap = document.querySelector('.chat-feed-wrap');
-    var inputRow = document.querySelector('.chat-input-row');
-    var qaPanel = document.getElementById('qaPanel');
-    var tabEmpty = document.getElementById('tabEmpty');
-    var qaDot = document.getElementById('qaDot');
-    var tabs = Array.prototype.slice.call(document.querySelectorAll('.chat-tab'));
 
     var allMsgs = [], filterUser = null, newCount = 0, atBottom = true, searchOpen = false;
-    var muted = {}, qaList = [], activeTab = 'chat', mid = 0;
-    var rnd = 1;
+    var rnd = 1; // 결정적 유사난수(리셋 시 동일 흐름)
     function rand(n) { rnd = (rnd * 9301 + 49297) % 233280; return Math.floor(rnd / 233280 * n); }
     function now() { var d = new Date(), h = d.getHours(), m = d.getMinutes(), ap = h >= 12 ? '오후' : '오전'; h = h % 12 || 12; return ap + ' ' + h + ':' + (m < 10 ? '0' : '') + m; }
-    function ago(t) { var s = Math.floor((Date.now() - t) / 1000); if (s < 60) return '방금 전'; var m = Math.floor(s / 60); if (m < 60) return m + '분 전'; return Math.floor(m / 60) + '시간 전'; }
-    function toast(msg, ok) { if (window.__gripToast) window.__gripToast(msg, ok); }
+    function badge(u, sm) { if (!u.b) return ''; return '<span class="cm-badge' + (sm ? ' sm' : '') + '" style="background:' + u.bb + ';color:' + u.bc + '">' + u.b + '</span>'; }
 
     function msgHTML(m) {
       var u = U[m.uid];
-      var menu = u.me ? '' : '<button class="cm-menu" data-mid="' + m.id + '" aria-label="메뉴">⋮</button>';
-      return '<div class="cm' + (u.me ? ' me' : '') + '" data-mid="' + m.id + '"><div class="cm-line"><span class="cm-nick" data-uid="' + m.uid + '" style="color:' + u.c + '">' + u.n + '</span><span class="cm-text">' + m.text + '</span></div><span class="cm-ts">' + m.time + '</span>' + menu + '</div>';
+      return '<div class="cm' + (u.me ? ' me' : '') + '" data-uid="' + m.uid + '">' + badge(u, true) +
+        '<span class="cm-nick" data-uid="' + m.uid + '" style="color:' + u.c + '">' + u.n + '</span>' +
+        '<span class="cm-text">' + m.text + '</span><span class="cm-ts">' + m.time + '</span></div>';
     }
-    function visible(m) { return !muted[m.uid]; }
     function scrollBottom() { requestAnimationFrame(function () { feed.scrollTop = feed.scrollHeight; }); }
     function renderAll() {
-      var list = allMsgs.filter(visible);
-      if (filterUser !== null) list = list.filter(function (m) { return m.uid === filterUser; });
+      var list = filterUser !== null ? allMsgs.filter(function (m) { return m.uid === filterUser; }) : allMsgs;
       feed.innerHTML = list.map(msgHTML).join('');
     }
     function renderOverlay() {
       if (!ov) return;
-      var last = allMsgs.filter(visible).slice(-4);
-      ov.innerHTML = last.map(function (m) { var u = U[m.uid]; return '<div class="ovc-line"><b style="color:' + (u.me ? '#ff9bb2' : '#8fd0ff') + '">' + u.n + '</b> ' + m.text + '</div>'; }).join('');
+      var last = allMsgs.slice(-4);
+      ov.innerHTML = last.map(function (m) { var u = U[m.uid]; return '<div class="ovc-line"><b style="color:' + (u.me ? '#ff9bb2' : lighten(u.c)) + '">' + u.n + '</b> ' + m.text + '</div>'; }).join('');
     }
-    function cmNode(m) { var d = document.createElement('div'); d.innerHTML = msgHTML(m); return d.firstChild; }
+    function lighten() { return '#dfe3ea'; } // 오버레이 닉네임은 밝게 통일(가독성)
+
     function addMsg(m) {
-      m.id = ++mid; allMsgs.push(m);
+      allMsgs.push(m);
       renderOverlay();
-      if (!visible(m)) return;                         // 음소거 유저는 노출 안 함
-      if (activeTab !== 'chat') return;
       if (filterUser !== null) {
         if (m.uid === filterUser) { feed.appendChild(cmNode(m)); scrollBottom(); }
         else { newCount++; newBar.textContent = '전체 채팅 +' + newCount + '개의 새 메시지'; newBar.classList.add('on'); }
-      } else { feed.appendChild(cmNode(m)); if (atBottom) scrollBottom(); }
+      } else {
+        feed.appendChild(cmNode(m));
+        if (atBottom) scrollBottom();
+      }
     }
-    function liveMsg() { addMsg({ uid: rand(U.length - 1), text: MSGS[rand(MSGS.length)], time: now() }); }
-    var timer = setInterval(liveMsg, 2400);
-    function initChat() { allMsgs = []; for (var i = 0; i < 16; i++) allMsgs.push({ id: ++mid, uid: rand(U.length - 1), text: MSGS[rand(MSGS.length)], time: now() }); renderAll(); renderOverlay(); scrollBottom(); }
+    function cmNode(m) { var d = document.createElement('div'); d.innerHTML = msgHTML(m); return d.firstChild; }
+
+    function liveMsg() { addMsg({ uid: rand(U.length - 1), text: MSGS[rand(MSGS.length)], time: now() }); } // ME 제외
+    var timer = setInterval(liveMsg, 2200);
+
+    function initChat() { allMsgs = []; filterUser = null; newCount = 0; for (var i = 0; i < 16; i++) allMsgs.push({ uid: rand(U.length - 1), text: MSGS[rand(MSGS.length)], time: now() }); renderAll(); renderOverlay(); scrollBottom(); }
 
     feed.addEventListener('scroll', function () { var gap = feed.scrollHeight - feed.scrollTop - feed.clientHeight; atBottom = gap < 40; if (scrollBtn) scrollBtn.classList.toggle('on', !atBottom); });
     if (scrollBtn) scrollBtn.addEventListener('click', scrollBottom);
 
-    // ---- 메시지 ⋮ 메뉴 (유저 대상: 음소거/답변하기) ----
-    var cmenu = document.createElement('div'); cmenu.className = 'chat-menu'; document.body.appendChild(cmenu);
-    var menuMsg = null;
-    function findMsg(id) { for (var i = 0; i < allMsgs.length; i++) if (allMsgs[i].id === id) return allMsgs[i]; return null; }
-    function openMenu(btn, m) {
-      menuMsg = m;
-      cmenu.innerHTML = '<button data-a="mute-end">방송 끝까지 음소거</button><button data-a="mute-5">5분 음소거</button><button data-a="answer">답변하기</button>';
-      var r = btn.getBoundingClientRect();
-      cmenu.style.top = Math.min(r.bottom + 4, window.innerHeight - 130) + 'px';
-      cmenu.style.left = Math.min(r.left - 150, window.innerWidth - 172) + 'px';
-      cmenu.classList.add('on');
-    }
-    function closeMenu() { cmenu.classList.remove('on'); menuMsg = null; }
-    cmenu.addEventListener('click', function (e) {
-      var b = e.target.closest('button'); if (!b || !menuMsg) return;
-      var a = b.getAttribute('data-a'), m = menuMsg, u = U[m.uid];
-      if (a === 'mute-end' || a === 'mute-5') { muted[m.uid] = true; toast('‘' + u.n + '’ 님을 ' + (a === 'mute-5' ? '5분간' : '방송 끝까지') + ' 음소거했습니다.', true); renderAll(); renderOverlay(); }
-      else if (a === 'answer') { registerQA(m); toast('Q&A에 질문을 등록했습니다.', true); }
-      closeMenu();
-    });
-    feed.addEventListener('click', function (e) {
-      var mb = e.target.closest ? e.target.closest('.cm-menu') : null;
-      if (mb) { var m = findMsg(parseInt(mb.getAttribute('data-mid'), 10)); if (m) openMenu(mb, m); return; }
-      var nk = e.target.closest ? e.target.closest('.cm-nick') : null;
-      if (nk) { openSearch(true); applyFilter(parseInt(nk.getAttribute('data-uid'), 10)); }
-    });
-    document.addEventListener('click', function (e) { if (!cmenu.contains(e.target) && !(e.target.closest && e.target.closest('.cm-menu'))) closeMenu(); });
+    // 닉네임 클릭 → 필터
+    feed.addEventListener('click', function (e) { var nk = e.target.closest ? e.target.closest('.cm-nick') : null; if (!nk) return; openSearch(true); applyFilter(parseInt(nk.getAttribute('data-uid'), 10)); });
 
-    // ---- Q&A ----
-    function registerQA(m) { qaList.push({ uid: m.uid, q: m.text, a: null, t: Date.now(), answering: false }); updateQADot(true); renderQA(); updateOvQA(); }
-    function updateOvQA() {
-      if (!ovQa) return;
-      if (!qaList.length) { ovQa.classList.remove('on'); ovQa.innerHTML = ''; return; }
-      var last = qaList[qaList.length - 1];
-      ovQa.innerHTML = '<span class="ovq-q">Q</span> ' + last.q + ' <span class="ovq-arr">›</span>';
-      ovQa.classList.add('on');
-    }
-    function updateQADot(has) { if (qaDot) qaDot.classList.toggle('on', has ? true : qaList.length > 0); }
-    function renderQA() {
-      if (!qaPanel) return;
-      if (!qaList.length) { qaPanel.innerHTML = '<div class="qa-empty">등록된 Q&A가 없습니다.<br/>채팅 메시지의 ⋮ → 답변하기로 등록하세요.</div>'; return; }
-      qaPanel.innerHTML = qaList.map(function (it, i) {
-        var u = U[it.uid];
-        var ansRow = it.answering
-          ? '<div class="qa-ans-edit"><input class="qa-ans-input" data-i="' + i + '" placeholder="답변을 입력하세요" value="' + (it.a || '') + '"/><button class="qa-ans-ok" data-i="' + i + '">등록</button></div>'
-          : (it.a ? '<div class="qa-row qa-a"><span class="qa-ic a">A</span><span class="qa-txt">' + it.a + '</span></div>' : '<div class="qa-row qa-a pending"><span class="qa-ic a">A</span><span class="qa-txt">답변 대기 중</span></div>');
-        return '<div class="qa-item" data-i="' + i + '"><div class="qa-head"><div class="qa-rows"><div class="qa-row"><span class="qa-ic q">Q</span><span class="qa-txt"><b style="color:' + u.c + '">' + u.n + '</b> ' + it.q + '</span></div>' + ansRow + '</div><span class="qa-time">' + ago(it.t) + '</span><button class="qa-menu" data-i="' + i + '">⋮</button></div></div>';
-      }).join('');
-    }
-    // Q&A 아이템 메뉴
-    var qmenu = document.createElement('div'); qmenu.className = 'chat-menu'; document.body.appendChild(qmenu);
-    var qmenuI = -1;
-    if (qaPanel) qaPanel.addEventListener('click', function (e) {
-      var mb = e.target.closest('.qa-menu');
-      if (mb) { qmenuI = parseInt(mb.getAttribute('data-i'), 10); qmenu.innerHTML = '<button data-a="ans">답변하기</button><button data-a="del">삭제하기</button>'; var r = mb.getBoundingClientRect(); qmenu.style.top = (r.bottom + 4) + 'px'; qmenu.style.left = Math.min(r.left - 120, window.innerWidth - 142) + 'px'; qmenu.classList.add('on'); return; }
-      var ok = e.target.closest('.qa-ans-ok');
-      if (ok) { var i = parseInt(ok.getAttribute('data-i'), 10); var inp = qaPanel.querySelector('.qa-ans-input[data-i="' + i + '"]'); qaList[i].a = (inp.value || '').trim() || null; qaList[i].answering = false; renderQA(); updateOvQA(); return; }
-    });
-    if (qaPanel) qaPanel.addEventListener('keydown', function (e) { if (e.key === 'Enter') { var inp = e.target.closest('.qa-ans-input'); if (inp) { var i = parseInt(inp.getAttribute('data-i'), 10); qaList[i].a = (inp.value || '').trim() || null; qaList[i].answering = false; renderQA(); } } });
-    qmenu.addEventListener('click', function (e) {
-      var b = e.target.closest('button'); if (!b || qmenuI < 0) return;
-      var a = b.getAttribute('data-a');
-      if (a === 'ans') { qaList[qmenuI].answering = true; renderQA(); var inp = qaPanel.querySelector('.qa-ans-input[data-i="' + qmenuI + '"]'); if (inp) inp.focus(); }
-      else if (a === 'del') { qaList.splice(qmenuI, 1); updateQADot(); renderQA(); updateOvQA(); }
-      qmenu.classList.remove('on'); qmenuI = -1;
-    });
-    document.addEventListener('click', function (e) { if (!qmenu.contains(e.target) && !(e.target.closest && e.target.closest('.qa-menu'))) { qmenu.classList.remove('on'); } });
-
-    // ---- 탭 전환 ----
-    function setTab(name) {
-      activeTab = name;
-      tabs.forEach(function (t) { t.classList.toggle('active', t.getAttribute('data-tab') === name); });
-      var isChat = name === 'chat', isQA = name === 'qa';
-      if (feedWrap) feedWrap.style.display = isChat ? '' : 'none';
-      if (inputRow) inputRow.style.display = isChat ? '' : 'none';
-      if (searchBtn) searchBtn.style.display = isChat ? '' : 'none';
-      if (!isChat) { if (searchBar) searchBar.classList.remove('on'); if (strip) strip.classList.remove('on'); if (newBar) newBar.classList.remove('on'); }
-      if (qaPanel) qaPanel.style.display = isQA ? 'flex' : 'none';
-      if (tabEmpty) tabEmpty.style.display = (!isChat && !isQA) ? 'flex' : 'none';
-      if (isQA) { renderQA(); updateQADot(false); if (qaDot) qaDot.classList.remove('on'); }
-      if (isChat) { renderAll(); scrollBottom(); }
-    }
-    tabs.forEach(function (t) { t.addEventListener('click', function () { setTab(t.getAttribute('data-tab') || 'chat'); }); });
-
-    // ---- 검색 ----
+    // 검색 토글
     function openSearch(on) { searchOpen = on; if (searchBar) searchBar.classList.toggle('on', on); if (searchBtn) searchBtn.classList.toggle('act', on); if (on && si) si.focus(); if (!on) { if (si) si.value = ''; if (acEl) acEl.classList.remove('on'); if (clearBtn) clearBtn.classList.remove('on'); clearFilter(); } }
     if (searchBtn) searchBtn.addEventListener('click', function () { openSearch(!searchOpen); });
+
     if (si) si.addEventListener('input', function () { var v = si.value.trim(); if (clearBtn) clearBtn.classList.toggle('on', v.length > 0); if (v.length > 0) showAC(v); else if (acEl) acEl.classList.remove('on'); });
     if (si) si.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); var v = si.value.trim().toLowerCase(); if (!v) return; for (var i = 0; i < U.length; i++) { if (i !== ME && U[i].n.toLowerCase().indexOf(v) !== -1) { applyFilter(i); break; } } if (acEl) acEl.classList.remove('on'); } });
     if (clearBtn) clearBtn.addEventListener('click', function () { si.value = ''; clearBtn.classList.remove('on'); if (acEl) acEl.classList.remove('on'); clearFilter(); si.focus(); });
+
     function showAC(q) {
       var ql = q.toLowerCase(), matched = [];
       U.forEach(function (u, i) { if (i !== ME && u.n.toLowerCase().indexOf(ql) !== -1) matched.push({ u: u, idx: i, cnt: allMsgs.filter(function (m) { return m.uid === i; }).length }); });
@@ -1982,17 +1862,18 @@
       matched.forEach(function (it) {
         var re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
         var hl = it.u.n.replace(re, '<mark>$1</mark>');
-        html += '<div class="cs-ac-item" data-idx="' + it.idx + '"><span class="cs-ac-av" style="background:#eaf1ff;color:' + it.u.c + '">' + it.u.n.charAt(0) + '</span><span class="cs-ac-name">' + hl + '</span><span class="cs-ac-cnt">' + it.cnt + '건</span></div>';
+        html += '<div class="cs-ac-item" data-idx="' + it.idx + '"><span class="cs-ac-av" style="background:' + (it.u.bb || '#eef1f6') + ';color:' + it.u.c + '">' + it.u.n.charAt(0) + '</span><span class="cs-ac-name">' + hl + ' ' + badge(it.u, false) + '</span><span class="cs-ac-cnt">' + it.cnt + '건</span></div>';
       });
       acEl.innerHTML = html; acEl.classList.add('on');
       acEl.querySelectorAll('.cs-ac-item').forEach(function (el) { el.addEventListener('mousedown', function (ev) { ev.preventDefault(); applyFilter(parseInt(el.getAttribute('data-idx'), 10)); acEl.classList.remove('on'); }); });
     }
+
     function applyFilter(uid) {
       filterUser = uid; newCount = 0; var u = U[uid];
       if (si) si.value = u.n; if (clearBtn) clearBtn.classList.add('on');
-      var av = document.getElementById('cfAvatar'); if (av) { av.style.background = '#eaf1ff'; av.style.color = u.c; av.textContent = u.n.charAt(0); }
+      var av = document.getElementById('cfAvatar'); if (av) { av.style.background = u.bb || '#eef1f6'; av.style.color = u.c; av.textContent = u.n.charAt(0); }
       var cnt = allMsgs.filter(function (m) { return m.uid === uid; }).length;
-      var nm = document.getElementById('cfName'); if (nm) nm.textContent = u.n;
+      var nm = document.getElementById('cfName'); if (nm) nm.innerHTML = u.n + ' ' + badge(u, true);
       var cc = document.getElementById('cfCount'); if (cc) cc.textContent = '메시지 ' + cnt + '건';
       if (strip) strip.classList.add('on'); if (newBar) newBar.classList.remove('on');
       renderAll(); scrollBottom();
@@ -2001,12 +1882,13 @@
     var cfClose = document.getElementById('cfClose'); if (cfClose) cfClose.addEventListener('click', function () { if (si) si.value = ''; if (clearBtn) clearBtn.classList.remove('on'); clearFilter(); });
     if (newBar) newBar.addEventListener('click', function () { if (si) si.value = ''; if (clearBtn) clearBtn.classList.remove('on'); clearFilter(); });
 
-    // ---- 내 메시지 전송 ----
+    // 내 메시지 전송 → 채팅·프리뷰 반영
     function send() { var v = (input.value || '').trim(); if (!v) return; addMsg({ uid: ME, text: v, time: now() }); input.value = ''; if (filterUser !== null) { clearFilter(); if (si) si.value = ''; if (clearBtn) clearBtn.classList.remove('on'); } }
     if (sendBtn) sendBtn.addEventListener('click', send);
     if (input) input.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); send(); } });
 
-    window.__gripChatReset = function () { muted = {}; qaList = []; updateQADot(); updateOvQA(); if (qaPanel) qaPanel.style.display = 'none'; if (tabEmpty) tabEmpty.style.display = 'none'; setTab('chat'); openSearch(false); if (searchBar) searchBar.classList.remove('on'); if (searchBtn) searchBtn.classList.remove('act'); if (si) si.value = ''; if (acEl) acEl.classList.remove('on'); clearFilter(); };
+    // 데모 리셋용
+    window.__gripChatReset = function () { openSearch(false); if (searchBar) searchBar.classList.remove('on'); if (searchBtn) searchBtn.classList.remove('act'); if (si) si.value = ''; if (acEl) acEl.classList.remove('on'); clearFilter(); };
 
     initChat();
   })();
