@@ -343,11 +343,9 @@
   .pi-value-row { display: flex; align-items: baseline; gap: 5px; min-width: 0; }
   .pi-regular-value { font-size: 14px; font-weight: 500; color: var(--t3); text-decoration: line-through; text-decoration-color: #b9bcc4; white-space: nowrap; }
   .pi-discount-value { font-size: 15px; font-weight: 700; color: #20222a; white-space: nowrap; }
-  .pi-discount-badge { display: inline-flex; align-items: center; height: 17px; font-size: 11px; font-weight: 800; color: var(--grip); background: #fdeaef; border-radius: 4px; padding: 0 5px; line-height: 1; white-space: nowrap; flex: 0 0 auto; }
+  .pi-discount-badge { display: inline-flex; align-items: center; height: 16px; font-size: 11px; font-weight: 700; color: var(--grip); background: #fdeaef; border-radius: 4px; padding: 0 5px; line-height: 1; white-space: nowrap; align-self: center; }
   .pi-cell.pi-cell--live { flex: 1.3 1 0; }
-  .pi-cell.pi-cell--discount { flex: 1.45 1 0; }
-  .pi-cell.pi-cell--discount .pi-discount-input { width: 54px; }
-  .pi-live-field { display: flex; align-items: center; gap: 4px; flex-wrap: nowrap; }
+  .pi-live-field { display: flex; align-items: baseline; gap: 3px 4px; flex-wrap: wrap; }
   .pi-live-input, .pi-regular-input, .pi-discount-input { width: 60px; border: 1px solid var(--field-border); border-radius: 6px; background: #fff; color: #20222a; font-family: inherit; font-size: 14px; font-weight: 800; text-align: right; padding: 4px 6px; line-height: 1.2; letter-spacing: -.01em; outline: none; transition: border-color .12s, box-shadow .12s; }
   .pi-live-input:hover, .pi-regular-input:hover, .pi-discount-input:hover { border-color: #c7cad1; }
   .pi-live-input:focus, .pi-regular-input:focus, .pi-discount-input:focus { border-color: #b6bac2; box-shadow: 0 0 0 3px rgba(140,144,151,.14); }
@@ -440,11 +438,11 @@
   /* ---------- Right: chat ---------- */
   .chat-card { display: flex; flex-direction: column; height: 430px; }
   .chat-tabs {
-    display: flex; align-items: center; gap: 13px;
-    padding: 15px 15px 0; position: relative;
+    display: flex; align-items: center; gap: 20px;
+    padding: 16px 18px 0; position: relative;
     border-bottom: 1px solid var(--border);
   }
-  .chat-tab { font-size: 13.5px; font-weight: 600; color: var(--t3); padding-bottom: 13px; border: 0; background: none; position: relative; white-space: nowrap; flex: 0 0 auto; cursor: pointer; }
+  .chat-tab { font-size: 14.5px; font-weight: 600; color: var(--t3); padding-bottom: 13px; border: 0; background: none; position: relative; }
   .chat-tab.active { color: #1d1f25; font-weight: 700; }
   .chat-tab.active::after { content:""; position:absolute; left:0; right:0; bottom:-1px; height:2px; background:#1d1f25; border-radius:2px; }
   .chat-ext { margin-left: auto; color: #b6bac2; padding-bottom: 11px; background:none; border:0; }
@@ -690,7 +688,7 @@
   .pfs-btn .pfs-caret { margin-top:2px; }
   .pfs-item { line-height:1.45; }
   /* ===== 채팅: 실시간 스트림 + 닉네임 검색 ===== */
-  .chat-search-btn { margin-left:auto; color:#b6bac2; padding-bottom:11px; background:none; border:0; cursor:pointer; display:inline-flex; flex:0 0 auto; }
+  .chat-search-btn { margin-left:auto; color:#b6bac2; padding-bottom:11px; background:none; border:0; cursor:pointer; display:inline-flex; }
   .chat-search-btn.act { color:var(--grip); }
   .chat-search-btn:hover { color:#8d919c; }
   .chat-search { display:none; padding:0 2px 10px; position:relative; }
@@ -735,17 +733,6 @@
   .ov-chat { position:absolute; left:12px; bottom:104px; width:74%; display:flex; flex-direction:column; gap:3px; pointer-events:none; }
   .ovc-line { font-size:11.5px; line-height:1.4; color:#f2f3f5; text-shadow:0 1px 3px rgba(0,0,0,.75); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .ovc-line b { font-weight:800; margin-right:4px; }
-  /* GNB 접기 */
-  .sidebar { transition: width .18s ease, flex-basis .18s ease, padding .18s ease; }
-  .sidebar.collapsed { width:66px; flex:0 0 66px; padding-left:10px; padding-right:10px; }
-  .sidebar.collapsed .brand { justify-content:center; }
-  .sidebar.collapsed .brand-name { display:none; }
-  .sidebar.collapsed .brand-collapse { position:static; margin-left:0; }
-  .sidebar.collapsed .nav-item { justify-content:center; gap:0; padding:11px 0; font-size:0; }
-  .sidebar.collapsed .nav-item svg { width:20px; height:20px; }
-  .sidebar.collapsed .sidebar-bottom .nav-item { padding:10px 0; }
-  .sidebar.collapsed .profile { justify-content:center; }
-  .sidebar.collapsed .profile-meta { display:none; }
 </style>
 </head>
 <body>
@@ -1326,18 +1313,6 @@
     }
     tick();
     setInterval(tick, 1000);
-  })();
-
-  // GNB(사이드바) 접기/펼치기
-  (function () {
-    var btn = document.querySelector('.brand-collapse');
-    var sb = document.querySelector('.sidebar');
-    if (!btn || !sb) return;
-    btn.addEventListener('click', function () {
-      var c = sb.classList.toggle('collapsed');
-      btn.textContent = c ? '\u00BB' : '\u00AB';
-      btn.title = c ? '펼치기' : '접기';
-    });
   })();
 
   // 판매 상태 버튼(판매예정/판매시작/품절) — 라디오 토글
