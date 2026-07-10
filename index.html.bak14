@@ -788,10 +788,7 @@
   .qa-a.pending .qa-txt { color:#a0a4ad; }
   .qa-time { font-size:11px; color:#b6bac2; flex:0 0 auto; }
   .qa-menu { border:0; background:none; color:#b6bac2; font-size:16px; cursor:pointer; padding:0 2px; flex:0 0 auto; }
-  .qa-ans-edit { display:flex; flex-direction:column; gap:6px; }
-  .qa-ans-row { display:flex; gap:6px; }
-  .qa-ans-cancel { border:0; background:#eceef1; color:#5c606b; border-radius:7px; padding:0 11px; font-size:13px; font-weight:700; cursor:pointer; flex:0 0 auto; }
-  .qa-edit-live { margin-top:2px; }
+  .qa-ans-edit { display:flex; gap:6px; }
   .qa-ans-input { flex:1; min-width:0; border:1px solid #e3e4e8; border-radius:7px; padding:7px 9px; font-size:13px; outline:none; }
   .qa-ans-input:focus { border-color:var(--grip); }
   .qa-ans-ok { border:0; background:var(--grip); color:#fff; border-radius:7px; padding:0 12px; font-size:13px; font-weight:700; cursor:pointer; flex:0 0 auto; }
@@ -1971,7 +1968,7 @@
       qaPanel.innerHTML = qaList.map(function (it, i) {
         var u = U[it.uid];
         var ansRow = it.answering
-          ? '<div class="qa-ans-edit"><div class="qa-ans-row"><input class="qa-ans-input" data-i="' + i + '" placeholder="답변을 입력하세요" value="' + (it.a || '').replace(/"/g, '&quot;') + '"/><button class="qa-ans-ok" data-i="' + i + '">저장</button><button class="qa-ans-cancel" data-i="' + i + '">취소</button></div><label class="cr-live qa-edit-live" data-i="' + i + '"><span class="cr-live-box' + (it.priv ? ' on' : '') + '"></span> <span class="cr-live-title">본인만 보기</span> <span class="cr-live-hint">켜면 문의한 유저에게만 노출</span></label></div>'
+          ? '<div class="qa-ans-edit"><input class="qa-ans-input" data-i="' + i + '" placeholder="답변을 입력하세요" value="' + (it.a || '') + '"/><button class="qa-ans-ok" data-i="' + i + '">등록</button></div>'
           : (it.a ? '<div class="qa-row qa-a"><span class="qa-ic a">A</span><span class="qa-txt">' + it.a + '</span></div>' : '<div class="qa-row qa-a pending"><span class="qa-ic a">A</span><span class="qa-txt">답변 대기 중</span></div>');
         var visBtn = '<span class="qa-vis' + (it.priv ? ' priv' : '') + '">' + (it.priv ? '🔒 본인만' : '🌐 전체 공개') + '</span>';
         return '<div class="qa-item" data-i="' + i + '"><div class="qa-head"><div class="qa-rows"><div class="qa-row"><span class="qa-ic q">Q</span><span class="qa-txt"><b style="color:' + u.c + '">' + u.n + '</b> ' + it.q + '</span></div>' + ansRow + '</div>' + visBtn + '<span class="qa-time">' + ago(it.t) + '</span><button class="qa-menu" data-i="' + i + '">⋮</button></div></div>';
@@ -1982,19 +1979,15 @@
     var qmenuI = -1;
     if (qaPanel) qaPanel.addEventListener('click', function (e) {
       var mb = e.target.closest('.qa-menu');
-      if (mb) { qmenuI = parseInt(mb.getAttribute('data-i'), 10); qmenu.innerHTML = (qaList[qmenuI] && qaList[qmenuI].a) ? '<button data-a="edit">수정하기</button><button data-a="del">삭제하기</button>' : '<button data-a="ans">답변하기</button><button data-a="del">삭제하기</button>'; var r = mb.getBoundingClientRect(); qmenu.style.top = (r.bottom + 4) + 'px'; qmenu.style.left = Math.min(r.left - 120, window.innerWidth - 142) + 'px'; qmenu.classList.add('on'); return; }
-      var lv = e.target.closest('.qa-edit-live');
-      if (lv) { e.preventDefault(); var lb = lv.querySelector('.cr-live-box'); if (lb) lb.classList.toggle('on'); return; }
-      var cc = e.target.closest('.qa-ans-cancel');
-      if (cc) { var ci = parseInt(cc.getAttribute('data-i'), 10); qaList[ci].answering = false; renderQA(); return; }
+      if (mb) { qmenuI = parseInt(mb.getAttribute('data-i'), 10); qmenu.innerHTML = '<button data-a="ans">답변하기</button><button data-a="del">삭제하기</button>'; var r = mb.getBoundingClientRect(); qmenu.style.top = (r.bottom + 4) + 'px'; qmenu.style.left = Math.min(r.left - 120, window.innerWidth - 142) + 'px'; qmenu.classList.add('on'); return; }
       var ok = e.target.closest('.qa-ans-ok');
-      if (ok) { var i = parseInt(ok.getAttribute('data-i'), 10); var inp = qaPanel.querySelector('.qa-ans-input[data-i="' + i + '"]'); var val = (inp.value || '').trim(); if (!val) { toast('답변을 입력해 주세요.', false); if (inp) inp.focus(); return; } var vb = qaPanel.querySelector('.qa-edit-live[data-i="' + i + '"] .cr-live-box'); var priv = !!(vb && vb.classList.contains('on')); qaList[i].a = val; qaList[i].priv = priv; qaList[i].answering = false; renderQA(); updateOvQA(); toast(priv ? '‘' + U[qaList[i].uid].n + '’ 본인에게만 노출로 수정했습니다.' : '전체 공개로 수정했습니다.', true); return; }
+      if (ok) { var i = parseInt(ok.getAttribute('data-i'), 10); var inp = qaPanel.querySelector('.qa-ans-input[data-i="' + i + '"]'); qaList[i].a = (inp.value || '').trim() || null; qaList[i].answering = false; renderQA(); updateOvQA(); return; }
     });
-    if (qaPanel) qaPanel.addEventListener('keydown', function (e) { if (e.key === 'Enter') { var inp = e.target.closest('.qa-ans-input'); if (inp) { e.preventDefault(); var i = parseInt(inp.getAttribute('data-i'), 10); var val = (inp.value || '').trim(); if (!val) { toast('답변을 입력해 주세요.', false); return; } var vb = qaPanel.querySelector('.qa-edit-live[data-i="' + i + '"] .cr-live-box'); var priv = !!(vb && vb.classList.contains('on')); qaList[i].a = val; qaList[i].priv = priv; qaList[i].answering = false; renderQA(); updateOvQA(); } } });
+    if (qaPanel) qaPanel.addEventListener('keydown', function (e) { if (e.key === 'Enter') { var inp = e.target.closest('.qa-ans-input'); if (inp) { var i = parseInt(inp.getAttribute('data-i'), 10); qaList[i].a = (inp.value || '').trim() || null; qaList[i].answering = false; renderQA(); } } });
     qmenu.addEventListener('click', function (e) {
       var b = e.target.closest('button'); if (!b || qmenuI < 0) return;
       var a = b.getAttribute('data-a');
-      if (a === 'ans' || a === 'edit') { qaList.forEach(function (x) { x.answering = false; }); qaList[qmenuI].answering = true; renderQA(); var inp = qaPanel.querySelector('.qa-ans-input[data-i="' + qmenuI + '"]'); if (inp) { inp.focus(); try { inp.setSelectionRange(inp.value.length, inp.value.length); } catch (er) {} } }
+      if (a === 'ans') { qaList[qmenuI].answering = true; renderQA(); var inp = qaPanel.querySelector('.qa-ans-input[data-i="' + qmenuI + '"]'); if (inp) inp.focus(); }
       else if (a === 'del') { qaList.splice(qmenuI, 1); updateQADot(); renderQA(); updateOvQA(); }
       qmenu.classList.remove('on'); qmenuI = -1;
     });
@@ -2246,7 +2239,7 @@
         '<span class="prd-k2">배경 · 실제 문제</span>' +
         '<p>“답변 = 전체 공개”만 있어, 무관/방해성 질문에 답하면 그대로 전체 Q&amp;A·방송에 박제되어 방송 흐름을 해친다.</p>' +
         '<span class="prd-k2">해결 (정책)</span>' +
-        '<p>답변 박스에 <b>[본인만 보기] 토글</b> 제공.<br/>· <b>OFF(기본) = 전체 공개</b>: <b>모든 유저</b>의 Q&amp;A에 노출 + 방송 프리뷰 띠지 노출.<br/>· <b>ON = 본인만</b>: <b>문의한 본인에게만</b> Q&amp;A로 노출, <b>다른 유저·방송에는 노출 안 됨</b>.<br/>· 등록 후에도 <b>Q&amp;A 탭 ⋮ → 수정하기</b>로 답변·노출 범위를 다시 조정 가능(첫 답변과 동일 UX).</p>' +
+        '<p>답변 박스에 <b>[본인만 보기] 토글</b> 제공.<br/>· <b>OFF(기본) = 전체 공개</b>: <b>모든 유저</b>의 Q&amp;A에 노출 + 방송 프리뷰 띠지 노출.<br/>· <b>ON = 본인만</b>: <b>문의한 본인에게만</b> Q&amp;A로 노출, <b>다른 유저·방송에는 노출 안 됨</b>.</p>' +
         '<span class="prd-k2">참고</span>' +
         '<p>후속으로 “작성 시점부터 Q&amp;A 미노출(완전 비공개)” 옵션도 확장 가능.</p>',
       flowHTML:
@@ -2258,7 +2251,7 @@
           '<div class="fbranch"><span class="fout no">아니오(기본) → 전체 공개: 모든 유저 Q&amp;A + 방송 띠지</span><span class="fout ok">예 → 본인만: 문의자에게만 · 다른 유저·방송 미노출</span></div>' +
         '</div>' +
         '<div class="fmerge">↓ Q&amp;A 등록</div>' +
-        '<div class="fnode final">등록 후에도 ⋮ → 수정하기로 노출 범위 재조정 가능 · 전체 공개 항목만 방송 프리뷰 띠지에 노출</div>',
+        '<div class="fnode final">노출 범위는 답변 시 결정 · 전체 공개 항목만 방송 프리뷰 띠지에 노출</div>',
       prd: [
         { n: 1, target: '#chatFeed', title: '답변 시 노출 범위 토글', tag: '전체/본인만',
           def: '답변 작성 박스에 [본인만 보기] 토글 제공(기본 꺼짐 = 전체 공개).',
@@ -2267,19 +2260,14 @@
           features: ['<b>OFF(기본) = 전체 공개</b>: 모든 유저 Q&amp;A + 방송 프리뷰 띠지 노출.', '<b>ON = 본인만</b>: 문의한 본인에게만 노출.', '토글은 답변 박스 하단에 위치.'] },
         { n: 2, target: '.chat-tab[data-tab="qa"]', title: '본인만 = 다른 유저 미노출', tag: '핵심',
           def: '본인만 보기로 답하면 문의한 유저에게만 Q&A로 노출되고 다른 유저·방송에는 노출되지 않는다.',
-          features: ['문의자 본인 Q&amp;A에만 답변 표시.', '<b>다른 유저 Q&amp;A·방송 프리뷰에는 노출 안 됨.</b>', '무관/방해성 문의 대응에 사용.'] },
-        { n: 3, target: '.chat-tab[data-tab="qa"]', title: 'Q&A 탭에서 노출 범위 수정', tag: '사후 수정',
-          def: '등록된 답변의 ⋮ → 수정하기로, 처음 답변할 때처럼 답변 내용과 노출 범위 토글을 그 자리에서 다시 선택해 수정한다.',
-          features: ['Q&amp;A 항목 우측 <b>⋮ → 수정하기</b>.', '답변 입력 + <b>[본인만 보기] 토글</b>이 인라인으로 함께 표시(첫 답변과 동일 UX).', '<b>[저장]</b> 시 노출 범위(전체 공개 ↔ 본인만) 즉시 반영 · 배지·방송 프리뷰 띠지 갱신.'] }
+          features: ['문의자 본인 Q&amp;A에만 답변 표시.', '<b>다른 유저 Q&amp;A·방송 프리뷰에는 노출 안 됨.</b>', '무관/방해성 문의 대응에 사용.'] }
       ],
       steps: [
         { tag: '시작', t: '채팅 답변의 <b>노출 범위(전체/본인만)</b>를 제어하는 흐름을 시연합니다. (Jira GRIPPGM-3402)', target: function () { return q('#chatFeed'); }, act: function () { resetUI(); } },
         { tag: '답변 작성', t: '유저 메시지 <b>⋮ → 답변하기</b>로 답변 박스를 엽니다.', target: function () { return q('#chatReply'); }, act: function () { var cm = document.querySelector('#chatFeed .cm:not(.me)'); if (cm) { var b = cm.querySelector('.cm-menu'); if (b) b.click(); var am = document.querySelector('.chat-menu.on button[data-a="answer"]'); if (am) am.click(); } } },
         { tag: '노출 범위 토글', t: '답변 박스 하단 <b>[본인만 보기]</b> 토글 — <b>기본 꺼짐 = 전체 공개</b>.', target: function () { return q('#crLiveLbl'); }, act: function () { var i = document.getElementById('crInput'); if (i) i.value = '재입고되면 안내드릴게요'; } },
         { tag: '전체 공개 (기본)', t: '기본(전체 공개)으로 답변 → <b>모든 유저 Q&amp;A + 방송 프리뷰 띠지</b>에 노출됩니다.', target: function () { return q('#ovQa'); }, act: function () { var s = document.getElementById('crSubmit'); if (s) s.click(); } },
-        { tag: '본인만 보기', t: '무관/방해성 문의는 <b>[본인만 보기]</b>를 켜서 답변 → <b>문의자에게만</b> 노출, 다른 유저·방송에는 노출 안 됨.', target: function () { return q('#qaPanel'); }, act: function () { var cms = document.querySelectorAll('#chatFeed .cm:not(.me)'); var cm = cms[1] || cms[0]; if (cm) { var b = cm.querySelector('.cm-menu'); if (b) b.click(); var am = document.querySelector('.chat-menu.on button[data-a="answer"]'); if (am) am.click(); } var i = document.getElementById('crInput'); if (i) i.value = '개별적으로 안내드릴게요'; var lb = document.getElementById('crLiveBox'); if (lb && !lb.classList.contains('on')) lb.click(); var s = document.getElementById('crSubmit'); if (s) s.click(); var t = document.querySelector('.chat-tab[data-tab="qa"]'); if (t) t.click(); } },
-        { tag: '사후 수정 — 수정하기', t: '등록 후에도 Q&amp;A 탭에서 답변의 <b>⋮ → 수정하기</b>를 누르면, <b>답변 내용과 [본인만 보기] 토글이 처음 답변할 때처럼</b> 그 자리에 함께 나타납니다.', target: function () { return q('#qaPanel .qa-ans-edit') || q('#qaPanel'); }, act: function () { var tb = document.querySelector('.chat-tab[data-tab="qa"]'); if (tb) tb.click(); var item = document.querySelector('#qaPanel .qa-item'); if (item) { var mb = item.querySelector('.qa-menu'); if (mb) mb.click(); var eb = document.querySelector('.chat-menu.on button[data-a="edit"]'); if (eb) eb.click(); } } },
-        { tag: '노출 방식 변경·저장', t: '그 자리에서 <b>[본인만 보기]</b>를 켜고 <b>[저장]</b> → 노출 범위가 바뀌고 배지도 <b>🔒 본인만</b>으로 갱신됩니다.', target: function () { return q('#qaPanel'); }, act: function () { var lv = document.querySelector('#qaPanel .qa-edit-live'); if (lv) lv.click(); var ok = document.querySelector('#qaPanel .qa-ans-ok'); if (ok) ok.click(); } }
+        { tag: '본인만 보기', t: '무관/방해성 문의는 <b>[본인만 보기]</b>를 켜서 답변 → <b>문의자에게만</b> 노출, 다른 유저·방송에는 노출 안 됨.', target: function () { return q('#qaPanel'); }, act: function () { var cms = document.querySelectorAll('#chatFeed .cm:not(.me)'); var cm = cms[1] || cms[0]; if (cm) { var b = cm.querySelector('.cm-menu'); if (b) b.click(); var am = document.querySelector('.chat-menu.on button[data-a="answer"]'); if (am) am.click(); } var i = document.getElementById('crInput'); if (i) i.value = '개별적으로 안내드릴게요'; var lb = document.getElementById('crLiveBox'); if (lb && !lb.classList.contains('on')) lb.click(); var s = document.getElementById('crSubmit'); if (s) s.click(); var t = document.querySelector('.chat-tab[data-tab="qa"]'); if (t) t.click(); } }
       ]
     });
 
