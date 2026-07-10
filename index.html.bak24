@@ -2026,7 +2026,7 @@
     var PRICES = ['124,354', '435,435', '124,354', '125,435', '123,246', '98,000', '210,500', '77,777', '305,120', '150,000', '88,000', '412,900'];
     var STOCKS = ['1,231', '3,123,123', '23,123', '3,123', '12,312', '450', '88,900', '2,000', '560,000', '9,090', '31,000', '712'];
 
-    var state = null, draft = null, currentRow = null;
+    var state = null, draft = null;
     Array.prototype.forEach.call(document.querySelectorAll('.product-row'), function (r, i) { r.setAttribute('data-optaxes', String((i % 3) + 1)); });
 
     function tplAxis(ai) {
@@ -2053,8 +2053,6 @@
       return { axes: axes, combos: buildCombos(axes) };
     }
     function cloneAxes(axes) { return axes.map(function (a) { return { type: a.type, values: a.values.map(function (v) { return { name: v.name, price: v.price, stock: v.stock }; }) }; }); }
-    function cloneState(s) { return { axes: cloneAxes(s.axes), combos: (s.combos || []).map(function (c) { return { price: c.price, stock: c.stock, sale: c.sale }; }) }; }
-    function persist() { if (currentRow) currentRow.__optState = cloneState(state); }
     function comboLabels(ci) {
       var labels = [], rem = ci;
       for (var j = state.axes.length - 1; j >= 0; j--) { var sz = state.axes[j].values.length; labels[j] = state.axes[j].values[rem % sz].name; rem = Math.floor(rem / sz); }
@@ -2086,9 +2084,8 @@
     }
 
     function openModal(row) {
-      currentRow = row;
-      if (row && row.__optState) { state = cloneState(row.__optState); }
-      else { var n = parseInt((row && row.getAttribute('data-optaxes')) || '1', 10); state = buildState(n); if (row) row.__optState = cloneState(state); }
+      var n = parseInt((row && row.getAttribute('data-optaxes')) || '1', 10);
+      state = buildState(n);
       if (prodName) { var ni = row && row.querySelector('.pr-name-input'); prodName.textContent = (ni && ni.value) ? ni.value : '상품'; }
       renderGroup();
       modal.classList.add('open');
@@ -2103,7 +2100,7 @@
 
     if (group) group.addEventListener('click', function (e) {
       var sw = e.target.closest('.opt-sw');
-      if (sw) { var si = parseInt(sw.getAttribute('data-sale'), 10); state.combos[si].sale = !state.combos[si].sale; sw.classList.toggle('on'); persist(); return; }
+      if (sw) { var si = parseInt(sw.getAttribute('data-sale'), 10); state.combos[si].sale = !state.combos[si].sale; sw.classList.toggle('on'); return; }
       var all = e.target.closest('[data-all]');
       if (all) { var ai = all.getAttribute('data-all'); var on = !all.classList.contains('on'); all.classList.toggle('on', on); Array.prototype.forEach.call(group.querySelectorAll('[data-ax="' + ai + '"]'), function (c) { c.classList.toggle('on', on); }); return; }
       var chk = e.target.closest('[data-ax]');
@@ -2163,7 +2160,7 @@
       var del = e.target.closest('[data-del-ax]');
       if (del) { var da = parseInt(del.getAttribute('data-del-ax'), 10); var dv = parseInt(del.getAttribute('data-del-vi'), 10); readBody(); draft[da].values.splice(dv, 1); if (draft[da].values.length === 0) draft.splice(da, 1); renderBody(); return; }
     });
-    function commitAxes(axes) { state.axes = cloneAxes(axes); state.combos = buildCombos(state.axes); persist(); renderGroup(); }
+    function commitAxes(axes) { state.axes = cloneAxes(axes); state.combos = buildCombos(state.axes); renderGroup(); }
     if (nameSave) nameSave.addEventListener('click', function () {
       readBody();
       var cleaned = [];
@@ -2181,7 +2178,7 @@
     var delAllOk = document.getElementById('optDelAllOk'), delAllCancel = document.getElementById('optDelAllCancel');
     function closeDelAll() { if (delAllModal) delAllModal.classList.remove('open'); }
     if (delAllOk) delAllOk.addEventListener('click', function () {
-      state.axes = []; state.combos = []; persist(); renderGroup();
+      state.axes = []; state.combos = []; renderGroup();
       toast('옵션을 모두 삭제했습니다.', true);
       closeDelAll(); closeName();
     });
