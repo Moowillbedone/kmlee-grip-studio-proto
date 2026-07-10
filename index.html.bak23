@@ -480,9 +480,6 @@
   .optb-addaxis:hover { background:var(--grip-soft); }
   .optb-axdel { display:block; margin-top:9px; border:0; background:none; color:#aeb2bb; font-size:12px; font-weight:700; cursor:pointer; text-decoration:underline; padding:0; }
   .optb-axdel:hover { color:var(--grip); }
-  .opt-empty { padding:44px 0; text-align:center; color:#9aa0ab; font-size:14px; line-height:1.7; }
-  .optb-empty { padding:14px 4px; color:#8d919c; font-size:13px; line-height:1.6; }
-  #optDelAllModal { z-index:140; }
 
   /* 일괄 수정 실패 팝업 */
   .modal-fail { max-width: 600px; }
@@ -1482,15 +1479,6 @@
   </div>
 </div>
 
-<!-- 옵션 전체 삭제 확인 -->
-<div class="modal-overlay" id="optDelAllModal">
-  <div class="modal" role="dialog" aria-modal="true" aria-label="옵션 전체 삭제" style="max-width:400px;text-align:center;">
-    <div class="modal-title">옵션을 모두 삭제하시겠습니까?</div>
-    <div class="modal-body"><p class="modal-lead" style="text-align:center;">이 상품의 <b>모든 옵션(종류·값)</b>이 삭제됩니다.</p></div>
-    <div class="modal-foot" style="justify-content:center;gap:12px;"><button class="btn-close" id="optDelAllCancel">닫기</button><button class="btn-apply" id="optDelAllOk">적용</button></div>
-  </div>
-</div>
-
 <!-- PRD 모드 -->
 <button class="prd-toggle" id="prdToggle"><span class="dot"></span> PRD 모드</button>
 <aside class="prd-panel" id="prdPanel" aria-label="PRD 기능 명세">
@@ -2003,12 +1991,11 @@
     applyMode('limited');   // 초기: 한정판매 모드
   })();
 
-  // ============ 상품 옵션 관리 (다축 1~3 · 옵션 일괄 수정: 옵션/값 추가삭제 + 가격/재고 + 전체삭제) ============
+  // ============ 상품 옵션 관리 (다축 1~3 · 옵션 일괄 수정: 옵션/값 추가삭제 + 가격/재고) ============
   (function () {
     var modal = document.getElementById('optionModal');
     if (!modal) return;
     var nameModal = document.getElementById('optNameModal');
-    var delAllModal = document.getElementById('optDelAllModal');
     var group = document.getElementById('optGroup');
     var compose = document.getElementById('optCompose');
     var countEl = document.getElementById('optCount');
@@ -2033,7 +2020,7 @@
       var t = AXIS_TPL[ai] || { type: '옵션' + (ai + 1), values: [''] };
       return { type: t.type, values: t.values.map(function (v, i) { return { name: v, price: PRICES[i % PRICES.length], stock: STOCKS[i % STOCKS.length] }; }) };
     }
-    // 조합 가격/재고 = 대표 옵션(옵션1=첫 축) 값 기준. 조합별 개별 실데이터는 step5.
+    // 조합 가격/재고 = 대표 옵션(옵션1=첫 축) 값 기준 (옵션 1개면 값=조합 1:1). 조합별 개별 실데이터는 step5.
     function buildCombos(axes) {
       if (!axes.length) return [];
       var sizes = axes.map(function (a) { return Math.max(a.values.length, 1); });
@@ -2061,14 +2048,7 @@
 
     function renderGroup() {
       if (!group || !state) return;
-      var axes = state.axes;
-      if (!axes.length) {
-        if (compose) compose.textContent = '옵션 없음';
-        if (countEl) countEl.textContent = '판매 중 옵션 0';
-        group.innerHTML = '<div class="opt-empty">등록된 옵션이 없습니다.<br/><b>[옵션 일괄 수정]</b>에서 옵션을 추가할 수 있습니다.</div>';
-        return;
-      }
-      var total = state.combos.length;
+      var axes = state.axes, total = state.combos.length;
       if (compose) compose.textContent = axes.map(function (a) { return a.type + '(' + a.values.length + ')'; }).join(' × ') + ' = 총 ' + total + '개 조합';
       if (countEl) countEl.textContent = '판매 중 옵션 ' + total;
       var axisChk = '<div class="opt-axes">' + axes.map(function (a, ai) {
@@ -2109,26 +2089,26 @@
     var sellAll = document.getElementById('optSellAll');
     if (sellAll) sellAll.addEventListener('click', function () { sellAll.classList.toggle('on'); });
 
-    // ---- 옵션 일괄 수정 (중첩 팝업: 옵션/값 추가·삭제 + 가격/재고 + 전체 삭제) ----
+    // ---- 옵션 일괄 수정 (중첩 팝업: 옵션 추가 + 값 추가/삭제 + 가격/재고) ----
     function renderBody() {
       if (!nameBody || !draft) return;
       var blocks = draft.map(function (a, ai) {
         var rows = a.values.map(function (v, vi) {
           var isLast = vi === a.values.length - 1;
+          var canDel = a.values.length > 1 && vi !== 0;
           var ctrl = '<div class="optb-ctrl">' +
             (isLast ? '<button class="optb-add" data-add="' + ai + '">추가</button>' : '') +
-            '<button class="optb-del" data-del-ax="' + ai + '" data-del-vi="' + vi + '">삭제</button></div>';
+            (canDel ? '<button class="optb-del" data-del-ax="' + ai + '" data-del-vi="' + vi + '">삭제</button>' : '') + '</div>';
           return '<div class="optb-vrow">' +
             '<input class="opt-input optb-name" value="' + esc(v.name) + '" placeholder="옵션 값" />' +
             '<input class="opt-input optb-price" value="' + esc(v.price) + '" placeholder="가격" inputmode="numeric" />' +
             '<input class="opt-input optb-stock" value="' + esc(v.stock) + '" placeholder="재고" inputmode="numeric" />' + ctrl + '</div>';
         }).join('');
-        var axDel = '<button class="optb-axdel" data-axdel="' + ai + '" title="이 옵션 종류 삭제">옵션 삭제</button>';
+        var axDel = draft.length > 1 ? '<button class="optb-axdel" data-axdel="' + ai + '" title="이 옵션 종류 삭제">옵션 삭제</button>' : '';
         return '<div class="optb-axis"><div class="optb-type"><input class="opt-input opt-type-input" value="' + esc(a.type) + '" placeholder="옵션 종류" />' + axDel + '</div><div class="optb-vals">' + rows + '</div></div>';
       }).join('');
       var addAxis = draft.length < MAX_AXES ? '<button class="optb-addaxis" data-addaxis="1">+ 옵션 추가 (최대 ' + MAX_AXES + '개)</button>' : '';
-      var emptyHint = draft.length === 0 ? '<div class="optb-empty">모든 옵션이 삭제된 상태입니다. 옵션을 추가하거나, 그대로 <b>[옵션 적용 하기]</b>를 누르면 옵션 전체 삭제를 확인합니다.</div>' : '';
-      nameBody.innerHTML = blocks + emptyHint + addAxis;
+      nameBody.innerHTML = blocks + addAxis;
     }
     function readBody() {
       if (!nameBody || !draft) return;
@@ -2154,36 +2134,25 @@
       var addax = e.target.closest('[data-addaxis]');
       if (addax) { readBody(); if (draft.length < MAX_AXES) draft.push(tplAxis(draft.length)); renderBody(); return; }
       var axdel = e.target.closest('[data-axdel]');
-      if (axdel) { var ad = parseInt(axdel.getAttribute('data-axdel'), 10); readBody(); draft.splice(ad, 1); renderBody(); return; }
+      if (axdel) { var ad = parseInt(axdel.getAttribute('data-axdel'), 10); readBody(); if (draft.length > 1) draft.splice(ad, 1); renderBody(); return; }
       var add = e.target.closest('[data-add]');
       if (add) { var ai = parseInt(add.getAttribute('data-add'), 10); readBody(); draft[ai].values.push({ name: '', price: '', stock: '' }); renderBody(); return; }
       var del = e.target.closest('[data-del-ax]');
-      if (del) { var da = parseInt(del.getAttribute('data-del-ax'), 10); var dv = parseInt(del.getAttribute('data-del-vi'), 10); readBody(); draft[da].values.splice(dv, 1); if (draft[da].values.length === 0) draft.splice(da, 1); renderBody(); return; }
+      if (del) { var da = parseInt(del.getAttribute('data-del-ax'), 10); var dv = parseInt(del.getAttribute('data-del-vi'), 10); readBody(); if (draft[da].values.length > 1) draft[da].values.splice(dv, 1); renderBody(); return; }
     });
-    function commitAxes(axes) { state.axes = cloneAxes(axes); state.combos = buildCombos(state.axes); renderGroup(); }
     if (nameSave) nameSave.addEventListener('click', function () {
       readBody();
-      var cleaned = [];
       for (var i = 0; i < draft.length; i++) {
-        var vals = draft[i].values.filter(function (v) { return (v.name || '').trim(); }).map(function (v) { return { name: v.name.trim(), price: (v.price || '').trim(), stock: (v.stock || '').trim() }; });
-        if (vals.length) cleaned.push({ type: (draft[i].type || '').trim() || ('옵션' + (i + 1)), values: vals });
+        if (!(draft[i].type || '').trim()) { toast('옵션 종류를 입력해 주세요.', false); return; }
+        draft[i].values = draft[i].values.filter(function (v) { return (v.name || '').trim(); }).map(function (v) { return { name: v.name.trim(), price: (v.price || '').trim(), stock: (v.stock || '').trim() }; });
+        if (!draft[i].values.length) { toast('옵션 값을 1개 이상 입력해 주세요.', false); return; }
       }
-      if (!cleaned.length) { if (delAllModal) delAllModal.classList.add('open'); return; }  // 옵션 전체 삭제 → 확인
-      commitAxes(cleaned);
+      state.axes = cloneAxes(draft);
+      state.combos = buildCombos(state.axes);
+      renderGroup();
       toast('옵션을 적용했습니다.', true);
       closeName();
     });
-
-    // ---- 옵션 전체 삭제 확인 ----
-    var delAllOk = document.getElementById('optDelAllOk'), delAllCancel = document.getElementById('optDelAllCancel');
-    function closeDelAll() { if (delAllModal) delAllModal.classList.remove('open'); }
-    if (delAllOk) delAllOk.addEventListener('click', function () {
-      state.axes = []; state.combos = []; renderGroup();
-      toast('옵션을 모두 삭제했습니다.', true);
-      closeDelAll(); closeName();
-    });
-    if (delAllCancel) delAllCancel.addEventListener('click', closeDelAll);
-    if (delAllModal) delAllModal.addEventListener('click', function (e) { if (e.target === delAllModal) closeDelAll(); });
   })();
 
 
