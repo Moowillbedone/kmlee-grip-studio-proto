@@ -476,10 +476,6 @@
   .optb-add { border-color:var(--grip); color:var(--grip); }
   .optb-add:hover { background:var(--grip-soft); }
   .optb-del:hover { background:#f6f7f9; }
-  .optb-addaxis { width:100%; border:1px dashed var(--grip); background:#fff; color:var(--grip); border-radius:9px; padding:13px; font-size:14px; font-weight:800; cursor:pointer; margin-top:8px; }
-  .optb-addaxis:hover { background:var(--grip-soft); }
-  .optb-axdel { display:block; margin-top:9px; border:0; background:none; color:#aeb2bb; font-size:12px; font-weight:700; cursor:pointer; text-decoration:underline; padding:0; }
-  .optb-axdel:hover { color:var(--grip); }
 
   /* 일괄 수정 실패 팝업 */
   .modal-fail { max-width: 600px; }
@@ -1991,7 +1987,7 @@
     applyMode('limited');   // 초기: 한정판매 모드
   })();
 
-  // ============ 상품 옵션 관리 (다축 1~3 · 옵션 일괄 수정: 옵션/값 추가삭제 + 가격/재고) ============
+  // ============ 상품 옵션 관리 (다축 1~3 · 옵션 일괄 수정: 값 추가/삭제 + 가격/재고) ============
   (function () {
     var modal = document.getElementById('optionModal');
     if (!modal) return;
@@ -2001,7 +1997,6 @@
     var countEl = document.getElementById('optCount');
     var prodName = document.getElementById('optProdName');
     var nameBody = document.getElementById('optNameBody');
-    var MAX_AXES = 3;
     function toast(m, ok) { if (window.__gripToast) window.__gripToast(m, ok); }
     function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
 
@@ -2016,27 +2011,16 @@
     var state = null, draft = null;
     Array.prototype.forEach.call(document.querySelectorAll('.product-row'), function (r, i) { r.setAttribute('data-optaxes', String((i % 3) + 1)); });
 
-    function tplAxis(ai) {
-      var t = AXIS_TPL[ai] || { type: '옵션' + (ai + 1), values: [''] };
-      return { type: t.type, values: t.values.map(function (v, i) { return { name: v, price: PRICES[i % PRICES.length], stock: STOCKS[i % STOCKS.length] }; }) };
-    }
-    // 조합 가격/재고 = 대표 옵션(옵션1=첫 축) 값 기준 (옵션 1개면 값=조합 1:1). 조합별 개별 실데이터는 step5.
     function buildCombos(axes) {
-      if (!axes.length) return [];
-      var sizes = axes.map(function (a) { return Math.max(a.values.length, 1); });
-      var total = sizes.reduce(function (n, s) { return n * s; }, 1);
+      var total = axes.reduce(function (n, a) { return n * Math.max(a.values.length, 1); }, 1);
       var combos = [];
-      for (var ci = 0; ci < total; ci++) {
-        var rem = ci, idxs = [];
-        for (var j = axes.length - 1; j >= 0; j--) { idxs[j] = rem % sizes[j]; rem = Math.floor(rem / sizes[j]); }
-        var v0 = axes[0].values[idxs[0]] || { price: '', stock: '' };
-        combos.push({ price: v0.price, stock: v0.stock, sale: true });
-      }
+      for (var i = 0; i < total; i++) combos.push({ price: PRICES[i % PRICES.length], stock: STOCKS[i % STOCKS.length], sale: true });
       return combos;
     }
     function buildState(n) {
-      var axes = [];
-      for (var i = 0; i < n; i++) axes.push(tplAxis(i));
+      var axes = AXIS_TPL.slice(0, n).map(function (a) {
+        return { type: a.type, values: a.values.map(function (v, i) { return { name: v, price: PRICES[i % PRICES.length], stock: STOCKS[i % STOCKS.length] }; }) };
+      });
       return { axes: axes, combos: buildCombos(axes) };
     }
     function cloneAxes(axes) { return axes.map(function (a) { return { type: a.type, values: a.values.map(function (v) { return { name: v.name, price: v.price, stock: v.stock }; }) }; }); }
@@ -2089,10 +2073,10 @@
     var sellAll = document.getElementById('optSellAll');
     if (sellAll) sellAll.addEventListener('click', function () { sellAll.classList.toggle('on'); });
 
-    // ---- 옵션 일괄 수정 (중첩 팝업: 옵션 추가 + 값 추가/삭제 + 가격/재고) ----
+    // ---- 옵션 일괄 수정 (중첩 팝업: 값 추가/삭제 + 가격/재고) ----
     function renderBody() {
       if (!nameBody || !draft) return;
-      var blocks = draft.map(function (a, ai) {
+      nameBody.innerHTML = draft.map(function (a, ai) {
         var rows = a.values.map(function (v, vi) {
           var isLast = vi === a.values.length - 1;
           var canDel = a.values.length > 1 && vi !== 0;
@@ -2104,11 +2088,8 @@
             '<input class="opt-input optb-price" value="' + esc(v.price) + '" placeholder="가격" inputmode="numeric" />' +
             '<input class="opt-input optb-stock" value="' + esc(v.stock) + '" placeholder="재고" inputmode="numeric" />' + ctrl + '</div>';
         }).join('');
-        var axDel = draft.length > 1 ? '<button class="optb-axdel" data-axdel="' + ai + '" title="이 옵션 종류 삭제">옵션 삭제</button>' : '';
-        return '<div class="optb-axis"><div class="optb-type"><input class="opt-input opt-type-input" value="' + esc(a.type) + '" placeholder="옵션 종류" />' + axDel + '</div><div class="optb-vals">' + rows + '</div></div>';
+        return '<div class="optb-axis"><div class="optb-type"><input class="opt-input opt-type-input" value="' + esc(a.type) + '" placeholder="옵션 종류" /></div><div class="optb-vals">' + rows + '</div></div>';
       }).join('');
-      var addAxis = draft.length < MAX_AXES ? '<button class="optb-addaxis" data-addaxis="1">+ 옵션 추가 (최대 ' + MAX_AXES + '개)</button>' : '';
-      nameBody.innerHTML = blocks + addAxis;
     }
     function readBody() {
       if (!nameBody || !draft) return;
@@ -2131,10 +2112,6 @@
     if (nameReset) nameReset.addEventListener('click', function () { draft = cloneAxes(state.axes); renderBody(); toast('입력값을 초기화했습니다.', true); });
     if (nameModal) nameModal.addEventListener('click', function (e) { if (e.target === nameModal) closeName(); });
     if (nameBody) nameBody.addEventListener('click', function (e) {
-      var addax = e.target.closest('[data-addaxis]');
-      if (addax) { readBody(); if (draft.length < MAX_AXES) draft.push(tplAxis(draft.length)); renderBody(); return; }
-      var axdel = e.target.closest('[data-axdel]');
-      if (axdel) { var ad = parseInt(axdel.getAttribute('data-axdel'), 10); readBody(); if (draft.length > 1) draft.splice(ad, 1); renderBody(); return; }
       var add = e.target.closest('[data-add]');
       if (add) { var ai = parseInt(add.getAttribute('data-add'), 10); readBody(); draft[ai].values.push({ name: '', price: '', stock: '' }); renderBody(); return; }
       var del = e.target.closest('[data-del-ax]');
