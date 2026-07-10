@@ -445,17 +445,6 @@
   .opt-input { width:100%; border:1px solid #e3e4e8; border-radius:9px; padding:12px 14px; font-size:14px; outline:none; box-sizing:border-box; }
   .opt-input:focus { border-color:var(--grip); }
   #optValInputs .opt-input { margin-bottom:9px; }
-  .opt-axes { margin-bottom:2px; }
-  .opt-axis { display:flex; align-items:center; gap:14px; flex-wrap:wrap; padding:8px 4px; font-size:13px; }
-  .opt-axis-lbl { font-weight:800; color:#1d1f25; min-width:44px; }
-  .opt-table-wrap { overflow-x:auto; }
-  .optname-head { display:flex; gap:16px; font-size:14px; font-weight:800; color:#1d1f25; margin-bottom:10px; }
-  .optname-head span:first-child { width:34%; flex:0 0 34%; }
-  .optname-axis { display:flex; gap:16px; margin-bottom:16px; }
-  .optname-type { width:34%; flex:0 0 34%; }
-  .optname-vals { flex:1; min-width:0; }
-  .optname-vals .opt-input { margin-bottom:9px; }
-  .optname-vals .opt-input:last-child { margin-bottom:0; }
 
   /* 일괄 수정 실패 팝업 */
   .modal-fail { max-width: 600px; }
@@ -1448,8 +1437,8 @@
     <div class="opt-head"><span class="opt-h-title">옵션명 수정</span><button class="opt-x" id="optNameClose" aria-label="닫기">&times;</button></div>
     <div class="modal-body">
       <div class="opt-note">옵션 종류(예: <b>컬러</b>)와 옵션 값(예: <b>그레이 / 블랙 / 화이트</b>)을 직접 입력하여 수정하세요.<br/>수정하기를 누르면 아래 옵션 표·필터·요약에 즉시 반영됩니다.</div>
-      <div class="optname-head"><span>옵션 종류</span><span>옵션 값</span></div>
-      <div id="optNameBody"></div>
+      <div class="opt-field"><label class="opt-field-lbl">옵션 종류</label><input class="opt-input" id="optTypeInput" /></div>
+      <div class="opt-field"><label class="opt-field-lbl">옵션 값</label><div id="optValInputs"></div></div>
     </div>
     <div class="modal-foot"><button class="btn-close" id="optNameCancel">취소</button><button class="btn-apply" id="optNameSave">수정하기</button></div>
   </div>
@@ -1967,7 +1956,7 @@
     applyMode('limited');   // 초기: 한정판매 모드
   })();
 
-  // ============ 상품 옵션 관리 (다축 옵션 1~3개 · 옵션 버튼 → 모달 → 옵션명 수정) ============
+  // ============ 상품 옵션 관리 (옵션 버튼 → 모달 → 옵션명 수정) ============
   (function () {
     var modal = document.getElementById('optionModal');
     if (!modal) return;
@@ -1976,69 +1965,39 @@
     var compose = document.getElementById('optCompose');
     var countEl = document.getElementById('optCount');
     var prodName = document.getElementById('optProdName');
-    var nameBody = document.getElementById('optNameBody');
     function toast(m, ok) { if (window.__gripToast) window.__gripToast(m, ok); }
+
+    // 옵션 1개(종류) + 옵션 값 3개. (옵션 종류는 최대 3개까지 가능하나 지정은 별도 화면 — 여기선 1개 케이스)
+    var state = {
+      type: '응 되긴하네',
+      values: [
+        { name: '123213', price: '2,462,460', stock: '23,123,120', sale: true },
+        { name: '565656', price: '2,462,460', stock: '231,231', sale: true },
+        { name: '787878', price: '3,543,540', stock: '3,123,213', sale: true }
+      ]
+    };
     function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
 
-    // 옵션 종류 템플릿 (최대 3개, 각 종류당 값 3개). 실제 종류/값 지정은 별도 화면 — 여기선 데모 데이터.
-    var AXIS_TPL = [
-      { type: '옵션1', values: ['12313', '123123', '123123123'] },
-      { type: '옵션2', values: ['678678', '67868678678', '678678678678768'] },
-      { type: '옵션3', values: ['445', '44544', '4454454'] }
-    ];
-    var PRICES = ['124,354', '435,435', '124,354', '125,435', '123,246', '98,000', '210,500', '77,777', '305,120', '150,000', '88,000', '412,900'];
-    var STOCKS = ['1,231', '3,123,123', '23,123', '3,123', '12,312', '450', '88,900', '2,000', '560,000', '9,090', '31,000', '712'];
-
-    var state = null;
-    // 리스트 순서대로 옵션 종류 개수 지정: 1,2,3,1,2,3...
-    Array.prototype.forEach.call(document.querySelectorAll('.product-row'), function (r, i) {
-      r.setAttribute('data-optaxes', String((i % 3) + 1));
-    });
-
-    function buildState(axisCount) {
-      var axes = AXIS_TPL.slice(0, axisCount).map(function (a) { return { type: a.type, values: a.values.slice() }; });
-      var total = axes.reduce(function (n, a) { return n * a.values.length; }, 1);
-      var combos = [];
-      for (var i = 0; i < total; i++) combos.push({ price: PRICES[i % PRICES.length], stock: STOCKS[i % STOCKS.length], sale: true });
-      return { axes: axes, combos: combos };
-    }
-    // 조합 인덱스 → 각 축의 값 라벨 (마지막 축이 가장 빠르게 변함)
-    function comboLabels(ci) {
-      var labels = [], rem = ci;
-      for (var j = state.axes.length - 1; j >= 0; j--) {
-        var sz = state.axes[j].values.length;
-        labels[j] = state.axes[j].values[rem % sz];
-        rem = Math.floor(rem / sz);
-      }
-      return labels;
-    }
-
     function renderGroup() {
-      if (!group || !state) return;
-      var axes = state.axes, total = state.combos.length;
-      if (compose) compose.textContent = axes.map(function (a) { return a.type + '(' + a.values.length + ')'; }).join(' × ') + ' = 총 ' + total + '개 조합';
-      if (countEl) countEl.textContent = '판매 중 옵션 ' + total;
-      var axisChk = '<div class="opt-axes">' + axes.map(function (a, ai) {
-        return '<div class="opt-axis"><span class="opt-axis-lbl">' + esc(a.type) + '</span>' +
-          '<label class="opt-chk"><span class="cbox3 on" data-all="' + ai + '"></span> 전체</label>' +
-          a.values.map(function (v, vi) { return '<label class="opt-chk"><span class="cbox3" data-ax="' + ai + '" data-vi="' + vi + '"></span> ' + esc(v) + '</label>'; }).join('') +
-          '</div>';
-      }).join('') + '</div>';
-      var head = '<tr>' + axes.map(function (a) { return '<th>' + esc(a.type) + '</th>'; }).join('') + '<th>가격</th><th>재고</th><th>판매 여부</th><th>자체 옵션 코드</th></tr>';
-      var body = state.combos.map(function (c, ci) {
-        var cells = comboLabels(ci).map(function (l) { return '<td class="opt-td-name">' + esc(l) + '</td>'; }).join('');
-        return '<tr>' + cells +
-          '<td><span class="opt-cell-box">' + esc(c.price) + ' <span class="opt-unit">원</span></span></td>' +
-          '<td><span class="opt-cell-box">' + esc(c.stock) + ' <span class="opt-unit">개</span></span></td>' +
-          '<td><span class="opt-sw' + (c.sale ? ' on' : '') + '" data-sale="' + ci + '"></span></td>' +
+      if (!group) return;
+      var n = state.values.length;
+      if (compose) compose.textContent = state.type + '(' + n + ') = 총 ' + n + '개 조합';
+      if (countEl) countEl.textContent = '판매 중 옵션 ' + n;
+      var chips = '<label class="opt-chk"><span class="cbox3 on" data-all="1"></span> 전체</label>' +
+        state.values.map(function (v, i) { return '<label class="opt-chk"><span class="cbox3" data-chk="' + i + '"></span> ' + esc(v.name) + '</label>'; }).join('');
+      var rows = state.values.map(function (v, i) {
+        return '<tr><td class="opt-td-name">' + esc(v.name) + '</td>' +
+          '<td><span class="opt-cell-box">' + esc(v.price) + ' <span class="opt-unit">원</span></span></td>' +
+          '<td><span class="opt-cell-box">' + esc(v.stock) + ' <span class="opt-unit">개</span></span></td>' +
+          '<td><span class="opt-sw' + (v.sale ? ' on' : '') + '" data-sale="' + i + '"></span></td>' +
           '<td class="opt-td-code">-</td></tr>';
       }).join('');
-      group.innerHTML = axisChk + '<div class="opt-table-wrap"><table class="opt-table"><thead>' + head + '</thead><tbody>' + body + '</tbody></table></div>';
+      group.innerHTML =
+        '<div class="opt-grouphead"><span class="opt-typename">' + esc(state.type) + '</span>' + chips + '</div>' +
+        '<table class="opt-table"><thead><tr><th>' + esc(state.type) + '</th><th>가격</th><th>재고</th><th>판매 여부</th><th>자체 옵션 코드</th></tr></thead><tbody>' + rows + '</tbody></table>';
     }
 
     function openModal(row) {
-      var n = parseInt((row && row.getAttribute('data-optaxes')) || '1', 10);
-      state = buildState(n);
       if (prodName) { var ni = row && row.querySelector('.pr-name-input'); prodName.textContent = (ni && ni.value) ? ni.value : '상품'; }
       renderGroup();
       modal.classList.add('open');
@@ -2055,28 +2014,26 @@
     if (optApply) optApply.addEventListener('click', function () { toast('옵션 설정을 적용했습니다.', true); closeModal(); });
     modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
 
+    // 그룹 내 판매여부 토글 / 체크박스
     if (group) group.addEventListener('click', function (e) {
       var sw = e.target.closest('.opt-sw');
-      if (sw) { var si = parseInt(sw.getAttribute('data-sale'), 10); state.combos[si].sale = !state.combos[si].sale; sw.classList.toggle('on'); return; }
+      if (sw) { var si = parseInt(sw.getAttribute('data-sale'), 10); state.values[si].sale = !state.values[si].sale; sw.classList.toggle('on'); return; }
       var all = e.target.closest('[data-all]');
-      if (all) { var ai = all.getAttribute('data-all'); var on = !all.classList.contains('on'); all.classList.toggle('on', on); Array.prototype.forEach.call(group.querySelectorAll('[data-ax="' + ai + '"]'), function (c) { c.classList.toggle('on', on); }); return; }
-      var chk = e.target.closest('[data-ax]');
-      if (chk) { chk.classList.toggle('on'); var ai2 = chk.getAttribute('data-ax'); var allBox = group.querySelector('[data-all="' + ai2 + '"]'); var every = Array.prototype.every.call(group.querySelectorAll('[data-ax="' + ai2 + '"]'), function (c) { return c.classList.contains('on'); }); if (allBox) allBox.classList.toggle('on', every); return; }
+      if (all) { var on = !all.classList.contains('on'); all.classList.toggle('on', on); Array.prototype.forEach.call(group.querySelectorAll('[data-chk]'), function (c) { c.classList.toggle('on', on); }); return; }
+      var chk = e.target.closest('[data-chk]');
+      if (chk) { chk.classList.toggle('on'); var allBox = group.querySelector('[data-all]'); var every = Array.prototype.every.call(group.querySelectorAll('[data-chk]'), function (c) { return c.classList.contains('on'); }); if (allBox) allBox.classList.toggle('on', every); return; }
     });
     var sellAll = document.getElementById('optSellAll');
     if (sellAll) sellAll.addEventListener('click', function () { sellAll.classList.toggle('on'); });
 
-    // ---- 옵션명 수정 (중첩 팝업, 옵션 종류별로 구분) ----
-    function renderNameBody() {
-      if (!nameBody || !state) return;
-      nameBody.innerHTML = state.axes.map(function (a, ai) {
-        return '<div class="optname-axis">' +
-          '<div class="optname-type"><input class="opt-input opt-type-input" data-ax="' + ai + '" value="' + esc(a.type) + '" /></div>' +
-          '<div class="optname-vals">' + a.values.map(function (v, vi) { return '<input class="opt-input opt-val-input" data-ax="' + ai + '" data-vi="' + vi + '" value="' + esc(v) + '" />'; }).join('') + '</div>' +
-          '</div>';
-      }).join('');
+    // ---- 옵션명 수정 (중첩 팝업) ----
+    var typeInput = document.getElementById('optTypeInput');
+    var valWrap = document.getElementById('optValInputs');
+    function openName() {
+      if (typeInput) typeInput.value = state.type;
+      if (valWrap) valWrap.innerHTML = state.values.map(function (v, i) { return '<input class="opt-input opt-val-input" data-vi="' + i + '" value="' + esc(v.name) + '" />'; }).join('');
+      if (nameModal) nameModal.classList.add('open');
     }
-    function openName() { renderNameBody(); if (nameModal) nameModal.classList.add('open'); }
     function closeName() { if (nameModal) nameModal.classList.remove('open'); }
     var editNameBtn = document.getElementById('optEditNameBtn');
     if (editNameBtn) editNameBtn.addEventListener('click', openName);
@@ -2085,20 +2042,17 @@
     if (nameCancel) nameCancel.addEventListener('click', closeName);
     if (nameModal) nameModal.addEventListener('click', function (e) { if (e.target === nameModal) closeName(); });
     if (nameSave) nameSave.addEventListener('click', function () {
-      var ok = true;
-      Array.prototype.forEach.call(nameBody.querySelectorAll('.opt-type-input'), function (inp) {
-        var ai = parseInt(inp.getAttribute('data-ax'), 10); var t = (inp.value || '').trim(); if (t) state.axes[ai].type = t; else ok = false;
-      });
-      if (!ok) { toast('옵션 종류를 입력해 주세요.', false); return; }
-      Array.prototype.forEach.call(nameBody.querySelectorAll('.opt-val-input'), function (inp) {
-        var ai = parseInt(inp.getAttribute('data-ax'), 10); var vi = parseInt(inp.getAttribute('data-vi'), 10); var nv = (inp.value || '').trim(); if (nv) state.axes[ai].values[vi] = nv;
+      var t = (typeInput.value || '').trim();
+      if (!t) { toast('옵션 종류를 입력해 주세요.', false); typeInput.focus(); return; }
+      state.type = t;
+      Array.prototype.forEach.call(valWrap.querySelectorAll('.opt-val-input'), function (inp) {
+        var vi = parseInt(inp.getAttribute('data-vi'), 10); var nv = (inp.value || '').trim(); if (nv) state.values[vi].name = nv;
       });
       renderGroup();
       toast('옵션명을 수정했습니다.', true);
       closeName();
     });
   })();
-
 
   // ============ 채팅 — 실시간 스트림 + 닉네임 검색 + 음소거/답변(Q&A) (GRIPPGM-3224 외) ============
   (function () {
