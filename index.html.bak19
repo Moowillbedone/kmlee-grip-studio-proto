@@ -394,57 +394,6 @@
   .btn-close:hover { background: #e9eaee; }
   .btn-apply { background: var(--grip); border: 0; color: #fff; font-size: 15px; font-weight: 800; padding: 13px 34px; border-radius: 10px; cursor: pointer; }
   .btn-apply:hover { background: var(--grip-strong); }
-  /* 옵션 버튼 + 상품 옵션 관리 모달 */
-  .btn-option { background:#fff; border:1px solid #e3e4e8; color:#5c606b; font-size:14px; font-weight:700; padding:11px 20px; border-radius:9px; flex:0 0 auto; cursor:pointer; }
-  .btn-option:hover { background:#f6f7f9; border-color:#d7dae1; }
-  .opt-modal { max-width:720px; display:flex; flex-direction:column; max-height:88vh; }
-  #optNameModal { z-index:120; }
-  .opt-head { display:flex; align-items:center; justify-content:space-between; padding:20px 24px; border-bottom:1px solid var(--border); flex:0 0 auto; }
-  .opt-h-title { font-size:18px; font-weight:800; color:#1d1f25; }
-  .opt-x { border:0; background:none; font-size:24px; line-height:1; color:#9aa0ab; cursor:pointer; padding:0 2px; }
-  .opt-body { padding:22px 24px; overflow-y:auto; }
-  .opt-prod { display:flex; align-items:center; gap:14px; margin-bottom:18px; }
-  .opt-thumb { width:56px; height:56px; border-radius:10px; background:#2b2d34; background-size:cover; background-position:center; flex:0 0 auto; }
-  .opt-prod-lbl { font-size:12.5px; color:#9aa0ab; font-weight:600; }
-  .opt-prod-name { font-size:17px; font-weight:800; color:#1d1f25; }
-  .opt-summary-line { display:flex; align-items:center; justify-content:space-between; font-size:14px; color:#41444d; font-weight:600; margin-bottom:12px; flex-wrap:wrap; gap:8px; }
-  .opt-filters { display:flex; gap:8px; }
-  .opt-drop { border:1px solid #e3e4e8; border-radius:8px; padding:7px 12px; font-size:12.5px; color:#6b6f78; background:#fff; }
-  .opt-summary { background:#f7f8fa; border-radius:12px; padding:16px 18px; margin-bottom:18px; }
-  .opt-price-row { display:flex; align-items:center; gap:18px; flex-wrap:wrap; font-size:14px; color:#41444d; }
-  .opt-price-row s { color:#aeb2bb; }
-  .opt-price-row .opt-live { color:var(--grip); font-weight:800; }
-  .opt-sell-all { margin-left:auto; display:flex; align-items:center; gap:9px; font-weight:700; color:#41444d; cursor:pointer; user-select:none; }
-  .opt-compose { margin-top:12px; font-size:13.5px; color:#6b6f78; }
-  .opt-sw { width:40px; height:23px; border-radius:12px; background:#cfd3da; position:relative; display:inline-block; cursor:pointer; flex:0 0 auto; transition:background .15s; vertical-align:middle; }
-  .opt-sw::after { content:""; position:absolute; top:2.5px; left:2.5px; width:18px; height:18px; border-radius:50%; background:#fff; box-shadow:0 1px 2px rgba(0,0,0,.25); transition:left .15s; }
-  .opt-sw.on { background:var(--grip); }
-  .opt-sw.on::after { left:19px; }
-  .opt-info-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
-  .opt-info-lbl { font-size:15px; font-weight:800; color:#1d1f25; }
-  .opt-editname-btn { border:1px solid var(--grip); background:#fff; color:var(--grip); font-size:13px; font-weight:700; padding:8px 14px; border-radius:8px; cursor:pointer; }
-  .opt-editname-btn:hover { background:var(--grip-soft); }
-  .opt-grouphead { display:flex; align-items:center; gap:14px; flex-wrap:wrap; padding:12px 4px; font-size:14px; }
-  .opt-typename { color:#1d1f25; font-weight:800; }
-  .opt-chk { display:inline-flex; align-items:center; gap:6px; color:#41444d; font-weight:600; cursor:pointer; font-size:13px; }
-  .cbox3 { width:18px; height:18px; border-radius:5px; border:1.5px solid #cfd2d9; background:#fff; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; flex:0 0 auto; }
-  .cbox3.on { background:var(--grip); border-color:var(--grip); }
-  .cbox3.on::after { content:"\2713"; color:#fff; font-size:11px; font-weight:900; }
-  .opt-table { width:100%; border-collapse:collapse; font-size:13.5px; }
-  .opt-table th { text-align:center; color:#9aa0ab; font-weight:600; font-size:12.5px; padding:10px 8px; border-bottom:1px solid var(--border); }
-  .opt-table th:first-child { text-align:left; }
-  .opt-table td { text-align:center; padding:12px 8px; border-bottom:1px solid #f0f1f3; color:#2b2d34; }
-  .opt-td-name { text-align:left; font-weight:700; }
-  .opt-cell-box { display:inline-block; background:#f4f5f7; border-radius:7px; padding:7px 10px; min-width:88px; }
-  .opt-unit { color:#9aa0ab; font-size:12px; }
-  .opt-td-code { color:#aeb2bb; }
-  .opt-note { background:var(--grip-soft); color:#b0304e; font-size:13px; line-height:1.6; border-radius:10px; padding:14px 16px; margin-bottom:20px; }
-  .opt-note b { color:var(--grip); }
-  .opt-field { margin-bottom:16px; }
-  .opt-field-lbl { display:block; font-size:14px; font-weight:800; color:#1d1f25; margin-bottom:8px; }
-  .opt-input { width:100%; border:1px solid #e3e4e8; border-radius:9px; padding:12px 14px; font-size:14px; outline:none; box-sizing:border-box; }
-  .opt-input:focus { border-color:var(--grip); }
-  #optValInputs .opt-input { margin-bottom:9px; }
 
   /* 일괄 수정 실패 팝업 */
   .modal-fail { max-width: 600px; }
@@ -1033,7 +982,7 @@
               <div class="pr-top">
                 <input class="pr-name-input" value="미니 대표 선크림" />
                 <div class="pr-actions">
-                  <button class="btn-option">옵션</button><button class="btn-up">▲ UP</button>
+                  <button class="btn-up">▲ UP</button>
                   <button class="btn-storeoff">스토어 OFF</button>
                 </div>
               </div>
@@ -1069,7 +1018,7 @@
               <div class="pr-top">
                 <input class="pr-name-input" value="수분 진정 토너 200ml" />
                 <div class="pr-actions">
-                  <button class="btn-option">옵션</button><button class="btn-up">▲ UP</button>
+                  <button class="btn-up">▲ UP</button>
                   <button class="btn-storeoff">스토어 OFF</button>
                 </div>
               </div>
@@ -1105,7 +1054,7 @@
               <div class="pr-top">
                 <input class="pr-name-input" value="데일리 클렌징 폼" />
                 <div class="pr-actions">
-                  <button class="btn-option">옵션</button><button class="btn-up">▲ UP</button>
+                  <button class="btn-up">▲ UP</button>
                   <button class="btn-storeoff">스토어 OFF</button>
                 </div>
               </div>
@@ -1141,7 +1090,7 @@
               <div class="pr-top">
                 <input class="pr-name-input" value="비타민C 브라이트 세럼" />
                 <div class="pr-actions">
-                  <button class="btn-option">옵션</button><button class="btn-up">▲ UP</button>
+                  <button class="btn-up">▲ UP</button>
                   <button class="btn-storeoff">스토어 OFF</button>
                 </div>
               </div>
@@ -1177,7 +1126,7 @@
               <div class="pr-top">
                 <input class="pr-name-input" value="수분 진정 크림 50ml" />
                 <div class="pr-actions">
-                  <button class="btn-option">옵션</button><button class="btn-up">▲ UP</button>
+                  <button class="btn-up">▲ UP</button>
                   <button class="btn-storeoff">스토어 OFF</button>
                 </div>
               </div>
@@ -1213,7 +1162,7 @@
               <div class="pr-top">
                 <input class="pr-name-input" value="모이스처 립밤 2종 세트" />
                 <div class="pr-actions">
-                  <button class="btn-option">옵션</button><button class="btn-up">▲ UP</button>
+                  <button class="btn-up">▲ UP</button>
                   <button class="btn-storeoff">스토어 OFF</button>
                 </div>
               </div>
@@ -1410,37 +1359,6 @@
     <div class="modal-foot" style="justify-content:center;">
       <button class="btn-apply" id="upMaxOk" style="width:100%;background:var(--grip);">확인</button>
     </div>
-  </div>
-</div>
-
-<!-- 상품 옵션 관리 -->
-<div class="modal-overlay" id="optionModal">
-  <div class="modal opt-modal" role="dialog" aria-modal="true" aria-label="상품 옵션 관리">
-    <div class="opt-head"><span class="opt-h-title">상품 옵션 관리</span><button class="opt-x" id="optClose" aria-label="닫기">&times;</button></div>
-    <div class="opt-body">
-      <div class="opt-prod"><span class="opt-thumb" id="optThumb"></span><div><div class="opt-prod-lbl">상품명</div><div class="opt-prod-name" id="optProdName">상품</div></div></div>
-      <div class="opt-summary-line"><span><b id="optCount">판매 중 옵션 3</b> · 총 재고 26,477,567</span><span class="opt-filters"><span class="opt-drop">판매 여부 전체 &#9662;</span><span class="opt-drop">기본순 &#9662;</span></span></div>
-      <div class="opt-summary">
-        <div class="opt-price-row"><span>상품가 <s>1,231,231원</s></span><span>상시 할인가 <b>1,231,231원</b></span><span class="opt-live">라이브가 <b>1,231,231원</b></span><label class="opt-sell-all"><span>전체 판매</span><span class="opt-sw on" id="optSellAll"></span></label></div>
-        <div class="opt-compose">옵션 구성 <b id="optCompose">응 되긴하네(3) = 총 3개 조합</b></div>
-      </div>
-      <div class="opt-info-head"><span class="opt-info-lbl">옵션 정보</span><button class="opt-editname-btn" id="optEditNameBtn">옵션명 수정하기</button></div>
-      <div class="opt-group" id="optGroup"></div>
-    </div>
-    <div class="modal-foot"><button class="btn-close" id="optCancel">닫기</button><button class="btn-apply" id="optApply">적용</button></div>
-  </div>
-</div>
-
-<!-- 옵션명 수정 (중첩 팝업) -->
-<div class="modal-overlay" id="optNameModal">
-  <div class="modal" role="dialog" aria-modal="true" aria-label="옵션명 수정" style="max-width:480px;">
-    <div class="opt-head"><span class="opt-h-title">옵션명 수정</span><button class="opt-x" id="optNameClose" aria-label="닫기">&times;</button></div>
-    <div class="modal-body">
-      <div class="opt-note">옵션 종류(예: <b>컬러</b>)와 옵션 값(예: <b>그레이 / 블랙 / 화이트</b>)을 직접 입력하여 수정하세요.<br/>수정하기를 누르면 아래 옵션 표·필터·요약에 즉시 반영됩니다.</div>
-      <div class="opt-field"><label class="opt-field-lbl">옵션 종류</label><input class="opt-input" id="optTypeInput" /></div>
-      <div class="opt-field"><label class="opt-field-lbl">옵션 값</label><div id="optValInputs"></div></div>
-    </div>
-    <div class="modal-foot"><button class="btn-close" id="optNameCancel">취소</button><button class="btn-apply" id="optNameSave">수정하기</button></div>
   </div>
 </div>
 
@@ -1954,104 +1872,6 @@
     window.__gripSetMode = applyMode;
 
     applyMode('limited');   // 초기: 한정판매 모드
-  })();
-
-  // ============ 상품 옵션 관리 (옵션 버튼 → 모달 → 옵션명 수정) ============
-  (function () {
-    var modal = document.getElementById('optionModal');
-    if (!modal) return;
-    var nameModal = document.getElementById('optNameModal');
-    var group = document.getElementById('optGroup');
-    var compose = document.getElementById('optCompose');
-    var countEl = document.getElementById('optCount');
-    var prodName = document.getElementById('optProdName');
-    function toast(m, ok) { if (window.__gripToast) window.__gripToast(m, ok); }
-
-    // 옵션 1개(종류) + 옵션 값 3개. (옵션 종류는 최대 3개까지 가능하나 지정은 별도 화면 — 여기선 1개 케이스)
-    var state = {
-      type: '응 되긴하네',
-      values: [
-        { name: '123213', price: '2,462,460', stock: '23,123,120', sale: true },
-        { name: '565656', price: '2,462,460', stock: '231,231', sale: true },
-        { name: '787878', price: '3,543,540', stock: '3,123,213', sale: true }
-      ]
-    };
-    function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
-
-    function renderGroup() {
-      if (!group) return;
-      var n = state.values.length;
-      if (compose) compose.textContent = state.type + '(' + n + ') = 총 ' + n + '개 조합';
-      if (countEl) countEl.textContent = '판매 중 옵션 ' + n;
-      var chips = '<label class="opt-chk"><span class="cbox3 on" data-all="1"></span> 전체</label>' +
-        state.values.map(function (v, i) { return '<label class="opt-chk"><span class="cbox3" data-chk="' + i + '"></span> ' + esc(v.name) + '</label>'; }).join('');
-      var rows = state.values.map(function (v, i) {
-        return '<tr><td class="opt-td-name">' + esc(v.name) + '</td>' +
-          '<td><span class="opt-cell-box">' + esc(v.price) + ' <span class="opt-unit">원</span></span></td>' +
-          '<td><span class="opt-cell-box">' + esc(v.stock) + ' <span class="opt-unit">개</span></span></td>' +
-          '<td><span class="opt-sw' + (v.sale ? ' on' : '') + '" data-sale="' + i + '"></span></td>' +
-          '<td class="opt-td-code">-</td></tr>';
-      }).join('');
-      group.innerHTML =
-        '<div class="opt-grouphead"><span class="opt-typename">' + esc(state.type) + '</span>' + chips + '</div>' +
-        '<table class="opt-table"><thead><tr><th>' + esc(state.type) + '</th><th>가격</th><th>재고</th><th>판매 여부</th><th>자체 옵션 코드</th></tr></thead><tbody>' + rows + '</tbody></table>';
-    }
-
-    function openModal(row) {
-      if (prodName) { var ni = row && row.querySelector('.pr-name-input'); prodName.textContent = (ni && ni.value) ? ni.value : '상품'; }
-      renderGroup();
-      modal.classList.add('open');
-    }
-    function closeModal() { modal.classList.remove('open'); }
-
-    document.addEventListener('click', function (e) {
-      var b = e.target.closest && e.target.closest('.btn-option');
-      if (b) openModal(b.closest('.product-row'));
-    });
-    var optClose = document.getElementById('optClose'), optCancel = document.getElementById('optCancel'), optApply = document.getElementById('optApply');
-    if (optClose) optClose.addEventListener('click', closeModal);
-    if (optCancel) optCancel.addEventListener('click', closeModal);
-    if (optApply) optApply.addEventListener('click', function () { toast('옵션 설정을 적용했습니다.', true); closeModal(); });
-    modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
-
-    // 그룹 내 판매여부 토글 / 체크박스
-    if (group) group.addEventListener('click', function (e) {
-      var sw = e.target.closest('.opt-sw');
-      if (sw) { var si = parseInt(sw.getAttribute('data-sale'), 10); state.values[si].sale = !state.values[si].sale; sw.classList.toggle('on'); return; }
-      var all = e.target.closest('[data-all]');
-      if (all) { var on = !all.classList.contains('on'); all.classList.toggle('on', on); Array.prototype.forEach.call(group.querySelectorAll('[data-chk]'), function (c) { c.classList.toggle('on', on); }); return; }
-      var chk = e.target.closest('[data-chk]');
-      if (chk) { chk.classList.toggle('on'); var allBox = group.querySelector('[data-all]'); var every = Array.prototype.every.call(group.querySelectorAll('[data-chk]'), function (c) { return c.classList.contains('on'); }); if (allBox) allBox.classList.toggle('on', every); return; }
-    });
-    var sellAll = document.getElementById('optSellAll');
-    if (sellAll) sellAll.addEventListener('click', function () { sellAll.classList.toggle('on'); });
-
-    // ---- 옵션명 수정 (중첩 팝업) ----
-    var typeInput = document.getElementById('optTypeInput');
-    var valWrap = document.getElementById('optValInputs');
-    function openName() {
-      if (typeInput) typeInput.value = state.type;
-      if (valWrap) valWrap.innerHTML = state.values.map(function (v, i) { return '<input class="opt-input opt-val-input" data-vi="' + i + '" value="' + esc(v.name) + '" />'; }).join('');
-      if (nameModal) nameModal.classList.add('open');
-    }
-    function closeName() { if (nameModal) nameModal.classList.remove('open'); }
-    var editNameBtn = document.getElementById('optEditNameBtn');
-    if (editNameBtn) editNameBtn.addEventListener('click', openName);
-    var nameClose = document.getElementById('optNameClose'), nameCancel = document.getElementById('optNameCancel'), nameSave = document.getElementById('optNameSave');
-    if (nameClose) nameClose.addEventListener('click', closeName);
-    if (nameCancel) nameCancel.addEventListener('click', closeName);
-    if (nameModal) nameModal.addEventListener('click', function (e) { if (e.target === nameModal) closeName(); });
-    if (nameSave) nameSave.addEventListener('click', function () {
-      var t = (typeInput.value || '').trim();
-      if (!t) { toast('옵션 종류를 입력해 주세요.', false); typeInput.focus(); return; }
-      state.type = t;
-      Array.prototype.forEach.call(valWrap.querySelectorAll('.opt-val-input'), function (inp) {
-        var vi = parseInt(inp.getAttribute('data-vi'), 10); var nv = (inp.value || '').trim(); if (nv) state.values[vi].name = nv;
-      });
-      renderGroup();
-      toast('옵션명을 수정했습니다.', true);
-      closeName();
-    });
   })();
 
   // ============ 채팅 — 실시간 스트림 + 닉네임 검색 + 음소거/답변(Q&A) (GRIPPGM-3224 외) ============
