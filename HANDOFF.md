@@ -37,8 +37,9 @@
   - 한정: UP **1개씩**(다른 상품 UP 시 이전 자동 해제), [UP한 상품 목록] 버튼 O, "1개씩 판매" 문구, 기본 UP 1개.
   - 스토어: UP **최대 5개**(6번째 팝업 `#upMaxModal`), 버튼 숨김, "최대 5개/판매종료·품절 자동해제" 문구, 기본 UP 3개.
 - **UP:** `upOrder`(현재 UP, 프리뷰 노출) vs `everUp`(**한 번이라도 UP된 상품 전부** — UP한 상품 목록 모달용, 누적). 삭제 시 둘 다에서 제거. 품절 클릭 시 UP 자동 해제.
-- **삭제:** (2026-07-03 변경) 행별 🗑(`.pr-del`) **제거** → **체크박스 선택 + `[선택 삭제]`(`#btnDelSel`)** 방식. `#btnDelSel`은 체크박스 IIFE `actionBtns`에 포함돼 1개+ 선택 시 `.enabled`(코랄 `danger`). 클릭 → `askBulkDelete(window.__gripCheckedRows())` → 확인 모달(`#deleteModal`) → `[제거]` → `pendingRows.forEach(doRemove)` + `window.__gripSelRefresh()`. 체크박스 IIFE는 `liveRows()`(isConnected)로 삭제 후 카운트 보정, `__gripSelRefresh`/`__gripCheckedRows` 노출. UP 목록/프리뷰 자동 반영(한정). 비즈센터 미반영.
-  - **판매 모드별 확인 문구(2026-07-03 추가):** `askDelete()`가 `#delDetail`을 모드별로 세팅. **한정판매**=“UP한 상품 목록에서도 제거” 문구 포함 / **스토어판매**=제외(스토어엔 [UP한 상품 목록] 버튼 자체가 없음 — `applyMode`가 store에서 `btnUpList` 숨김). “비즈센터 유지” 문구는 두 모드 공통. PRD 명세 **4개**(1삭제/2**모드별 문구**/3UP동기화(한정)/4비즈센터), 플로우 “현재 판매 모드는?” 분기, 데모에 **스토어 분기+정리 스텝** 추가.
+- **삭제:** (2026-07-03 변경) 행별 🗑(`.pr-del`) **제거** → **체크박스 선택 + `[선택 삭제]`(`#btnDelSel`)** 방식. `#btnDelSel`은 체크박스 IIFE `actionBtns`에 포함돼 1개+ 선택 시 `.enabled`(코랄 `danger`). 클릭 → `askBulkDelete(window.__gripCheckedRows())` → 확인 모달(`#deleteModal`) → `[제거]` → `pendingRows.forEach(doRemove)` + `window.__gripSelRefresh()`. 체크박스 IIFE는 `liveRows()`(isConnected)로 삭제 후 카운트 보정, `__gripSelRefresh`/`__gripCheckedRows` 노출. UP 목록/프리뷰 자동 반영(한정).
+  - **삭제 연동 정책(2026-07-03 정정 — 중요):** 토스트=“N개 상품을 삭제했습니다”(단순). 모달/토스트/PRD에서 **“비즈센터 상품은 유지” 문구 전면 삭제**. 정정된 정책: 스튜디오 삭제 → **비즈센터 ‘라이브 방송 상품 설정’ 영역에서도 함께 제거(연동 O)**, 단 **비즈센터의 실제 상품 목록(상품 마스터)은 삭제 안 됨(연동 X)**. ‘라이브 방송 상품 설정’ ≠ 비즈센터 상품 목록(별개 영역). (이전엔 “라이브 방송 상품 설정 미반영”으로 **틀리게** 적혀 있었음 → 뒤집음.) PRD 명세4 제목 “비즈센터 미반영”→“삭제 연동 범위(라이브 방송 상품 설정)”. **가격 3338의 비즈센터=가격 데이터 연동은 별개·정상(유지).**
+  - **판매 모드별 확인 문구:** `setDelDetail()`이 `#delDetail`을 모드별로 세팅. **한정판매**=“스튜디오 방송 리스트와 UP한 상품 목록에서 제거” / **스토어판매**=“스튜디오 방송 리스트에서 제거”(UP 목록 문구 없음). 비즈센터 언급 없음. PRD 명세 **4개**(1선택삭제/2**모드별 문구**/3UP동기화(한정)/4**삭제 연동 범위**), 플로우 “현재 판매 모드는?” 분기, 데모에 스토어 분기+정리 스텝. 컨플루언스 삭제 PRD 2319581187 **v14**(ver0.4).
 - 상품 이미지: `p1~p6.png`(다운로드 오늘자 PNG 복사). 프리뷰 가로 카드 `#poStrip`(scroll-snap), UP한 상품 목록 모달 `#upListModal`(전체선택/체크/스토어 ON·OFF).
 - 데모 리셋용 `window.__gripRestoreRows`, `window.__gripSetMode` 노출.
 
