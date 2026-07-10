@@ -456,26 +456,6 @@
   .optname-vals { flex:1; min-width:0; }
   .optname-vals .opt-input { margin-bottom:9px; }
   .optname-vals .opt-input:last-child { margin-bottom:0; }
-  .opt-bulk-modal { max-height:88vh; display:flex; flex-direction:column; }
-  .opt-bulk-body { overflow-y:auto; }
-  .optb-head { display:flex; gap:14px; margin-bottom:12px; font-weight:800; font-size:14px; color:#1d1f25; }
-  .optb-h-type { width:150px; flex:0 0 150px; }
-  .optb-h-vals { flex:1; min-width:0; display:flex; gap:8px; }
-  .optb-h-name { flex:1; }
-  .optb-h-price, .optb-h-stock { width:120px; flex:0 0 120px; }
-  .optb-h-ctrl { width:118px; flex:0 0 118px; }
-  .optb-axis { display:flex; gap:14px; padding:14px 0; border-bottom:1px solid #f0f1f3; }
-  .optb-axis:last-child { border-bottom:0; }
-  .optb-type { width:150px; flex:0 0 150px; }
-  .optb-vals { flex:1; min-width:0; display:flex; flex-direction:column; gap:9px; }
-  .optb-vrow { display:flex; gap:8px; align-items:center; }
-  .optb-name { flex:1; min-width:0; }
-  .optb-price, .optb-stock { width:120px; flex:0 0 120px; }
-  .optb-ctrl { width:118px; flex:0 0 118px; display:flex; gap:6px; justify-content:flex-end; }
-  .optb-add, .optb-del { border:1px solid #e3e4e8; background:#fff; border-radius:8px; padding:9px 13px; font-size:13px; font-weight:700; cursor:pointer; color:#5c606b; flex:0 0 auto; }
-  .optb-add { border-color:var(--grip); color:var(--grip); }
-  .optb-add:hover { background:var(--grip-soft); }
-  .optb-del:hover { background:#f6f7f9; }
 
   /* 일괄 수정 실패 팝업 */
   .modal-fail { max-width: 600px; }
@@ -1455,23 +1435,23 @@
         <div class="opt-price-row"><span>상품가 <s>1,231,231원</s></span><span>상시 할인가 <b>1,231,231원</b></span><span class="opt-live">라이브가 <b>1,231,231원</b></span><label class="opt-sell-all"><span>전체 판매</span><span class="opt-sw on" id="optSellAll"></span></label></div>
         <div class="opt-compose">옵션 구성 <b id="optCompose">응 되긴하네(3) = 총 3개 조합</b></div>
       </div>
-      <div class="opt-info-head"><span class="opt-info-lbl">옵션 정보</span><button class="opt-editname-btn" id="optEditNameBtn">옵션 일괄 수정</button></div>
+      <div class="opt-info-head"><span class="opt-info-lbl">옵션 정보</span><button class="opt-editname-btn" id="optEditNameBtn">옵션명 수정하기</button></div>
       <div class="opt-group" id="optGroup"></div>
     </div>
     <div class="modal-foot"><button class="btn-close" id="optCancel">닫기</button><button class="btn-apply" id="optApply">적용</button></div>
   </div>
 </div>
 
-<!-- 옵션 일괄 수정 (중첩 팝업) -->
+<!-- 옵션명 수정 (중첩 팝업) -->
 <div class="modal-overlay" id="optNameModal">
-  <div class="modal opt-bulk-modal" role="dialog" aria-modal="true" aria-label="옵션 일괄 수정" style="max-width:900px;">
-    <div class="opt-head"><span class="opt-h-title">옵션 일괄 수정</span><button class="opt-x" id="optNameClose" aria-label="닫기">&times;</button></div>
-    <div class="modal-body opt-bulk-body">
-      <div class="opt-note">옵션 <b>종류·값</b>을 직접 입력하고, 값 행을 <b>추가/삭제</b>할 수 있습니다. 각 옵션 값의 <b>가격·재고</b>도 함께 수정하세요.<br/><b>[옵션 적용 하기]</b>를 누르면 아래 옵션 표·필터·요약에 즉시 반영됩니다.</div>
-      <div class="optb-head"><span class="optb-h-type">옵션 종류</span><div class="optb-h-vals"><span class="optb-h-name">옵션 값</span><span class="optb-h-price">가격</span><span class="optb-h-stock">재고</span><span class="optb-h-ctrl"></span></div></div>
+  <div class="modal" role="dialog" aria-modal="true" aria-label="옵션명 수정" style="max-width:480px;">
+    <div class="opt-head"><span class="opt-h-title">옵션명 수정</span><button class="opt-x" id="optNameClose" aria-label="닫기">&times;</button></div>
+    <div class="modal-body">
+      <div class="opt-note">옵션 종류(예: <b>컬러</b>)와 옵션 값(예: <b>그레이 / 블랙 / 화이트</b>)을 직접 입력하여 수정하세요.<br/>수정하기를 누르면 아래 옵션 표·필터·요약에 즉시 반영됩니다.</div>
+      <div class="optname-head"><span>옵션 종류</span><span>옵션 값</span></div>
       <div id="optNameBody"></div>
     </div>
-    <div class="modal-foot" style="justify-content:center;gap:12px;"><button class="btn-close" id="optNameReset">초기화</button><button class="btn-apply" id="optNameSave">옵션 적용 하기</button></div>
+    <div class="modal-foot"><button class="btn-close" id="optNameCancel">취소</button><button class="btn-apply" id="optNameSave">수정하기</button></div>
   </div>
 </div>
 
@@ -1987,7 +1967,7 @@
     applyMode('limited');   // 초기: 한정판매 모드
   })();
 
-  // ============ 상품 옵션 관리 (다축 1~3 · 옵션 일괄 수정: 값 추가/삭제 + 가격/재고) ============
+  // ============ 상품 옵션 관리 (다축 옵션 1~3개 · 옵션 버튼 → 모달 → 옵션명 수정) ============
   (function () {
     var modal = document.getElementById('optionModal');
     if (!modal) return;
@@ -1998,8 +1978,9 @@
     var prodName = document.getElementById('optProdName');
     var nameBody = document.getElementById('optNameBody');
     function toast(m, ok) { if (window.__gripToast) window.__gripToast(m, ok); }
-    function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+    function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
 
+    // 옵션 종류 템플릿 (최대 3개, 각 종류당 값 3개). 실제 종류/값 지정은 별도 화면 — 여기선 데모 데이터.
     var AXIS_TPL = [
       { type: '옵션1', values: ['12313', '123123', '123123123'] },
       { type: '옵션2', values: ['678678', '67868678678', '678678678678768'] },
@@ -2008,25 +1989,27 @@
     var PRICES = ['124,354', '435,435', '124,354', '125,435', '123,246', '98,000', '210,500', '77,777', '305,120', '150,000', '88,000', '412,900'];
     var STOCKS = ['1,231', '3,123,123', '23,123', '3,123', '12,312', '450', '88,900', '2,000', '560,000', '9,090', '31,000', '712'];
 
-    var state = null, draft = null;
-    Array.prototype.forEach.call(document.querySelectorAll('.product-row'), function (r, i) { r.setAttribute('data-optaxes', String((i % 3) + 1)); });
+    var state = null;
+    // 리스트 순서대로 옵션 종류 개수 지정: 1,2,3,1,2,3...
+    Array.prototype.forEach.call(document.querySelectorAll('.product-row'), function (r, i) {
+      r.setAttribute('data-optaxes', String((i % 3) + 1));
+    });
 
-    function buildCombos(axes) {
-      var total = axes.reduce(function (n, a) { return n * Math.max(a.values.length, 1); }, 1);
+    function buildState(axisCount) {
+      var axes = AXIS_TPL.slice(0, axisCount).map(function (a) { return { type: a.type, values: a.values.slice() }; });
+      var total = axes.reduce(function (n, a) { return n * a.values.length; }, 1);
       var combos = [];
       for (var i = 0; i < total; i++) combos.push({ price: PRICES[i % PRICES.length], stock: STOCKS[i % STOCKS.length], sale: true });
-      return combos;
+      return { axes: axes, combos: combos };
     }
-    function buildState(n) {
-      var axes = AXIS_TPL.slice(0, n).map(function (a) {
-        return { type: a.type, values: a.values.map(function (v, i) { return { name: v, price: PRICES[i % PRICES.length], stock: STOCKS[i % STOCKS.length] }; }) };
-      });
-      return { axes: axes, combos: buildCombos(axes) };
-    }
-    function cloneAxes(axes) { return axes.map(function (a) { return { type: a.type, values: a.values.map(function (v) { return { name: v.name, price: v.price, stock: v.stock }; }) }; }); }
+    // 조합 인덱스 → 각 축의 값 라벨 (마지막 축이 가장 빠르게 변함)
     function comboLabels(ci) {
       var labels = [], rem = ci;
-      for (var j = state.axes.length - 1; j >= 0; j--) { var sz = state.axes[j].values.length; labels[j] = state.axes[j].values[rem % sz].name; rem = Math.floor(rem / sz); }
+      for (var j = state.axes.length - 1; j >= 0; j--) {
+        var sz = state.axes[j].values.length;
+        labels[j] = state.axes[j].values[rem % sz];
+        rem = Math.floor(rem / sz);
+      }
       return labels;
     }
 
@@ -2036,13 +2019,19 @@
       if (compose) compose.textContent = axes.map(function (a) { return a.type + '(' + a.values.length + ')'; }).join(' × ') + ' = 총 ' + total + '개 조합';
       if (countEl) countEl.textContent = '판매 중 옵션 ' + total;
       var axisChk = '<div class="opt-axes">' + axes.map(function (a, ai) {
-        return '<div class="opt-axis"><span class="opt-axis-lbl">' + esc(a.type) + '</span><label class="opt-chk"><span class="cbox3 on" data-all="' + ai + '"></span> 전체</label>' +
-          a.values.map(function (v, vi) { return '<label class="opt-chk"><span class="cbox3" data-ax="' + ai + '" data-vi="' + vi + '"></span> ' + esc(v.name) + '</label>'; }).join('') + '</div>';
+        return '<div class="opt-axis"><span class="opt-axis-lbl">' + esc(a.type) + '</span>' +
+          '<label class="opt-chk"><span class="cbox3 on" data-all="' + ai + '"></span> 전체</label>' +
+          a.values.map(function (v, vi) { return '<label class="opt-chk"><span class="cbox3" data-ax="' + ai + '" data-vi="' + vi + '"></span> ' + esc(v) + '</label>'; }).join('') +
+          '</div>';
       }).join('') + '</div>';
       var head = '<tr>' + axes.map(function (a) { return '<th>' + esc(a.type) + '</th>'; }).join('') + '<th>가격</th><th>재고</th><th>판매 여부</th><th>자체 옵션 코드</th></tr>';
       var body = state.combos.map(function (c, ci) {
         var cells = comboLabels(ci).map(function (l) { return '<td class="opt-td-name">' + esc(l) + '</td>'; }).join('');
-        return '<tr>' + cells + '<td><span class="opt-cell-box">' + esc(c.price) + ' <span class="opt-unit">원</span></span></td><td><span class="opt-cell-box">' + esc(c.stock) + ' <span class="opt-unit">개</span></span></td><td><span class="opt-sw' + (c.sale ? ' on' : '') + '" data-sale="' + ci + '"></span></td><td class="opt-td-code">-</td></tr>';
+        return '<tr>' + cells +
+          '<td><span class="opt-cell-box">' + esc(c.price) + ' <span class="opt-unit">원</span></span></td>' +
+          '<td><span class="opt-cell-box">' + esc(c.stock) + ' <span class="opt-unit">개</span></span></td>' +
+          '<td><span class="opt-sw' + (c.sale ? ' on' : '') + '" data-sale="' + ci + '"></span></td>' +
+          '<td class="opt-td-code">-</td></tr>';
       }).join('');
       group.innerHTML = axisChk + '<div class="opt-table-wrap"><table class="opt-table"><thead>' + head + '</thead><tbody>' + body + '</tbody></table></div>';
     }
@@ -2055,7 +2044,11 @@
       modal.classList.add('open');
     }
     function closeModal() { modal.classList.remove('open'); }
-    document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.btn-option'); if (b) openModal(b.closest('.product-row')); });
+
+    document.addEventListener('click', function (e) {
+      var b = e.target.closest && e.target.closest('.btn-option');
+      if (b) openModal(b.closest('.product-row'));
+    });
     var optClose = document.getElementById('optClose'), optCancel = document.getElementById('optCancel'), optApply = document.getElementById('optApply');
     if (optClose) optClose.addEventListener('click', closeModal);
     if (optCancel) optCancel.addEventListener('click', closeModal);
@@ -2073,61 +2066,35 @@
     var sellAll = document.getElementById('optSellAll');
     if (sellAll) sellAll.addEventListener('click', function () { sellAll.classList.toggle('on'); });
 
-    // ---- 옵션 일괄 수정 (중첩 팝업: 값 추가/삭제 + 가격/재고) ----
-    function renderBody() {
-      if (!nameBody || !draft) return;
-      nameBody.innerHTML = draft.map(function (a, ai) {
-        var rows = a.values.map(function (v, vi) {
-          var isLast = vi === a.values.length - 1;
-          var canDel = a.values.length > 1 && vi !== 0;
-          var ctrl = '<div class="optb-ctrl">' +
-            (isLast ? '<button class="optb-add" data-add="' + ai + '">추가</button>' : '') +
-            (canDel ? '<button class="optb-del" data-del-ax="' + ai + '" data-del-vi="' + vi + '">삭제</button>' : '') + '</div>';
-          return '<div class="optb-vrow">' +
-            '<input class="opt-input optb-name" value="' + esc(v.name) + '" placeholder="옵션 값" />' +
-            '<input class="opt-input optb-price" value="' + esc(v.price) + '" placeholder="가격" inputmode="numeric" />' +
-            '<input class="opt-input optb-stock" value="' + esc(v.stock) + '" placeholder="재고" inputmode="numeric" />' + ctrl + '</div>';
-        }).join('');
-        return '<div class="optb-axis"><div class="optb-type"><input class="opt-input opt-type-input" value="' + esc(a.type) + '" placeholder="옵션 종류" /></div><div class="optb-vals">' + rows + '</div></div>';
+    // ---- 옵션명 수정 (중첩 팝업, 옵션 종류별로 구분) ----
+    function renderNameBody() {
+      if (!nameBody || !state) return;
+      nameBody.innerHTML = state.axes.map(function (a, ai) {
+        return '<div class="optname-axis">' +
+          '<div class="optname-type"><input class="opt-input opt-type-input" data-ax="' + ai + '" value="' + esc(a.type) + '" /></div>' +
+          '<div class="optname-vals">' + a.values.map(function (v, vi) { return '<input class="opt-input opt-val-input" data-ax="' + ai + '" data-vi="' + vi + '" value="' + esc(v) + '" />'; }).join('') + '</div>' +
+          '</div>';
       }).join('');
     }
-    function readBody() {
-      if (!nameBody || !draft) return;
-      Array.prototype.forEach.call(nameBody.querySelectorAll('.optb-axis'), function (axEl, ai) {
-        if (!draft[ai]) return;
-        var t = axEl.querySelector('.opt-type-input'); if (t) draft[ai].type = t.value;
-        var vals = [];
-        Array.prototype.forEach.call(axEl.querySelectorAll('.optb-vrow'), function (vr) {
-          vals.push({ name: vr.querySelector('.optb-name').value, price: vr.querySelector('.optb-price').value, stock: vr.querySelector('.optb-stock').value });
-        });
-        draft[ai].values = vals;
-      });
-    }
-    function openName() { draft = cloneAxes(state.axes); renderBody(); if (nameModal) nameModal.classList.add('open'); }
+    function openName() { renderNameBody(); if (nameModal) nameModal.classList.add('open'); }
     function closeName() { if (nameModal) nameModal.classList.remove('open'); }
     var editNameBtn = document.getElementById('optEditNameBtn');
     if (editNameBtn) editNameBtn.addEventListener('click', openName);
-    var nameClose = document.getElementById('optNameClose'), nameReset = document.getElementById('optNameReset'), nameSave = document.getElementById('optNameSave');
+    var nameClose = document.getElementById('optNameClose'), nameCancel = document.getElementById('optNameCancel'), nameSave = document.getElementById('optNameSave');
     if (nameClose) nameClose.addEventListener('click', closeName);
-    if (nameReset) nameReset.addEventListener('click', function () { draft = cloneAxes(state.axes); renderBody(); toast('입력값을 초기화했습니다.', true); });
+    if (nameCancel) nameCancel.addEventListener('click', closeName);
     if (nameModal) nameModal.addEventListener('click', function (e) { if (e.target === nameModal) closeName(); });
-    if (nameBody) nameBody.addEventListener('click', function (e) {
-      var add = e.target.closest('[data-add]');
-      if (add) { var ai = parseInt(add.getAttribute('data-add'), 10); readBody(); draft[ai].values.push({ name: '', price: '', stock: '' }); renderBody(); return; }
-      var del = e.target.closest('[data-del-ax]');
-      if (del) { var da = parseInt(del.getAttribute('data-del-ax'), 10); var dv = parseInt(del.getAttribute('data-del-vi'), 10); readBody(); if (draft[da].values.length > 1) draft[da].values.splice(dv, 1); renderBody(); return; }
-    });
     if (nameSave) nameSave.addEventListener('click', function () {
-      readBody();
-      for (var i = 0; i < draft.length; i++) {
-        if (!(draft[i].type || '').trim()) { toast('옵션 종류를 입력해 주세요.', false); return; }
-        draft[i].values = draft[i].values.filter(function (v) { return (v.name || '').trim(); }).map(function (v) { return { name: v.name.trim(), price: (v.price || '').trim(), stock: (v.stock || '').trim() }; });
-        if (!draft[i].values.length) { toast('옵션 값을 1개 이상 입력해 주세요.', false); return; }
-      }
-      state.axes = cloneAxes(draft);
-      state.combos = buildCombos(state.axes);
+      var ok = true;
+      Array.prototype.forEach.call(nameBody.querySelectorAll('.opt-type-input'), function (inp) {
+        var ai = parseInt(inp.getAttribute('data-ax'), 10); var t = (inp.value || '').trim(); if (t) state.axes[ai].type = t; else ok = false;
+      });
+      if (!ok) { toast('옵션 종류를 입력해 주세요.', false); return; }
+      Array.prototype.forEach.call(nameBody.querySelectorAll('.opt-val-input'), function (inp) {
+        var ai = parseInt(inp.getAttribute('data-ax'), 10); var vi = parseInt(inp.getAttribute('data-vi'), 10); var nv = (inp.value || '').trim(); if (nv) state.axes[ai].values[vi] = nv;
+      });
       renderGroup();
-      toast('옵션을 적용했습니다.', true);
+      toast('옵션명을 수정했습니다.', true);
       closeName();
     });
   })();
