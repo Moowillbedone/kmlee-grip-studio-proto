@@ -1474,7 +1474,7 @@
   <div class="modal opt-bulk-modal" role="dialog" aria-modal="true" aria-label="옵션 일괄 수정" style="max-width:900px;">
     <div class="opt-head"><span class="opt-h-title">옵션 일괄 수정</span><button class="opt-x" id="optNameClose" aria-label="닫기">&times;</button></div>
     <div class="modal-body opt-bulk-body">
-      <div class="opt-note">옵션 <b>종류·값</b>을 직접 입력하고, 값 행을 <b>추가/삭제</b>할 수 있습니다. 각 옵션 값의 <b>가격·재고</b>도 함께 수정하세요. <b>옵션 종류는 최대 3개</b>까지 추가할 수 있습니다.<br/><b>[옵션 적용 하기]</b>를 누르면 아래 옵션 표·필터·요약에 즉시 반영됩니다.</div>
+      <div class="opt-note">옵션 <b>종류·값</b>을 직접 입력하고, 값 행을 <b>추가/삭제</b>할 수 있습니다. 각 옵션 값의 <b>가격·재고</b>도 함께 수정하세요.<br/><b>[옵션 적용 하기]</b>를 누르면 아래 옵션 표·필터·요약에 즉시 반영됩니다.</div>
       <div class="optb-head"><span class="optb-h-type">옵션 종류</span><div class="optb-h-vals"><span class="optb-h-name">옵션 값</span><span class="optb-h-price">가격</span><span class="optb-h-stock">재고</span><span class="optb-h-ctrl"></span></div></div>
       <div id="optNameBody"></div>
     </div>
@@ -2034,10 +2034,6 @@
       var t = AXIS_TPL[ai] || { type: '옵션' + (ai + 1), values: [''] };
       return { type: t.type, values: t.values.map(function (v, i) { return { name: v, price: PRICES[i % PRICES.length], stock: STOCKS[i % STOCKS.length] }; }) };
     }
-    // 옵션 추가 시: 종류명만 세팅, 옵션값은 1개(빈 값)만
-    function newAxis(ai) {
-      var t = AXIS_TPL[ai]; return { type: (t && t.type) || ('옵션' + (ai + 1)), values: [{ name: '', price: '', stock: '' }] };
-    }
     // 조합 가격/재고 = 대표 옵션(옵션1=첫 축) 값 기준. 조합별 개별 실데이터는 step5.
     function buildCombos(axes) {
       if (!axes.length) return [];
@@ -2134,7 +2130,7 @@
         var axDel = '<button class="optb-axdel" data-axdel="' + ai + '" title="이 옵션 종류 삭제">옵션 삭제</button>';
         return '<div class="optb-axis"><div class="optb-type"><input class="opt-input opt-type-input" value="' + esc(a.type) + '" placeholder="옵션 종류" />' + axDel + '</div><div class="optb-vals">' + rows + '</div></div>';
       }).join('');
-      var addAxis = draft.length < MAX_AXES ? '<button class="optb-addaxis" data-addaxis="1">+ 옵션 추가</button>' : '';
+      var addAxis = draft.length < MAX_AXES ? '<button class="optb-addaxis" data-addaxis="1">+ 옵션 추가 (최대 ' + MAX_AXES + '개)</button>' : '';
       var emptyHint = draft.length === 0 ? '<div class="optb-empty">모든 옵션이 삭제된 상태입니다. 옵션을 추가하거나, 그대로 <b>[옵션 적용 하기]</b>를 누르면 옵션 전체 삭제를 확인합니다.</div>' : '';
       nameBody.innerHTML = blocks + emptyHint + addAxis;
     }
@@ -2160,7 +2156,7 @@
     if (nameModal) nameModal.addEventListener('click', function (e) { if (e.target === nameModal) closeName(); });
     if (nameBody) nameBody.addEventListener('click', function (e) {
       var addax = e.target.closest('[data-addaxis]');
-      if (addax) { readBody(); if (draft.length < MAX_AXES) draft.push(newAxis(draft.length)); renderBody(); return; }
+      if (addax) { readBody(); if (draft.length < MAX_AXES) draft.push(tplAxis(draft.length)); renderBody(); return; }
       var axdel = e.target.closest('[data-axdel]');
       if (axdel) { var ad = parseInt(axdel.getAttribute('data-axdel'), 10); readBody(); draft.splice(ad, 1); renderBody(); return; }
       var add = e.target.closest('[data-add]');
