@@ -1510,7 +1510,8 @@
   <div class="modal opt-bulk-modal" role="dialog" aria-modal="true" aria-label="옵션 일괄 수정" style="max-width:900px;">
     <div class="opt-head"><span class="opt-h-title">옵션 일괄 수정</span><button class="opt-x" id="optNameClose" aria-label="닫기">&times;</button></div>
     <div class="modal-body opt-bulk-body">
-      <div class="opt-note">옵션 <b>종류·값</b>을 직접 입력하고 값 행을 <b>추가/삭제</b>할 수 있습니다. 아래 <b>옵션 상세</b>에서 조합별 <b>추가 가격·재고·판매 여부</b>를 설정하세요 (조합 가격 = <b>판매가 + 추가 가격</b>). <b>옵션 종류는 최대 3개</b>까지 추가할 수 있습니다.<br/><b>[옵션 적용 하기]</b>를 누르면 상품 옵션 관리 표·필터·요약에 즉시 반영됩니다.</div>
+      <div class="opt-note">옵션 <b>종류·값</b>을 직접 입력하고, 값 행을 <b>추가/삭제</b>할 수 있습니다. 각 옵션 값의 <b>가격·재고</b>도 함께 수정하세요. <b>옵션 종류는 최대 3개</b>까지 추가할 수 있습니다.<br/><b>[옵션 적용 하기]</b>를 누르면 아래 옵션 표·필터·요약에 즉시 반영됩니다.</div>
+      <div class="optb-head"><span class="optb-h-type">옵션 종류</span><div class="optb-h-vals"><span class="optb-h-name">옵션 값</span><span class="optb-h-price">가격</span><span class="optb-h-stock">재고</span><span class="optb-h-ctrl"></span></div></div>
       <div id="optNameBody"></div>
     </div>
     <div class="modal-foot" style="justify-content:center;gap:12px;"><button class="btn-close" id="optNameReset">초기화</button><button class="btn-apply" id="optNameSave">옵션 적용 하기</button></div>
