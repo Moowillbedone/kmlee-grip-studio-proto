@@ -516,8 +516,6 @@
   .ohv-s { color:#cfd3da; flex:0 0 auto; }
   .ohv-p { font-weight:800; flex:0 0 auto; }
   .opt-hover-foot { text-align:center; padding:13px; background:#111319; color:#fff; font-weight:700; font-size:13px; }
-  .pi-range { flex:1; min-width:0; font-size:16px; font-weight:800; color:#1d1f25; }
-  .pi-range-lbl { font-size:12px; font-weight:700; color:#9aa0ab; margin-right:6px; }
   .opt-empty { padding:44px 0; text-align:center; color:#9aa0ab; font-size:14px; line-height:1.7; }
   .optb-empty { padding:14px 4px; color:#8d919c; font-size:13px; line-height:1.6; }
   #optDelAllModal { z-index:140; }
@@ -2066,11 +2064,7 @@
     ];
 
     var state = null, draft = null, currentRow = null, bulkOpen = false;
-    Array.prototype.forEach.call(document.querySelectorAll('.product-row'), function (r, i) {
-      if (i === 0) { r.setAttribute('data-optaxes', '0'); }
-      else { var ax = ((i - 1) % 3) + 1; r.setAttribute('data-optaxes', String(ax)); var pr0 = readBaseFromRow(r); r.__optState = cloneState(buildState(ax, pr0.base || 1000, pr0.reg || 1000, pr0.dis || 1000)); }
-      updateRowPrice(r);
-    });
+    Array.prototype.forEach.call(document.querySelectorAll('.product-row'), function (r, i) { r.setAttribute('data-optaxes', String((i % 3) + 1)); });
 
     function tplAxis(ai) { var t = AXIS_TPL[ai] || { type: '옵션 ' + (ai + 1) + '번', values: ['옵션값 1번'] }; return { type: t.type, values: t.values.map(function (v) { return { name: v }; }) }; }
     function newAxis(ai) { var t = AXIS_TPL[ai]; return { type: (t && t.type) || ('옵션 ' + (ai + 1) + '번'), values: [{ name: '' }] }; }
@@ -2083,23 +2077,6 @@
     function cloneCombos(cs) { return (cs || []).map(function (c) { return { addPrice: c.addPrice, stock: c.stock, sale: c.sale, code: c.code }; }); }
     function cloneState(s) { return { base: s.base, priceReg: s.priceReg, priceDis: s.priceDis, axes: cloneAxes(s.axes), combos: cloneCombos(s.combos) }; }
     function persist() { if (currentRow) currentRow.__optState = cloneState(state); }
-    // 옵션 상품(조합>0) → 가격 범위(판매가+최소추가~판매가+최대추가) 표시, 비옵션 → 기존 3단(정가/상시/라이브가)
-    function updateRowPrice(row) {
-      if (!row) return;
-      var st = row.__optState;
-      var pricesEl = row.querySelector('.pi-prices'), rangeEl = row.querySelector('.pi-range');
-      if (st && st.axes.length && st.combos.length) {
-        var ps = st.combos.map(function (c) { return (st.base || 0) + numOf(c.addPrice); });
-        var mn = Math.min.apply(null, ps), mx = Math.max.apply(null, ps);
-        var txt = (mn === mx) ? (fmt(mn) + '원') : (fmt(mn) + '원 ~ ' + fmt(mx) + '원');
-        if (!rangeEl && pricesEl && pricesEl.parentNode) { rangeEl = document.createElement('div'); rangeEl.className = 'pi-range'; pricesEl.parentNode.insertBefore(rangeEl, pricesEl); }
-        if (rangeEl) { rangeEl.innerHTML = '<span class="pi-range-lbl">옵션가</span> ' + esc(txt); rangeEl.style.display = ''; }
-        if (pricesEl) pricesEl.style.display = 'none';
-      } else {
-        if (rangeEl) rangeEl.style.display = 'none';
-        if (pricesEl) pricesEl.style.display = '';
-      }
-    }
 
     function buildState(n, base, reg, dis) { var axes = []; for (var i = 0; i < n; i++) axes.push(tplAxis(i)); return { base: base, priceReg: reg, priceDis: dis, axes: axes, combos: buildCombos(axes) }; }
 
@@ -2261,7 +2238,7 @@
       if (!cleanAxes.length) { if (delAllModal) delAllModal.classList.add('open'); return; }
       // 조합 수 맞추기(현재 draft.combos 유지, 부족분 기본)
       var combos = resizeCombos(cleanAxes, draft.combos);
-      state.axes = cleanAxes; state.combos = combos; persist(); renderGroup(); updateRowPrice(currentRow);
+      state.axes = cleanAxes; state.combos = combos; persist(); renderGroup();
       toast('옵션을 적용했습니다.', true);
       closeName();
     });
@@ -2269,7 +2246,7 @@
     // ---- 옵션 전체 삭제 확인 ----
     var delAllOk = document.getElementById('optDelAllOk'), delAllCancel = document.getElementById('optDelAllCancel');
     function closeDelAll() { if (delAllModal) delAllModal.classList.remove('open'); }
-    if (delAllOk) delAllOk.addEventListener('click', function () { state.axes = []; state.combos = []; persist(); renderGroup(); updateRowPrice(currentRow); toast('옵션을 모두 삭제했습니다.', true); closeDelAll(); closeName(); });
+    if (delAllOk) delAllOk.addEventListener('click', function () { state.axes = []; state.combos = []; persist(); renderGroup(); toast('옵션을 모두 삭제했습니다.', true); closeDelAll(); closeName(); });
     if (delAllCancel) delAllCancel.addEventListener('click', closeDelAll);
     if (delAllModal) delAllModal.addEventListener('click', function (e) { if (e.target === delAllModal) closeDelAll(); });
 
