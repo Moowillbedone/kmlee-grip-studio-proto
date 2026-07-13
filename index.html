@@ -1728,8 +1728,17 @@
       var doL = pmGet('live') && pmGet('live').classList.contains('checked');
       var anyTarget = doJ || doS || doL;
       var failed = [];
+      function isOptRow(r) { return !!(r.__optState && r.__optState.axes && r.__optState.axes.length); }
       checkedRows().forEach(function (r) {
-        // 정가·상시할인가·라이브가 중 하나라도 200원 미만이 되면 → 해당 상품은 미적용
+        // 옵션 상품: 판매가 체계가 '라이브가' 하나뿐 → 정가/상시할인가는 대상에서 제외, 라이브가만 반영·검증
+        if (isOptRow(r)) {
+          if (!doL) return;                                    // 라이브가 미선택 시 옵션 상품은 변경 없음
+          if (num < BULK_MIN) { var no = r.querySelector('.pr-name-input'); failed.push(no ? no.value : '상품'); return; }
+          var lv = r.querySelector('.pi-opt-live-input');      // 옵션 라이브가(base) 입력 → input 이벤트로 base·숨은 라이브가·옵션가 범위 동기화
+          if (lv) { lv.value = disp; lv.dispatchEvent(new Event('input', { bubbles: true })); }
+          return;
+        }
+        // 비옵션(3단): 정가·상시할인가·라이브가 중 하나라도 200원 미만이면 → 해당 상품 미적용
         if (anyTarget && num < BULK_MIN) {
           var ni = r.querySelector('.pr-name-input');
           failed.push(ni ? ni.value : '상품');
