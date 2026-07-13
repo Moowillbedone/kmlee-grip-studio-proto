@@ -517,12 +517,12 @@
   .ohv-p { font-weight:800; flex:0 0 auto; }
   .opt-hover-foot { text-align:center; padding:13px; background:#111319; color:#fff; font-weight:700; font-size:13px; }
   .pi-opt { flex:1; min-width:0; display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
-  .pi-opt-cell { display:flex; align-items:center; gap:7px; white-space:nowrap; }
-  .pi-opt-lbl { font-size:12px; font-weight:700; color:#9aa0ab; white-space:nowrap; flex:0 0 auto; }
+  .pi-opt-cell { display:flex; align-items:center; gap:7px; }
+  .pi-opt-lbl { font-size:12px; font-weight:700; color:#9aa0ab; }
   .pi-opt-field { display:inline-flex; align-items:center; gap:4px; }
   .pi-opt-live-input { width:84px; border:1px solid #e3e4e8; border-radius:8px; padding:8px 10px; font-size:14px; font-weight:700; text-align:right; outline:none; }
   .pi-opt-live-input:focus { border-color:var(--grip); }
-  .pi-opt-range { font-size:15px; font-weight:800; color:#1d1f25; white-space:nowrap; }
+  .pi-opt-range { font-size:15px; font-weight:800; color:#1d1f25; }
   .opt-empty { padding:44px 0; text-align:center; color:#9aa0ab; font-size:14px; line-height:1.7; }
   .optb-empty { padding:14px 4px; color:#8d919c; font-size:13px; line-height:1.6; }
   #optDelAllModal { z-index:140; }

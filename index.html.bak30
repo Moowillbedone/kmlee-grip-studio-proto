@@ -516,13 +516,8 @@
   .ohv-s { color:#cfd3da; flex:0 0 auto; }
   .ohv-p { font-weight:800; flex:0 0 auto; }
   .opt-hover-foot { text-align:center; padding:13px; background:#111319; color:#fff; font-weight:700; font-size:13px; }
-  .pi-opt { flex:1; min-width:0; display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
-  .pi-opt-cell { display:flex; align-items:center; gap:7px; white-space:nowrap; }
-  .pi-opt-lbl { font-size:12px; font-weight:700; color:#9aa0ab; white-space:nowrap; flex:0 0 auto; }
-  .pi-opt-field { display:inline-flex; align-items:center; gap:4px; }
-  .pi-opt-live-input { width:84px; border:1px solid #e3e4e8; border-radius:8px; padding:8px 10px; font-size:14px; font-weight:700; text-align:right; outline:none; }
-  .pi-opt-live-input:focus { border-color:var(--grip); }
-  .pi-opt-range { font-size:15px; font-weight:800; color:#1d1f25; white-space:nowrap; }
+  .pi-range { flex:1; min-width:0; font-size:16px; font-weight:800; color:#1d1f25; }
+  .pi-range-lbl { font-size:12px; font-weight:700; color:#9aa0ab; margin-right:6px; }
   .opt-empty { padding:44px 0; text-align:center; color:#9aa0ab; font-size:14px; line-height:1.7; }
   .optb-empty { padding:14px 4px; color:#8d919c; font-size:13px; line-height:1.6; }
   #optDelAllModal { z-index:140; }
@@ -2089,37 +2084,22 @@
     function cloneState(s) { return { base: s.base, priceReg: s.priceReg, priceDis: s.priceDis, axes: cloneAxes(s.axes), combos: cloneCombos(s.combos) }; }
     function persist() { if (currentRow) currentRow.__optState = cloneState(state); }
     // 옵션 상품(조합>0) → 가격 범위(판매가+최소추가~판매가+최대추가) 표시, 비옵션 → 기존 3단(정가/상시/라이브가)
-    function optRangeText(st) {
-      var ps = st.combos.map(function (c) { return (st.base || 0) + numOf(c.addPrice); });
-      var mn = Math.min.apply(null, ps), mx = Math.max.apply(null, ps);
-      return (mn === mx) ? (fmt(mn) + '원') : (fmt(mn) + '원 ~ ' + fmt(mx) + '원');
-    }
-    // 옵션 상품: 라이브가(단독 인풋) + 옵션가(범위) 노출 / 비옵션: 기존 3단
     function updateRowPrice(row) {
       if (!row) return;
       var st = row.__optState;
-      var pricesEl = row.querySelector('.pi-prices'), optEl = row.querySelector('.pi-opt');
+      var pricesEl = row.querySelector('.pi-prices'), rangeEl = row.querySelector('.pi-range');
       if (st && st.axes.length && st.combos.length) {
-        if (!optEl && pricesEl && pricesEl.parentNode) { optEl = document.createElement('div'); optEl.className = 'pi-opt'; pricesEl.parentNode.insertBefore(optEl, pricesEl); }
-        if (optEl) {
-          optEl.innerHTML = '<div class="pi-opt-cell"><span class="pi-opt-lbl">라이브가</span><span class="pi-opt-field"><input class="pi-opt-live-input" value="' + fmt(st.base || 0) + '" inputmode="numeric" aria-label="라이브가" /><span class="pi-live-unit">원</span></span></div>' +
-            '<div class="pi-opt-cell"><span class="pi-opt-lbl">옵션가</span> <b class="pi-opt-range">' + esc(optRangeText(st)) + '</b></div>';
-          optEl.style.display = '';
-        }
+        var ps = st.combos.map(function (c) { return (st.base || 0) + numOf(c.addPrice); });
+        var mn = Math.min.apply(null, ps), mx = Math.max.apply(null, ps);
+        var txt = (mn === mx) ? (fmt(mn) + '원') : (fmt(mn) + '원 ~ ' + fmt(mx) + '원');
+        if (!rangeEl && pricesEl && pricesEl.parentNode) { rangeEl = document.createElement('div'); rangeEl.className = 'pi-range'; pricesEl.parentNode.insertBefore(rangeEl, pricesEl); }
+        if (rangeEl) { rangeEl.innerHTML = '<span class="pi-range-lbl">옵션가</span> ' + esc(txt); rangeEl.style.display = ''; }
         if (pricesEl) pricesEl.style.display = 'none';
       } else {
-        if (optEl) optEl.style.display = 'none';
+        if (rangeEl) rangeEl.style.display = 'none';
         if (pricesEl) pricesEl.style.display = '';
       }
     }
-    // 옵션 상품 라이브가(판매가) 수정 → base 갱신·숨은 3단 라이브가 동기화·범위 실시간 재계산
-    document.addEventListener('input', function (e) {
-      var inp = e.target.closest && e.target.closest('.pi-opt-live-input'); if (!inp) return;
-      var row = inp.closest('.product-row'); if (!row || !row.__optState) return;
-      var v = numOf(inp.value); row.__optState.base = v;
-      var hid = row.querySelector('.pi-live-input'); if (hid) hid.value = fmt(v);
-      var b = row.querySelector('.pi-opt-range'); if (b) b.textContent = optRangeText(row.__optState);
-    });
 
     function buildState(n, base, reg, dis) { var axes = []; for (var i = 0; i < n; i++) axes.push(tplAxis(i)); return { base: base, priceReg: reg, priceDis: dis, axes: axes, combos: buildCombos(axes) }; }
 
