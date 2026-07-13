@@ -2007,7 +2007,6 @@
   (function () {
     var modal = document.getElementById('optionModal');
     if (!modal) return;
-    try { if (window.console && console.log) console.log('%c[grip-proto] 옵션 상태저장 빌드 2026-07-10c', 'color:#f5375b;font-weight:700'); } catch (e) {}
     var nameModal = document.getElementById('optNameModal');
     var delAllModal = document.getElementById('optDelAllModal');
     var group = document.getElementById('optGroup');
