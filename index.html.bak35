@@ -437,9 +437,6 @@
   .opt-td-name { text-align:left; font-weight:700; }
   .opt-cell-box { display:inline-block; background:#f4f5f7; border-radius:7px; padding:7px 10px; min-width:88px; }
   .opt-unit { color:#9aa0ab; font-size:12px; }
-  .opt-cell-box.is-input { display:inline-flex; align-items:center; gap:4px; padding:6px 10px; }
-  .opt-cell-num { border:none; background:transparent; outline:none; width:60px; text-align:right; font-size:14px; font-weight:600; color:#1d1f25; padding:0; font-family:inherit; }
-  .opt-cell-box.is-input:focus-within { box-shadow:inset 0 0 0 1.5px var(--grip); background:#fff; }
   .opt-td-code { color:#aeb2bb; }
   .opt-note { background:var(--grip-soft); color:#b0304e; font-size:13px; line-height:1.6; border-radius:10px; padding:14px 16px; margin-bottom:20px; }
   .opt-note b { color:var(--grip); }
@@ -2073,7 +2070,7 @@
     var MAX_AXES = 3;
     function toast(m, ok) { if (window.__gripToast) window.__gripToast(m, ok); }
     function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
-    function numOf(s) { var str = String(s == null ? '' : s); var neg = /^\s*-/.test(str); var n = parseInt(str.replace(/[^\d]/g, ''), 10); if (isNaN(n)) return 0; return neg ? -n : n; }
+    function numOf(s) { var n = parseInt(String(s == null ? '' : s).replace(/[^\d]/g, ''), 10); return isNaN(n) ? 0 : n; }
     function fmt(n) { return Number(n || 0).toLocaleString('en-US'); }
 
     var AXIS_TPL = [
@@ -2163,8 +2160,8 @@
       var body = state.combos.map(function (c, ci) {
         var cells = labelsOf(axes, ci).map(function (l) { return '<td class="opt-td-name">' + esc(l) + '</td>'; }).join('');
         return '<tr>' + cells +
-          '<td><span class="opt-cell-box is-input"><input class="opt-cell-num opt-price-inp" data-ci="' + ci + '" value="' + fmt(state.base + numOf(c.addPrice)) + '" inputmode="numeric" aria-label="가격" /><span class="opt-unit">원</span></span></td>' +
-          '<td><span class="opt-cell-box is-input"><input class="opt-cell-num opt-stock-inp" data-ci="' + ci + '" value="' + fmt(numOf(c.stock)) + '" inputmode="numeric" aria-label="재고" /><span class="opt-unit">개</span></span></td>' +
+          '<td><span class="opt-cell-box">' + fmt(state.base + numOf(c.addPrice)) + ' <span class="opt-unit">원</span></span></td>' +
+          '<td><span class="opt-cell-box">' + fmt(numOf(c.stock)) + ' <span class="opt-unit">개</span></span></td>' +
           '<td><span class="opt-sw' + (c.sale ? ' on' : '') + '" data-sale="' + ci + '"></span></td>' +
           '<td class="opt-td-code">' + (c.code ? esc(c.code) : '-') + '</td></tr>';
       }).join('');
@@ -2199,13 +2196,6 @@
       if (all) { var ai = all.getAttribute('data-all'); var on = !all.classList.contains('on'); all.classList.toggle('on', on); Array.prototype.forEach.call(group.querySelectorAll('[data-ax="' + ai + '"]'), function (c) { c.classList.toggle('on', on); }); return; }
       var chk = e.target.closest('[data-ax]');
       if (chk) { chk.classList.toggle('on'); var ai2 = chk.getAttribute('data-ax'); var allBox = group.querySelector('[data-all="' + ai2 + '"]'); var every = Array.prototype.every.call(group.querySelectorAll('[data-ax="' + ai2 + '"]'), function (c) { return c.classList.contains('on'); }); if (allBox) allBox.classList.toggle('on', every); return; }
-    });
-    if (group) group.addEventListener('input', function (e) {
-      if (!state) return;
-      var pe = e.target.closest && e.target.closest('.opt-price-inp');
-      if (pe) { var pci = parseInt(pe.getAttribute('data-ci'), 10); if (state.combos[pci]) { state.combos[pci].addPrice = fmt(numOf(pe.value) - (state.base || 0)); persist(); updateRowPrice(currentRow); } return; }
-      var se = e.target.closest && e.target.closest('.opt-stock-inp');
-      if (se) { var sci = parseInt(se.getAttribute('data-ci'), 10); if (state.combos[sci]) { state.combos[sci].stock = fmt(numOf(se.value)); persist(); } return; }
     });
     var sellAll = document.getElementById('optSellAll');
     if (sellAll) sellAll.addEventListener('click', function () { sellAll.classList.toggle('on'); });
@@ -2822,7 +2812,7 @@
           def: '상품 리스트의 [옵션] 버튼으로 상품 옵션 관리 모달을 연다. 옵션 상품은 판매가 체계가 라이브가 하나뿐이다.',
           asis: ['스튜디오에서 옵션 가격·재고·옵션명을 개별로만 수정 가능.'],
           tobe: ['[옵션] → 상품 옵션 관리에서 옵션 구성·조합을 한 화면에서 확인·수정.'],
-          features: ['상품 행 <b>[옵션]</b> 버튼(양 모드) → 상품 옵션 관리 모달.', '<b>옵션 상품 요약카드는 라이브가만</b> 노출(상품가·상시 할인가 없음) + 전체 판매 토글.', '옵션 구성(옵션 종류 수 · 총 조합 수)과 <b>조합별 표</b>(옵션 라벨/가격/재고/판매 여부/자체 옵션 코드) — <b>가격·재고는 표에서 바로 수정·저장</b>(가격은 추가 가격으로 역산되어 옵션가 범위·옵션 일괄 수정과 동기화).', '옵션 정보 필터(옵션 종류·값별 체크박스).'] },
+          features: ['상품 행 <b>[옵션]</b> 버튼(양 모드) → 상품 옵션 관리 모달.', '<b>옵션 상품 요약카드는 라이브가만</b> 노출(상품가·상시 할인가 없음) + 전체 판매 토글.', '옵션 구성(옵션 종류 수 · 총 조합 수)과 <b>조합별 표</b>(옵션 라벨/가격/재고/판매 여부/자체 옵션 코드) 표시.', '옵션 정보 필터(옵션 종류·값별 체크박스).'] },
         { n: 2, target: '.btn-option', title: '옵션 일괄 수정 — 옵션명·값', tag: '종류/값 · 추가/삭제',
           def: '[옵션 일괄 수정]에서 옵션 종류(옵션명)와 옵션 값을 편집한다.',
           features: ['옵션명(옵션 종류) · 옵션 값 인라인 수정.', '옵션 값 <b>추가/삭제</b>, <b>+ 옵션 추가(최대 3종류)</b>, <b>옵션 삭제</b>(종류 삭제).', '값·종류 변경 시 <b>조합(카테시안)</b> 자동 재계산.', '[초기화]로 직전 적용 상태로 되돌리기.'] },
@@ -2838,7 +2828,7 @@
       steps: [
         { tag: '시작', t: '옵션 상품의 <b>가격·재고·옵션명 일괄 수정</b> 흐름을 실제 화면에서 시연합니다. (Jira GRIPPGM-3336)', target: function () { var r = rowN(1); return r ? r.querySelector('.btn-option') : null; }, act: function () { resetUI(); } },
         { tag: '[옵션] 진입 & 요약', t: '옵션 상품의 <b>[옵션]</b> 버튼 → <b>상품 옵션 관리</b>. 옵션 상품 요약은 <b>라이브가만</b> 보입니다(정가·상시할인가 없음).', target: function () { return q('#optionModal .opt-summary'); }, act: function () { var r = rowN(1); if (r) { var b = r.querySelector('.btn-option'); if (b) b.click(); } } },
-        { tag: '옵션 정보(조합)', t: '옵션 정보 표 — 조합별 <b>가격·재고를 여기서 바로 수정</b>할 수 있고(저장됨), 판매 여부·자체 옵션 코드도 관리합니다.', target: function () { return q('#optGroup'); }, act: function () { if (!q('#optionModal').classList.contains('open')) { var r = rowN(1); var b = r && r.querySelector('.btn-option'); if (b) b.click(); } } },
+        { tag: '옵션 정보(조합)', t: '옵션 정보 표 — <b>조합별 가격(라이브가+추가가격)·재고·판매 여부·자체 옵션 코드</b>를 보여줍니다.', target: function () { return q('#optGroup'); }, act: function () { if (!q('#optionModal').classList.contains('open')) { var r = rowN(1); var b = r && r.querySelector('.btn-option'); if (b) b.click(); } } },
         { tag: '옵션 일괄 수정 — 옵션명·값', t: '<b>[옵션 일괄 수정]</b> → <b>옵션명·옵션 값</b>을 편집합니다. 값 추가/삭제, <b>+ 옵션 추가(최대 3)</b>, 옵션(종류) 삭제까지 가능합니다.', target: function () { return q('#optNameBody .optb-axis2'); }, act: function () { var eb = q('#optEditNameBtn'); if (eb) eb.click(); } },
         { tag: '옵션 상세 · 일괄 입력', t: '<b>옵션 상세</b> — 조합별 <b>추가 가격·재고·판매 여부·코드</b>를 표에서 수정하고, <b>[일괄 입력]</b>으로 전체 조합에 한 번에 적용합니다.', target: function () { return q('#optNameBody .optd'); }, act: function () { if (!q('#optNameModal').classList.contains('open')) { var eb = q('#optEditNameBtn'); if (eb) eb.click(); } } },
         { tag: '적용 · 전체 삭제', t: '<b>[옵션 적용 하기]</b> → 검증 후 조합이 <b>즉시 재계산·반영</b>됩니다. 옵션을 모두 삭제하고 적용하면 <b>“옵션을 모두 삭제하시겠습니까?”</b> 확인 팝업이 뜹니다.', target: function () { return q('#optNameSave'); }, act: function () {} },
