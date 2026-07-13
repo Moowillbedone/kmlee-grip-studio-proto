@@ -2129,6 +2129,10 @@
       if (pReg) pReg.textContent = fmt(state.priceReg) + '원';
       if (pDis) pDis.textContent = fmt(state.priceDis) + '원';
       if (pLive) pLive.textContent = fmt(state.base) + '원';
+      // 옵션 상품(축>0)은 라이브가만 노출 — 상품가/상시 할인가 숨김(리스트 행과 동일 정책)
+      var isOpt = !!(state.axes && state.axes.length);
+      if (pReg && pReg.parentNode) pReg.parentNode.style.display = isOpt ? 'none' : '';
+      if (pDis && pDis.parentNode) pDis.parentNode.style.display = isOpt ? 'none' : '';
       var axes = state.axes;
       if (!axes.length) {
         if (compose) compose.textContent = '옵션 없음';
