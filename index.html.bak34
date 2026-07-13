@@ -2785,57 +2785,6 @@
       ]
     });
 
-    // ===== 기능 5: 상품 옵션 관리 (가격/재고/옵션명 일괄 수정) =====
-    FEATURES.push({
-      id: 'option', demoMode: 'limited', jira: 'GRIPPGM-3336', name: '[스튜디오] 상품 옵션 관리 탭 내 가격,재고, 옵션명 일괄 수정 기능 추가',
-      overviewHTML:
-        '<div class="ov-title">🎯 과제 개요</div>' +
-        '<span class="prd-k2">과제의 목적</span>' +
-        '<p>상품 리스트의 <b>[옵션]</b> 버튼 → <b>상품 옵션 관리</b>에서 옵션명(옵션 종류·값)과 <b>조합별 가격(추가 가격)·재고·판매 여부·자체 옵션 코드</b>를 한 화면에서 <b>일괄로 수정</b>할 수 있게 한다. (Jira <b>GRIPPGM-3336</b>)</p>' +
-        '<span class="prd-k2">배경 · 실제 문제</span>' +
-        '<p>옵션이 많은 상품(다축·수십 조합)은 가격·재고·옵션명을 하나씩 고쳐야 해 번거롭고 실수가 잦다. 비즈센터·방송폰과 달리 스튜디오에는 옵션을 <b>일괄</b>로 관리하는 UI가 없었다.</p>' +
-        '<span class="prd-k2">해결 (정책)</span>' +
-        '<p>· <b>옵션 상품은 라이브가 하나만</b> — 정가/상시할인가 없음. 조합 가격 = <b>라이브가(판매가) + 추가 가격</b>.<br/>· 리스트에서 옵션 상품은 <b>라이브가(단독 인풋) + 옵션가(범위)</b>로 표기.<br/>· <b>[옵션 일괄 수정]</b>에서 옵션명·값 추가/삭제, <b>+ 옵션 추가(최대 3)</b>, 조합별 값 일괄 입력, 옵션 전체 삭제까지 한 번에.</p>',
-      flowHTML:
-        '<span class="prd-k2">상품 옵션 관리 · 일괄 수정 플로우</span>' +
-        '<div class="fpath">' +
-          '<div class="fpath-h"><span class="fpath-tag a">경로</span> [옵션] → 상품 옵션 관리 → 옵션 일괄 수정</div>' +
-          '<div class="frow"><span class="fnode">옵션 상품의 [옵션] 버튼</span><span class="farr">→</span><span class="fnode">상품 옵션 관리 (옵션 상품 = 라이브가만 · 조합별 가격/재고/판매여부/코드)</span></div>' +
-          '<div class="frow"><span class="fnode">[옵션 일괄 수정]</span><span class="farr">→</span><span class="fnode">옵션명·값 편집(추가/삭제 · + 옵션 추가 최대 3) + 옵션 상세(조합별 추가가격/재고/판매여부/코드 · 일괄 입력)</span></div>' +
-          '<div class="fdec">옵션을 모두 삭제했는가?</div>' +
-          '<div class="fbranch"><span class="fout ok">아니오 → [옵션 적용 하기] → 검증 후 조합 즉시 재계산·반영</span><span class="fout no">예 → “옵션을 모두 삭제하시겠습니까?” 확인 → 옵션 없음(비옵션 3단 복귀)</span></div>' +
-        '</div>' +
-        '<div class="fmerge">↓ 리스트 반영</div>' +
-        '<div class="fnode final">옵션 상품 = 라이브가(단독 인풋) + 옵션가(범위 = 라이브가 + 추가가격) · 모달 재오픈 시 상태 유지(롤백 없음) · 일괄 [가격 수정]도 옵션 상품은 라이브가만 반영</div>',
-      prd: [
-        { n: 1, target: '.btn-option', title: '상품 옵션 관리 진입 & 요약', tag: '옵션 상품=라이브가만',
-          def: '상품 리스트의 [옵션] 버튼으로 상품 옵션 관리 모달을 연다. 옵션 상품은 판매가 체계가 라이브가 하나뿐이다.',
-          asis: ['스튜디오에서 옵션 가격·재고·옵션명을 개별로만 수정 가능.'],
-          tobe: ['[옵션] → 상품 옵션 관리에서 옵션 구성·조합을 한 화면에서 확인·수정.'],
-          features: ['상품 행 <b>[옵션]</b> 버튼(양 모드) → 상품 옵션 관리 모달.', '<b>옵션 상품 요약카드는 라이브가만</b> 노출(정가·상시할인가 없음) + 전체 판매 토글.', '옵션 구성(옵션 종류 수 · 총 조합 수)과 <b>조합별 표</b>(옵션 라벨/가격/재고/판매 여부/자체 옵션 코드) 표시.', '옵션 정보 필터(옵션 종류·값별 체크박스).'] },
-        { n: 2, target: '.btn-option', title: '옵션 일괄 수정 — 옵션명·값', tag: '종류/값 · 추가/삭제',
-          def: '[옵션 일괄 수정]에서 옵션 종류(옵션명)와 옵션 값을 편집한다.',
-          features: ['옵션명(옵션 종류) · 옵션 값 인라인 수정.', '옵션 값 <b>추가/삭제</b>, <b>+ 옵션 추가(최대 3종류)</b>, <b>옵션 삭제</b>(종류 삭제).', '값·종류 변경 시 <b>조합(카테시안)</b> 자동 재계산.', '[초기화]로 직전 적용 상태로 되돌리기.'] },
-        { n: 3, target: '.pi-opt', title: '옵션 일괄 수정 — 조합 상세 & 전체 삭제', tag: '추가가격/재고 · 일괄 입력',
-          def: '조합별 추가 가격·재고·판매 여부·자체 옵션 코드를 표에서 일괄 수정하고, 옵션을 전부 삭제할 수도 있다.',
-          features: ['조합별 <b>추가 가격 · 재고 · 판매 여부 · 자체 옵션 코드</b> 표 편집.', '<b>[일괄 입력]</b> — 추가 가격/재고를 전체 조합에 한 번에 적용.', '<b>[옵션 적용 하기]</b> → 검증 후 상품 옵션 관리에 즉시 반영.', '옵션을 모두 삭제하고 적용하면 <b>“옵션을 모두 삭제하시겠습니까?”</b> 확인 팝업 → 적용 시 비옵션(3단)으로 전환.', '모달을 다시 열어도 <b>직전 저장 상태 유지</b>(롤백 없음).'] },
-        { n: 4, target: '.pi-opt', title: '가격 모델 & 리스트 반영', tag: '라이브가+옵션가',
-          def: '옵션 상품의 가격은 라이브가(판매가)에 조합별 추가 가격을 더해 계산되고, 리스트에는 라이브가 인풋과 옵션가 범위로 표기된다.',
-          asis: ['옵션 상품 가격이 3단(정가/상시할인가/라이브가)과 혼재되어 명확하지 않음.'],
-          tobe: ['옵션 상품은 <b>라이브가 + 옵션가(범위)</b>로 단순·명확하게 표기.'],
-          features: ['<b>조합 가격 = 라이브가(판매가) + 추가 가격</b>.', '리스트: <b>라이브가(단독 인풋, 자유 수정) + 옵션가(범위 = 최소~최대 조합가)</b>. 라이브가 수정 시 옵션가 범위 즉시 재계산.', '비옵션 상품은 기존 3단(정가/상시할인가/라이브가) 유지.', '일괄 <b>[가격 수정]</b>도 옵션 인지 — 옵션 상품은 <b>라이브가만</b> 반영(정가/상시할인가 미적용).'] }
-      ],
-      steps: [
-        { tag: '시작', t: '옵션 상품의 <b>가격·재고·옵션명 일괄 수정</b> 흐름을 실제 화면에서 시연합니다. (Jira GRIPPGM-3336)', target: function () { var r = rowN(1); return r ? r.querySelector('.btn-option') : null; }, act: function () { resetUI(); } },
-        { tag: '[옵션] 진입 & 요약', t: '옵션 상품의 <b>[옵션]</b> 버튼 → <b>상품 옵션 관리</b>. 옵션 상품 요약은 <b>라이브가만</b> 보입니다(정가·상시할인가 없음).', target: function () { return q('#optionModal .opt-summary'); }, act: function () { var r = rowN(1); if (r) { var b = r.querySelector('.btn-option'); if (b) b.click(); } } },
-        { tag: '옵션 정보(조합)', t: '옵션 정보 표 — <b>조합별 가격(라이브가+추가가격)·재고·판매 여부·자체 옵션 코드</b>를 보여줍니다.', target: function () { return q('#optGroup'); }, act: function () { if (!q('#optionModal').classList.contains('open')) { var r = rowN(1); var b = r && r.querySelector('.btn-option'); if (b) b.click(); } } },
-        { tag: '옵션 일괄 수정 — 옵션명·값', t: '<b>[옵션 일괄 수정]</b> → <b>옵션명·옵션 값</b>을 편집합니다. 값 추가/삭제, <b>+ 옵션 추가(최대 3)</b>, 옵션(종류) 삭제까지 가능합니다.', target: function () { return q('#optNameBody .optb-axis2'); }, act: function () { var eb = q('#optEditNameBtn'); if (eb) eb.click(); } },
-        { tag: '옵션 상세 · 일괄 입력', t: '<b>옵션 상세</b> — 조합별 <b>추가 가격·재고·판매 여부·코드</b>를 표에서 수정하고, <b>[일괄 입력]</b>으로 전체 조합에 한 번에 적용합니다.', target: function () { return q('#optNameBody .optd'); }, act: function () { if (!q('#optNameModal').classList.contains('open')) { var eb = q('#optEditNameBtn'); if (eb) eb.click(); } } },
-        { tag: '적용 · 전체 삭제', t: '<b>[옵션 적용 하기]</b> → 검증 후 조합이 <b>즉시 재계산·반영</b>됩니다. 옵션을 모두 삭제하고 적용하면 <b>“옵션을 모두 삭제하시겠습니까?”</b> 확인 팝업이 뜹니다.', target: function () { return q('#optNameSave'); }, act: function () {} },
-        { tag: '리스트 반영', t: '리스트에서 옵션 상품은 <b>라이브가(단독 인풋) + 옵션가(범위 = 라이브가+추가가격)</b>로 표기됩니다. 모달을 다시 열어도 상태가 유지됩니다.', target: function () { var r = rowN(1); return r ? r.querySelector('.pi-opt') : null; }, act: function () { ['#optNameModal', '#optionModal', '#optDelAllModal'].forEach(function (s) { var m = q(s); if (m) m.classList.remove('open'); }); } }
-      ]
-    });
-
     var cur = 0;
     function feat() { return FEATURES[cur]; }
 
@@ -2932,7 +2881,7 @@
     function snapshot() { var r = rowN(0); if (r) snap = { reg: r.querySelector('.pi-regular-input').value, dis: r.querySelector('.pi-discount-input').value, live: r.querySelector('.pi-live-input').value }; }
     function resetUI() {
       if (window.__gripSetMode) window.__gripSetMode(feat().demoMode || 'limited');
-      ['#priceModal', '#failModal', '#deleteModal', '#upListModal', '#upMaxModal', '#optionModal', '#optNameModal', '#optDelAllModal'].forEach(function (sel) { var m = q(sel); if (m) m.classList.remove('open'); });
+      ['#priceModal', '#failModal', '#deleteModal', '#upListModal', '#upMaxModal'].forEach(function (sel) { var m = q(sel); if (m) m.classList.remove('open'); });
       if (window.__gripChatReset) window.__gripChatReset();
       var tw = document.getElementById('toastWrap'); if (tw) tw.innerHTML = '';
       if (window.__gripRestoreRows) window.__gripRestoreRows();
