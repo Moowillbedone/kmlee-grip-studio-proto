@@ -2196,7 +2196,7 @@
       if (st && st.axes.length && st.combos.length) {
         if (!optEl && pricesEl && pricesEl.parentNode) { optEl = document.createElement('div'); optEl.className = 'pi-opt'; pricesEl.parentNode.insertBefore(optEl, pricesEl); }
         if (optEl) {
-          optEl.innerHTML = '<div class="pi-opt-cell"><span class="pi-opt-lbl">라이브가</span><span class="pi-opt-field"><input class="pi-opt-live-input" value="' + fmt(st.base || 0) + '" data-prev="' + fmt(st.base || 0) + '" inputmode="numeric" aria-label="라이브가" /><span class="pi-live-unit">원</span></span></div>' +
+          optEl.innerHTML = '<div class="pi-opt-cell"><span class="pi-opt-lbl">라이브가</span><span class="pi-opt-field"><input class="pi-opt-live-input" value="' + fmt(st.base || 0) + '" inputmode="numeric" aria-label="라이브가" /><span class="pi-live-unit">원</span></span></div>' +
             '<div class="pi-opt-cell"><span class="pi-opt-lbl">옵션가</span> <b class="pi-opt-range">' + esc(optRangeText(st)) + '</b></div>';
           optEl.style.display = '';
         }
@@ -2206,32 +2206,14 @@
         if (pricesEl) pricesEl.style.display = '';
       }
     }
-    // 옵션 상품 라이브가(판매가): 입력 중 프리뷰(부호 차단), 확정(Enter/blur) 시 200원 미만 미적용(되돌림)
+    // 옵션 상품 라이브가(판매가) 수정 → base 갱신·숨은 3단 라이브가 동기화·범위 실시간 재계산
     document.addEventListener('input', function (e) {
       var inp = e.target.closest && e.target.closest('.pi-opt-live-input'); if (!inp) return;
       var row = inp.closest('.product-row'); if (!row || !row.__optState) return;
-      var clean = String(inp.value).replace(/[^\d,]/g, ''); if (clean !== inp.value) inp.value = clean;
       var v = numOf(inp.value); row.__optState.base = v;
       var hid = row.querySelector('.pi-live-input'); if (hid) hid.value = fmt(v);
       var b = row.querySelector('.pi-opt-range'); if (b) b.textContent = optRangeText(row.__optState);
     });
-    var OPT_LIVE_MIN = 200, optLiveLock = false;
-    function commitOptLive(inp) {
-      if (optLiveLock) return; optLiveLock = true; setTimeout(function () { optLiveLock = false; }, 60);
-      var row = inp.closest('.product-row'); if (!row || !row.__optState) return;
-      var raw = String(inp.value).replace(/[^0-9]/g, '');
-      var prev = inp.dataset.prev || fmt(row.__optState.base || 0);
-      if (!raw) { inp.value = prev; row.__optState.base = numOf(prev); }
-      else {
-        var n = parseInt(raw, 10);
-        if (n < OPT_LIVE_MIN) { inp.value = prev; row.__optState.base = numOf(prev); toast('가격 수정에 실패하였습니다.', false); }
-        else { inp.value = fmt(n); inp.dataset.prev = inp.value; row.__optState.base = n; toast('가격 수정에 성공하였습니다.', true); }
-      }
-      var hid = row.querySelector('.pi-live-input'); if (hid) hid.value = fmt(row.__optState.base);
-      var b = row.querySelector('.pi-opt-range'); if (b) b.textContent = optRangeText(row.__optState);
-    }
-    document.addEventListener('keydown', function (e) { if (e.key !== 'Enter') return; var inp = e.target.closest && e.target.closest('.pi-opt-live-input'); if (inp) { e.preventDefault(); commitOptLive(inp); inp.blur(); } });
-    document.addEventListener('focusout', function (e) { var inp = e.target.closest && e.target.closest('.pi-opt-live-input'); if (inp) commitOptLive(inp); });
 
     function buildState(n, base, reg, dis) { var axes = []; for (var i = 0; i < n; i++) axes.push(tplAxis(i)); return { base: base, priceReg: reg, priceDis: dis, axes: axes, combos: buildCombos(axes) }; }
 
@@ -2362,9 +2344,9 @@
       if (!state) return;
       var t = e.target;
       var pe = t.closest && t.closest('.opt-price-inp');
-      if (pe) { var pcv = pe.value.replace(/[^\d,]/g, ''); if (pcv !== pe.value) pe.value = pcv; var pci = parseInt(pe.getAttribute('data-ci'), 10); if (state.combos[pci]) { state.combos[pci].addPrice = fmt(numOf(pe.value) - (state.base || 0)); persist(); updateRowPrice(currentRow); } return; }
+      if (pe) { var pci = parseInt(pe.getAttribute('data-ci'), 10); if (state.combos[pci]) { state.combos[pci].addPrice = fmt(numOf(pe.value) - (state.base || 0)); persist(); updateRowPrice(currentRow); } return; }
       var se = t.closest && t.closest('.opt-stock-inp');
-      if (se) { var scv = se.value.replace(/[^\d,]/g, ''); if (scv !== se.value) se.value = scv; var sci = parseInt(se.getAttribute('data-ci'), 10); if (state.combos[sci]) { state.combos[sci].stock = fmt(numOf(se.value)); persist(); var av = group.querySelector('.opt-avail[data-ci="' + sci + '"]'); if (av) av.textContent = fmt(Math.max(0, numOf(se.value) - occOf(sci))); } return; }
+      if (se) { var sci = parseInt(se.getAttribute('data-ci'), 10); if (state.combos[sci]) { state.combos[sci].stock = fmt(numOf(se.value)); persist(); var av = group.querySelector('.opt-avail[data-ci="' + sci + '"]'); if (av) av.textContent = fmt(Math.max(0, numOf(se.value) - occOf(sci))); } return; }
       var ce = t.closest && t.closest('.opt-code-inp');
       if (ce) { var cci = parseInt(ce.getAttribute('data-ci'), 10); if (state.combos[cci]) { state.combos[cci].code = ce.value; persist(); } return; }
       var hn = t.closest && t.closest('.opt-hname');
