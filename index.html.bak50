@@ -1583,15 +1583,15 @@
   </div>
 </div>
 
-<!-- 옵션 정보 수정 (팝업) -->
+<!-- 옵션명 수정 (팝업) -->
 <div class="modal-overlay" id="optNameModal">
-  <div class="modal opt-bulk-modal" role="dialog" aria-modal="true" aria-label="옵션 정보 수정" style="max-width:900px;">
+  <div class="modal" role="dialog" aria-modal="true" aria-label="옵션 정보 수정" style="max-width:620px;">
     <div class="opt-head"><span class="opt-h-title">옵션 정보 수정</span><button class="opt-x" id="optNameClose" aria-label="닫기">&times;</button></div>
-    <div class="modal-body opt-bulk-body">
-      <div class="opt-note">옵션 <b>종류·값</b>을 직접 입력하고 값 행을 <b>추가/삭제</b>할 수 있습니다. 아래 <b>옵션 상세</b>에서 조합별 <b>추가 가격·재고·판매 여부·자체 옵션 코드</b>를 설정하세요 (조합 가격 = <b>판매가 + 추가 가격</b>). <b>옵션 종류는 최대 3개</b>까지 추가할 수 있습니다.<br/><b>[옵션 적용 하기]</b>를 누르면 상품 옵션 관리 표·요약에 즉시 반영됩니다.</div>
+    <div class="modal-body">
+      <div class="opt-note">옵션 <b class="onm-eg">종류</b>·<b class="onm-eg">값</b>을 <b>추가·삭제</b>하고 이름을 수정할 수 있어요. (옵션 종류는 <b>최대 3개</b>, 옵션값은 <b>무제한</b>)<br/><b>[수정하기]</b>를 누르면 아래 옵션 표·요약에 즉시 반영됩니다.</div>
       <div id="optNameBody"></div>
     </div>
-    <div class="modal-foot" style="justify-content:center;gap:12px;"><button class="btn-close" id="optNameReset">초기화</button><button class="btn-apply" id="optNameSave">옵션 적용 하기</button></div>
+    <div class="modal-foot" style="justify-content:flex-end;gap:12px;"><button class="btn-close" id="optNameReset">취소</button><button class="btn-apply" id="optNameSave">수정하기</button></div>
   </div>
 </div>
 
@@ -2380,58 +2380,28 @@
     // ---------- 옵션 일괄 수정 (옵션명/값 편집 + 옵션 상세[조합별 추가가격]) ----------
     function renderBody() {
       if (!nameBody || !draft) return;
-      // 섹션1: 옵션명/값
-      var axBlocks = draft.axes.map(function (a, ai) {
+      var blocks = draft.axes.map(function (a, ai) {
         var vrows = a.values.map(function (v, vi) {
-          return '<div class="optb-vrow2"><input class="opt-input optb-name" value="' + esc(v.name) + '" placeholder="옵션값 입력" /><button class="optb-del" data-del-ax="' + ai + '" data-del-vi="' + vi + '">삭제</button></div>';
+          return '<div class="onm-vrow"><input class="opt-input onm-val" value="' + esc(v.name) + '" placeholder="옵션 값" /><button class="onm-x" data-del-ax="' + ai + '" data-del-vi="' + vi + '" aria-label="옵션 값 삭제">&times;</button></div>';
         }).join('');
-        return '<div class="optb-axis2">' +
-          '<div class="optb-axhead"><span class="optb-flbl">옵션명 ' + (ai + 1) + ' <em>*</em></span><button class="optb-axdel" data-axdel="' + ai + '">옵션 삭제</button></div>' +
-          '<input class="opt-input opt-type-input" value="' + esc(a.type) + '" placeholder="옵션명 입력" />' +
-          '<div class="optb-flbl optb-flbl2">옵션값 ' + (ai + 1) + ' <em>*</em></div>' +
-          '<div class="optb-vals2">' + vrows + '</div>' +
-          '<button class="optb-addval" data-addval="' + ai + '">옵션값 추가</button>' +
+        return '<div class="onm-axis">' +
+          '<div class="onm-col onm-col-type"><input class="opt-input onm-typei" value="' + esc(a.type) + '" placeholder="옵션 종류" /><button class="onm-axdel" data-axdel="' + ai + '">옵션 삭제</button></div>' +
+          '<div class="onm-col onm-col-vals">' + vrows + '<button class="onm-vadd" data-addval="' + ai + '">+ 옵션 값 추가</button></div>' +
           '</div>';
       }).join('');
-      var addAxis = draft.axes.length < MAX_AXES ? '<button class="optb-addaxis" data-addaxis="1">+ 옵션 추가</button>' : '';
-      var emptyHint = draft.axes.length === 0 ? '<div class="optb-empty">모든 옵션이 삭제된 상태입니다. 옵션을 추가하거나, 그대로 <b>[옵션 적용 하기]</b>를 누르면 옵션 전체 삭제를 확인합니다.</div>' : '';
-      // 섹션2: 옵션 상세(조합별 추가가격/재고/판매/코드)
-      var detail = '';
-      if (draft.axes.length) {
-        var total = draft.combos.length;
-        var bulkBar = bulkOpen ? '<div class="optd-bulkbar"><input class="opt-input" id="optdBulkPrice" placeholder="추가 가격" inputmode="numeric" /><input class="opt-input" id="optdBulkStock" placeholder="재고" inputmode="numeric" /><button class="btn-apply" id="optdBulkApply" style="padding:9px 16px;font-size:13px;">전체 적용</button></div>' : '';
-        var dhead = '<tr>' + draft.axes.map(function (a, ai) { return '<th>' + esc(a.type || ('옵션 ' + (ai + 1) + '번')) + '</th>'; }).join('') + '<th>추가 가격</th><th>재고</th><th>판매 여부</th><th>자체 옵션 코드</th></tr>';
-        var dbody = draft.combos.map(function (c, ci) {
-          var cells = labelsOf(draft.axes, ci).map(function (l) { return '<td class="optd-name">' + esc(l) + '</td>'; }).join('');
-          return '<tr>' + cells +
-            '<td><span class="optd-inp"><input class="opt-input optd-price" data-ci="' + ci + '" value="' + esc(c.addPrice) + '" inputmode="numeric" /><i>원</i></span></td>' +
-            '<td><span class="optd-inp"><input class="opt-input optd-stock" data-ci="' + ci + '" value="' + esc(c.stock) + '" inputmode="numeric" /><i>개</i></span></td>' +
-            '<td><span class="opt-sw' + (c.sale ? ' on' : '') + '" data-dsale="' + ci + '"></span></td>' +
-            '<td><input class="opt-input optd-code" data-ci="' + ci + '" value="' + esc(c.code) + '" placeholder="입력" /></td></tr>';
-        }).join('');
-        detail = '<div class="optd">' +
-          '<div class="optd-head"><span class="optd-title">옵션 상세 <em>*</em> · 총 <b>' + total + '</b>개 조합</span><button class="optd-bulk" id="optdBulkBtn">일괄 입력</button></div>' +
-          bulkBar +
-          '<div class="opt-table-wrap"><table class="opt-table optd-table"><thead>' + dhead + '</thead><tbody>' + dbody + '</tbody></table></div>' +
-          '<div class="optd-note">조합별 <b>추가 가격</b>은 상품 판매가에 더해집니다. (판매가 ' + fmt(draft.base) + '원 + 추가가 → 조합 가격)</div>' +
-          '</div>';
-      }
-      nameBody.innerHTML = axBlocks + addAxis + emptyHint + detail;
+      var addAxis = draft.axes.length < MAX_AXES ? '<button class="onm-axadd" data-addaxis="1">+ 옵션 종류 추가</button>' : '';
+      var emptyHint = draft.axes.length === 0 ? '<div class="onm-empty">옵션이 없습니다. <b>[+ 옵션 종류 추가]</b>로 추가하세요.</div>' : '';
+      nameBody.innerHTML = '<div class="onm-head"><span class="onm-h1">옵션 종류</span><span class="onm-h2">옵션 값</span></div>' + blocks + emptyHint + addAxis;
     }
     function readBody() {
       if (!nameBody || !draft) return;
-      // 옵션명/값
-      Array.prototype.forEach.call(nameBody.querySelectorAll('.optb-axis2'), function (axEl, ai) {
+      Array.prototype.forEach.call(nameBody.querySelectorAll('.onm-axis'), function (axEl, ai) {
         if (!draft.axes[ai]) return;
-        var t = axEl.querySelector('.opt-type-input'); if (t) draft.axes[ai].type = t.value;
+        var t = axEl.querySelector('.onm-typei'); if (t) draft.axes[ai].type = t.value;
         var vals = [];
-        Array.prototype.forEach.call(axEl.querySelectorAll('.optb-vrow2 .optb-name'), function (inp) { vals.push({ name: inp.value }); });
+        Array.prototype.forEach.call(axEl.querySelectorAll('.onm-val'), function (inp) { vals.push({ name: inp.value }); });
         draft.axes[ai].values = vals;
       });
-      // 옵션 상세(조합별)
-      Array.prototype.forEach.call(nameBody.querySelectorAll('.optd-price'), function (inp) { var ci = parseInt(inp.getAttribute('data-ci'), 10); if (draft.combos[ci]) draft.combos[ci].addPrice = inp.value; });
-      Array.prototype.forEach.call(nameBody.querySelectorAll('.optd-stock'), function (inp) { var ci = parseInt(inp.getAttribute('data-ci'), 10); if (draft.combos[ci]) draft.combos[ci].stock = inp.value; });
-      Array.prototype.forEach.call(nameBody.querySelectorAll('.optd-code'), function (inp) { var ci = parseInt(inp.getAttribute('data-ci'), 10); if (draft.combos[ci]) draft.combos[ci].code = inp.value; });
     }
     function syncCombos() { draft.combos = resizeCombos(draft.axes, draft.combos); }
     function openName() { draft = { base: state.base, priceReg: state.priceReg, priceDis: state.priceDis, axes: cloneAxes(state.axes), combos: cloneCombos(state.combos) }; bulkOpen = false; renderBody(); if (nameModal) nameModal.classList.add('open'); }
@@ -2466,7 +2436,7 @@
     });
     var nameClose = document.getElementById('optNameClose'), nameReset = document.getElementById('optNameReset'), nameSave = document.getElementById('optNameSave');
     if (nameClose) nameClose.addEventListener('click', closeName);
-    if (nameReset) nameReset.addEventListener('click', function () { draft = { base: state.base, priceReg: state.priceReg, priceDis: state.priceDis, axes: cloneAxes(state.axes), combos: cloneCombos(state.combos) }; bulkOpen = false; renderBody(); toast('입력값을 초기화했습니다.', true); });
+    if (nameReset) nameReset.addEventListener('click', closeName);
     if (nameModal) nameModal.addEventListener('click', function (e) { if (e.target === nameModal) closeName(); });
     if (nameBody) nameBody.addEventListener('click', function (e) {
       var addax = e.target.closest('[data-addaxis]');
