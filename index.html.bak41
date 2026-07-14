@@ -2251,7 +2251,6 @@
         if (compose) compose.textContent = '옵션 없음';
         if (countEl) countEl.textContent = '판매 중 옵션 0';
         group.innerHTML = editAreaHTML() + '<div class="opt-empty">등록된 옵션이 없습니다.<br/><b>[옵션명 수정하기]</b>에서 <b>[+ 옵션 종류 추가]</b>로 옵션을 만들 수 있습니다.</div>';
-        updateBulkBtn();
         return;
       }
       var total = state.combos.length;
@@ -2270,7 +2269,6 @@
           '<td><input class="opt-code-inp" data-ci="' + ci + '" value="' + esc(c.code || '') + '" placeholder="입력" /></td></tr>';
       }).join('');
       group.innerHTML = editAreaHTML() + '<div class="opt-table-wrap"><table class="opt-table"><thead>' + head + '</thead><tbody>' + body + '</tbody></table></div>';
-      updateBulkBtn();
     }
 
     function readBaseFromRow(row) {
