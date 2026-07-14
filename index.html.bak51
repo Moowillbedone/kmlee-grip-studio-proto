@@ -482,23 +482,6 @@
   .opt-table tbody tr.is-sel { background:var(--grip-soft); }
   .opt-code-inp { width:88px; border:1px solid #e3e4e8; border-radius:8px; padding:7px 9px; font-size:13px; outline:none; }
   .opt-code-inp:focus { border-color:var(--grip); }
-  /* 옵션 정보 수정 — 섹션1 2컬럼 */
-  .oe-head { display:flex; gap:20px; padding:2px 2px 10px; font-size:13px; font-weight:800; color:#41444d; border-bottom:1px solid #eceef1; }
-  .oe-head .oe-h1 { width:220px; flex:0 0 220px; } .oe-head .oe-h2 { flex:1; }
-  .opt-bulk-body .oe-axis { display:flex; gap:20px; align-items:flex-start; padding:14px 0; border:0; }
-  .opt-bulk-body .oe-axis + .oe-axis { border-top:1px solid #f0f1f3; }
-  .oe-typecol { width:220px; flex:0 0 220px; display:flex; flex-direction:column; gap:8px; }
-  .oe-typecol .opt-type-input { width:100%; margin:0; }
-  .oe-axdel { align-self:flex-start; border:none; background:transparent; color:#aeb2bb; font-size:12px; font-weight:600; cursor:pointer; text-decoration:underline; padding:0; }
-  .oe-axdel:hover { color:var(--grip); }
-  .oe-valcol { flex:1; display:flex; flex-direction:column; gap:8px; }
-  .oe-vrow { display:flex; align-items:center; gap:8px; }
-  .oe-vrow .optb-name { flex:1; margin:0; }
-  .oe-vbtn { flex:0 0 auto; border:1px solid #e3e4e8; background:#fff; border-radius:8px; padding:9px 16px; font-size:13px; font-weight:700; cursor:pointer; }
-  .oe-vadd { border-color:var(--grip); color:var(--grip); }
-  .oe-vadd:hover { background:var(--grip-soft); }
-  .oe-vdel { color:#8b909a; }
-  .oe-vdel:hover { border-color:var(--grip); color:var(--grip); }
   .opt-th-name { min-width:120px; }
   .opt-hname { width:100%; max-width:130px; border:1px solid transparent; background:transparent; font-weight:700; font-size:13px; color:#41444d; text-align:center; padding:6px 8px; border-radius:7px; outline:none; }
   .opt-hname:hover { border-color:#e3e4e8; }
@@ -2397,24 +2380,19 @@
     // ---------- 옵션 일괄 수정 (옵션명/값 편집 + 옵션 상세[조합별 추가가격]) ----------
     function renderBody() {
       if (!nameBody || !draft) return;
-      // 섹션1: 옵션 종류/값 (2컬럼 · 값 행 인라인 추가/삭제)
+      // 섹션1: 옵션명/값
       var axBlocks = draft.axes.map(function (a, ai) {
-        var n = a.values.length;
         var vrows = a.values.map(function (v, vi) {
-          var last = vi === n - 1;
-          return '<div class="optb-vrow2 oe-vrow"><input class="opt-input optb-name" value="' + esc(v.name) + '" placeholder="옵션값 입력" />' +
-            (last ? '<button class="oe-vbtn oe-vadd" data-addval="' + ai + '">추가</button>' : '') +
-            (vi > 0 ? '<button class="oe-vbtn oe-vdel" data-del-ax="' + ai + '" data-del-vi="' + vi + '">삭제</button>' : '') +
-            '</div>';
+          return '<div class="optb-vrow2"><input class="opt-input optb-name" value="' + esc(v.name) + '" placeholder="옵션값 입력" /><button class="optb-del" data-del-ax="' + ai + '" data-del-vi="' + vi + '">삭제</button></div>';
         }).join('');
-        return '<div class="optb-axis2 oe-axis">' +
-          '<div class="oe-typecol"><input class="opt-input opt-type-input" value="' + esc(a.type) + '" placeholder="옵션 종류 입력" />' +
-          (draft.axes.length > 1 ? '<button class="oe-axdel" data-axdel="' + ai + '">옵션 삭제</button>' : '') +
-          '</div>' +
-          '<div class="oe-valcol">' + vrows + '</div>' +
+        return '<div class="optb-axis2">' +
+          '<div class="optb-axhead"><span class="optb-flbl">옵션명 ' + (ai + 1) + ' <em>*</em></span><button class="optb-axdel" data-axdel="' + ai + '">옵션 삭제</button></div>' +
+          '<input class="opt-input opt-type-input" value="' + esc(a.type) + '" placeholder="옵션명 입력" />' +
+          '<div class="optb-flbl optb-flbl2">옵션값 ' + (ai + 1) + ' <em>*</em></div>' +
+          '<div class="optb-vals2">' + vrows + '</div>' +
+          '<button class="optb-addval" data-addval="' + ai + '">옵션값 추가</button>' +
           '</div>';
       }).join('');
-      var head2 = draft.axes.length ? '<div class="oe-head"><span class="oe-h1">옵션 종류</span><span class="oe-h2">옵션 값</span></div>' : '';
       var addAxis = draft.axes.length < MAX_AXES ? '<button class="optb-addaxis" data-addaxis="1">+ 옵션 추가</button>' : '';
       var emptyHint = draft.axes.length === 0 ? '<div class="optb-empty">모든 옵션이 삭제된 상태입니다. 옵션을 추가하거나, 그대로 <b>[옵션 적용 하기]</b>를 누르면 옵션 전체 삭제를 확인합니다.</div>' : '';
       // 섹션2: 옵션 상세(조합별 추가가격/재고/판매/코드)
@@ -2438,7 +2416,7 @@
           '<div class="optd-note">조합별 <b>추가 가격</b>은 상품 판매가에 더해집니다. (판매가 ' + fmt(draft.base) + '원 + 추가가 → 조합 가격)</div>' +
           '</div>';
       }
-      nameBody.innerHTML = head2 + axBlocks + addAxis + emptyHint + detail;
+      nameBody.innerHTML = axBlocks + addAxis + emptyHint + detail;
     }
     function readBody() {
       if (!nameBody || !draft) return;
