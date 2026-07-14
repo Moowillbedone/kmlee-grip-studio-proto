@@ -369,6 +369,8 @@
   .uponly-toggle.on .uponly-sw { background: var(--grip); }
   .uponly-toggle.on .uponly-sw::after { left: 16px; }
   .sales-card.is-store .mode-limited-only { display: none; }
+  /* 스토어판매: 상품 행에 판매예정/판매시작/품절 상태 버튼 없음(한정판매에만 존재) */
+  .sales-card.is-store .pr-sale-btns { display: none; }
   .sales-card.is-store .uponly-toggle { display: inline-flex; }
 
   /* 가격 일괄 수정 모달 */
