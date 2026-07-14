@@ -2195,26 +2195,9 @@
     function buildCombos(axes) { var t = neededCount(axes), out = []; for (var i = 0; i < t; i++) out.push(defaultCombo(i)); return out; }
     // 새로 생기는 조합은 빈 값(추가가격/재고 미입력) — 사용자가 직접 입력
     function resizeCombos(axes, combos) { var need = neededCount(axes), out = combos.slice(0, need); for (var i = out.length; i < need; i++) out.push(emptyCombo()); return out; }
-    // 조합 데이터는 좌표(축 대응 axisMap + 축별 값 인덱스 valMap) 기준으로 보존 — 축/값 추가·삭제로 조합 배열의 인덱스 의미가 바뀌어도 옛 데이터가 올바른 조합에 유지되고, 새 좌표만 공백. 값 1개 축의 추가/삭제는 좌표가 1:1이라 보존되고, 값이 여러 개인 축을 통째로 제거하는 것처럼 대응이 모호한 좌표만 공백이 된다.
+    // 조합 데이터는 (축별 값 인덱스) 좌표 기준으로 보존 — 축/값 추가·삭제로 조합 배열의 인덱스 의미가 바뀌어도 옛 데이터가 올바른 조합에 유지되고, 새 좌표만 공백. 축 개수가 달라지면(축 추가/삭제) 좌표 차원이 달라 매칭 불가 → 전부 공백.
     function comboKey(axes, ci) { return valIdxOf(axes, ci).join(','); }
-    function remapCombos(oldAxes, newAxes, oldCombos, axisMap, valMap) {
-      var need = neededCount(newAxes), out = [], map = {}, ot = neededCount(oldAxes);
-      for (var i = 0; i < ot; i++) { map[comboKey(oldAxes, i)] = oldCombos[i]; }
-      var oldToNew = oldAxes.map(function () { return -1; });
-      for (var na = 0; na < newAxes.length; na++) { var oa = axisMap ? axisMap[na] : na; if (oa != null && oa >= 0 && oa < oldAxes.length) oldToNew[oa] = na; }
-      for (var nI = 0; nI < need; nI++) {
-        var nc = valIdxOf(newAxes, nI), oc = [], ok = true;
-        for (var o = 0; o < oldAxes.length; o++) {
-          var mn = oldToNew[o], oldVi;
-          if (mn < 0) { if (Math.max(oldAxes[o].values.length, 1) > 1) { ok = false; break; } oldVi = 0; }
-          else { var m = valMap && valMap[mn]; oldVi = m ? m[nc[mn]] : nc[mn]; if (oldVi == null || oldVi < 0) { ok = false; break; } }
-          oc.push(oldVi);
-        }
-        var src = ok ? map[oc.join(',')] : null;
-        out.push(src ? { addPrice: src.addPrice, stock: src.stock, sale: src.sale, code: src.code } : emptyCombo());
-      }
-      return out;
-    }
+    function remapCombos(oldAxes, newAxes, oldCombos, valMap) { var need = neededCount(newAxes), out = [], sameDim = oldAxes.length === newAxes.length, map = {}; if (sameDim) { var ot = neededCount(oldAxes); for (var i = 0; i < ot; i++) { map[comboKey(oldAxes, i)] = oldCombos[i]; } } for (var nI = 0; nI < need; nI++) { var src = null; if (sameDim) { var nc = valIdxOf(newAxes, nI), oc = [], ok = true; for (var a = 0; a < nc.length; a++) { var m = valMap && valMap[a]; var oi = m ? m[nc[a]] : nc[a]; if (oi == null || oi < 0) { ok = false; break; } oc.push(oi); } if (ok) src = map[oc.join(',')]; } out.push(src ? { addPrice: src.addPrice, stock: src.stock, sale: src.sale, code: src.code } : emptyCombo()); } return out; }
     function labelsOf(axes, ci) { var sizes = axes.map(function (a) { return Math.max(a.values.length, 1); }), rem = ci, out = []; for (var j = axes.length - 1; j >= 0; j--) { out[j] = (axes[j].values[rem % sizes[j]] || {}).name || ''; rem = Math.floor(rem / sizes[j]); } return out; }
     function valIdxOf(axes, ci) { var sizes = axes.map(function (a) { return Math.max(a.values.length, 1); }), rem = ci, out = []; for (var j = axes.length - 1; j >= 0; j--) { out[j] = rem % sizes[j]; rem = Math.floor(rem / sizes[j]); } return out; }
     function occOf(ci) { return ((ci % 9) + 1) * 3; }
@@ -2523,11 +2506,11 @@
       var addax = e.target.closest('[data-addaxis]');
       if (addax) { readBody(); var oldAxesA = cloneAxes(draft.axes); if (draft.axes.length < MAX_AXES) draft.axes.push(newAxis(draft.axes.length)); syncCombos(oldAxesA); renderBody(); return; }
       var axdel = e.target.closest('[data-axdel]');
-      if (axdel) { var ad = parseInt(axdel.getAttribute('data-axdel'), 10); readBody(); var oldAxesD = cloneAxes(draft.axes); draft.axes.splice(ad, 1); var amapAx = draft.axes.map(function (a, j) { return j < ad ? j : j + 1; }); draft.combos = remapCombos(oldAxesD, draft.axes, draft.combos, amapAx); renderBody(); return; }
+      if (axdel) { var ad = parseInt(axdel.getAttribute('data-axdel'), 10); readBody(); var oldAxesD = cloneAxes(draft.axes); draft.axes.splice(ad, 1); syncCombos(oldAxesD); renderBody(); return; }
       var addval = e.target.closest('[data-addval]');
       if (addval) { var av = parseInt(addval.getAttribute('data-addval'), 10); readBody(); var oldAxesV = cloneAxes(draft.axes); draft.axes[av].values.push({ name: '' }); syncCombos(oldAxesV); renderBody(); return; }
       var del = e.target.closest('[data-del-ax]');
-      if (del) { var da = parseInt(del.getAttribute('data-del-ax'), 10); var dv = parseInt(del.getAttribute('data-del-vi'), 10); readBody(); var oldAxesX = cloneAxes(draft.axes); draft.axes[da].values.splice(dv, 1); if (draft.axes[da].values.length === 0) { draft.axes.splice(da, 1); var amapDel = draft.axes.map(function (a, j) { return j < da ? j : j + 1; }); draft.combos = remapCombos(oldAxesX, draft.axes, draft.combos, amapDel); } else { var vmap = draft.axes.map(function (a, i) { if (i !== da) return null; var arr = []; for (var k = 0; k < a.values.length; k++) arr.push(k < dv ? k : k + 1); return arr; }); draft.combos = remapCombos(oldAxesX, draft.axes, draft.combos, null, vmap); } renderBody(); return; }
+      if (del) { var da = parseInt(del.getAttribute('data-del-ax'), 10); var dv = parseInt(del.getAttribute('data-del-vi'), 10); readBody(); var oldAxesX = cloneAxes(draft.axes); draft.axes[da].values.splice(dv, 1); if (draft.axes[da].values.length === 0) { draft.axes.splice(da, 1); draft.combos = remapCombos(oldAxesX, draft.axes, draft.combos); } else { var vmap = draft.axes.map(function (a, i) { if (i !== da) return null; var arr = []; for (var k = 0; k < a.values.length; k++) arr.push(k < dv ? k : k + 1); return arr; }); draft.combos = remapCombos(oldAxesX, draft.axes, draft.combos, vmap); } renderBody(); return; }
       var dsw = e.target.closest('[data-dsale]');
       if (dsw) { var ds = parseInt(dsw.getAttribute('data-dsale'), 10); if (draft.combos[ds]) draft.combos[ds].sale = !draft.combos[ds].sale; dsw.classList.toggle('on'); return; }
       var bulkBtn = e.target.closest('#optdBulkBtn');
@@ -2540,15 +2523,14 @@
 
     if (nameSave) nameSave.addEventListener('click', function () {
       readBody();
-      var cleanAxes = [], cleanValMaps = [], cleanAxisMap = [];
+      var cleanAxes = [];
       for (var i = 0; i < draft.axes.length; i++) {
-        var survIdx = [], vals = [];
-        draft.axes[i].values.forEach(function (v, vi) { if ((v.name || '').trim()) { survIdx.push(vi); vals.push({ name: v.name.trim() }); } });
-        if (vals.length) { cleanAxes.push({ type: (draft.axes[i].type || '').trim() || ('옵션 ' + (i + 1) + '번'), values: vals }); cleanValMaps.push(survIdx); cleanAxisMap.push(i); }
+        var vals = draft.axes[i].values.filter(function (v) { return (v.name || '').trim(); }).map(function (v) { return { name: v.name.trim() }; });
+        if (vals.length) cleanAxes.push({ type: (draft.axes[i].type || '').trim() || ('옵션 ' + (i + 1) + '번'), values: vals });
       }
       if (!cleanAxes.length) { if (delAllModal) delAllModal.classList.add('open'); return; }
-      // 조합 데이터를 좌표(대응 축 + 살아남은 값의 원래 인덱스) 기준으로 보존 — 빈 값/빈 축 필터로 인덱스가 밀려도 데이터 유지
-      var combos = remapCombos(draft.axes, cleanAxes, draft.combos, cleanAxisMap, cleanValMaps);
+      // 조합 수 맞추기(현재 draft.combos 유지, 부족분 기본)
+      var combos = remapCombos(draft.axes, cleanAxes, draft.combos);
       state.axes = cleanAxes; state.combos = combos; persist(); renderGroup(); updateRowPrice(currentRow);
       toast('옵션을 적용했습니다.', true);
       closeName();
