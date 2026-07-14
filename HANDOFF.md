@@ -33,6 +33,7 @@
 
 ### UP + 삭제 + 판매모드 IIFE
 - **판매 모드:** `mode`='limited'(한정)|'store'(스토어). 좌측 하단 토글. `applyMode(m)`가 제목/안내문구/[UP한 상품 목록] 버튼 가시성/UP 정책/기본 UP 일괄 전환 + `.sales-card`에 `is-store` 클래스 토글. `window.__gripSetMode` 노출.
+  - **⭐ 스토어판매 모드 특성(2026-07-14, 향후 PRD/데모 작성 시 전제):** 스튜디오 홈 상품 행에 **`판매예정/판매시작/품절` 상태 버튼(`.pr-sale-btns`)이 없음**(한정판매에만 존재). `.sales-card.is-store .pr-sale-btns { display:none }`로 처리. 즉 한정=상태버튼 O / 스토어=상태버튼 X. (명시 서술은 불필요하나, PRD·데모 내용은 이 사실을 전제로 구성.)
   - **모드별 툴바(`.select-row .store-toggle`, 2026-07-03):** 공통 `[가격 수정][선택 삭제]`. **한정판매**=+`[스토어 ON/OFF]`(`.mode-limited-only`). **스토어판매**=`[UP 상품만 보기]` 토글(`#btnUpOnly`, `.uponly-toggle`, `.sales-card.is-store`일 때만 노출) — ON 시 UP 안 된 행 `display:none`(`applyUpOnly()`, setUp/resetUpState에서 재적용). 스토어ON/OFF는 store에서 숨김.
   - 한정: UP **1개씩**(다른 상품 UP 시 이전 자동 해제), [UP한 상품 목록] 버튼 O, "1개씩 판매" 문구, 기본 UP 1개.
   - 스토어: UP **최대 5개**(6번째 팝업 `#upMaxModal`), 버튼 숨김, "최대 5개/판매종료·품절 자동해제" 문구, 기본 UP 3개.
