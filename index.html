@@ -2191,8 +2191,10 @@
     function newAxis(ai) { var t = AXIS_TPL[ai]; return { type: (t && t.type) || ('옵션 ' + (ai + 1) + '번'), values: [{ name: '' }] }; }
     function neededCount(axes) { if (!axes.length) return 0; return axes.reduce(function (n, a) { return n * Math.max(a.values.length, 1); }, 1); }
     function defaultCombo(ci) { return { addPrice: fmt(((ci % 9) + 1) * 100), stock: fmt(((ci % 9) + 1) * 10), sale: true, code: '' }; }
+    function emptyCombo() { return { addPrice: '', stock: '', sale: true, code: '' }; }
     function buildCombos(axes) { var t = neededCount(axes), out = []; for (var i = 0; i < t; i++) out.push(defaultCombo(i)); return out; }
-    function resizeCombos(axes, combos) { var need = neededCount(axes), out = combos.slice(0, need); for (var i = out.length; i < need; i++) out.push(defaultCombo(i)); return out; }
+    // 새로 생기는 조합은 빈 값(추가가격/재고 미입력) — 사용자가 직접 입력
+    function resizeCombos(axes, combos) { var need = neededCount(axes), out = combos.slice(0, need); for (var i = out.length; i < need; i++) out.push(emptyCombo()); return out; }
     function labelsOf(axes, ci) { var sizes = axes.map(function (a) { return Math.max(a.values.length, 1); }), rem = ci, out = []; for (var j = axes.length - 1; j >= 0; j--) { out[j] = (axes[j].values[rem % sizes[j]] || {}).name || ''; rem = Math.floor(rem / sizes[j]); } return out; }
     function valIdxOf(axes, ci) { var sizes = axes.map(function (a) { return Math.max(a.values.length, 1); }), rem = ci, out = []; for (var j = axes.length - 1; j >= 0; j--) { out[j] = rem % sizes[j]; rem = Math.floor(rem / sizes[j]); } return out; }
     function occOf(ci) { return ((ci % 9) + 1) * 3; }
