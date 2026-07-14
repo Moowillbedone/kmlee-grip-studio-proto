@@ -83,7 +83,8 @@
 
 ## 4. 컨플루언스 PRD
 - 공간 spaceId **4030468**, 부모 페이지 **2306867212**("[스튜디오] 과제 모음").
-- 페이지: 가격 **2306113587**(3338) / 삭제 **2319581187**(3357) / 채팅 **2319515671**(3224) / **Q&A 노출범위 2320039942**(3402).
+- 페이지: 가격 **2306113587**(3338) / 삭제 **2319581187**(3357) / 채팅 **2319515671**(3224) / **Q&A 노출범위(스튜디오) 2320039942**(3402) / 옵션 **2337406981**(3336) / **Q&A 노출범위(그립 앱·모바일) 2342289409**(GRIPPGM-3424).
+- **모바일 Q&A PRD(2342289409, GRIPPGM-3424 「[그립 앱] 채팅 내용 답변 시 Q&A 미노출 기능」):** 스튜디오 3402의 모바일(코어 서비스) 카운터파트. 지라 첨부 이미지 4장(AS-IS/답변화면/Q&A바텀시트/⋮수정) 임베드 + PIL 플로우차트(draw_qa_mobile.py). 모바일 동작: 유저 채팅 탭→답변 UI+[본인만 보기] 토글(기본 OFF=전체) → 전체=모든 시청자 띠지·바텀시트 / 본인만=문의자 본인에게만. Q&A 바텀시트=[공지|Q&A N]+항목별 🌐전체공개/🔒본인만 배지. 답변 ⋮→수정하기(토글 재노출)/삭제하기. 스크립트 prd_qa_mobile.xhtml/confluence_create_qa_mobile.py. ⚠️토큰은 `~/.config/grip/atlassian.env`에서 로드.
 - 양식(가격 PRD 기준): TOC 매크로 → info 패널(프로토타입 링크) → 문서정보(Jira 매크로 포함) → 문서 히스토리 → 1.배경목적 2.KPI 3.용어 4.ASIS/TOBE 5.기능요구 6.검증규칙·수용기준 7.검증플로우(**플로우차트 이미지**) 8.화면UX 9.영향범위.
 - **Jira 매크로:** `<ac:structured-macro ac:name="jira"><ac:parameter ac:name="server">System Jira</ac:parameter><ac:parameter ac:name="serverId">174ac8ba-9990-3d59-be10-643a4aa0d945</ac:parameter><ac:parameter ac:name="key">GRIPPGM-xxxx</ac:parameter></ac:structured-macro>`
 - **플로우차트 이미지:** 로컬에 SVG변환기 없음 → **PIL로 PNG 렌더**(`draw_flow.py`, 한글폰트 `/System/Library/Fonts/AppleSDGothicNeo.ttc`, 시작/과정/결정/분기/최종 노드+화살표, 브랜드 코랄). 페이지에 `flow.png` 첨부 → 본문 `<ac:image ac:width="780"><ri:attachment ri:filename="flow.png"/></ac:image>`.
