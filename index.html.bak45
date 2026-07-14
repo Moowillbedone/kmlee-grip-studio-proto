@@ -2362,15 +2362,16 @@
       if (!nameBody || !draft) return;
       var blocks = draft.axes.map(function (a, ai) {
         var vrows = a.values.map(function (v, vi) {
-          return '<div class="onm-vrow"><input class="opt-input onm-val" value="' + esc(v.name) + '" placeholder="옵션 값" /></div>';
+          return '<div class="onm-vrow"><input class="opt-input onm-val" value="' + esc(v.name) + '" placeholder="옵션 값" /><button class="onm-x" data-del-ax="' + ai + '" data-del-vi="' + vi + '" aria-label="옵션 값 삭제">&times;</button></div>';
         }).join('');
         return '<div class="onm-axis">' +
-          '<div class="onm-col onm-col-type"><input class="opt-input onm-typei" value="' + esc(a.type) + '" placeholder="옵션 종류" /></div>' +
-          '<div class="onm-col onm-col-vals">' + vrows + '</div>' +
+          '<div class="onm-col onm-col-type"><input class="opt-input onm-typei" value="' + esc(a.type) + '" placeholder="옵션 종류" /><button class="onm-axdel" data-axdel="' + ai + '">옵션 삭제</button></div>' +
+          '<div class="onm-col onm-col-vals">' + vrows + '<button class="onm-vadd" data-addval="' + ai + '">+ 옵션 값 추가</button></div>' +
           '</div>';
       }).join('');
-      var emptyHint = draft.axes.length === 0 ? '<div class="onm-empty">등록된 옵션이 없습니다.</div>' : '';
-      nameBody.innerHTML = '<div class="onm-head"><span class="onm-h1">옵션 종류</span><span class="onm-h2">옵션 값</span></div>' + blocks + emptyHint;
+      var addAxis = draft.axes.length < MAX_AXES ? '<button class="onm-axadd" data-addaxis="1">+ 옵션 종류 추가</button>' : '';
+      var emptyHint = draft.axes.length === 0 ? '<div class="onm-empty">옵션이 없습니다. <b>[+ 옵션 종류 추가]</b>로 추가하거나, 그대로 <b>[수정하기]</b>를 누르면 옵션 전체 삭제를 확인합니다.</div>' : '';
+      nameBody.innerHTML = '<div class="onm-head"><span class="onm-h1">옵션 종류</span><span class="onm-h2">옵션 값</span></div>' + blocks + emptyHint + addAxis;
     }
     function readBody() {
       if (!nameBody || !draft) return;
@@ -2947,7 +2948,7 @@
         '<span class="prd-k2">배경 · 실제 문제</span>' +
         '<p>옵션이 많은 상품(다축·수십 조합)은 가격·재고·옵션명을 하나씩 고쳐야 해 번거롭고 실수가 잦다. 비즈센터·방송폰과 달리 스튜디오에는 옵션을 <b>일괄</b>로 관리하는 UI가 없었다.</p>' +
         '<span class="prd-k2">해결 (정책)</span>' +
-        '<p>· <b>옵션 상품은 라이브가 하나만</b> — 상품가/상시 할인가 없음. 조합 가격 = <b>라이브가(판매가) + 추가 가격</b>.<br/>· <b>상품 옵션 관리 표에서 인라인 수정</b>: <b>옵션명·옵션값·재고·가격·자체 옵션 코드</b>를 클릭해 바로 수정. 표 컬럼 순서 = 옵션명·옵션값·재고·판매 가능·주문·점유·가격. <b>판매 가능·주문·점유는 비즈센터 연동값(읽기 전용)</b>.<br/>· <b>[옵션명 수정하기]</b> → 팝업에서 저장된 옵션 종류·값 이름 수정. <b>[일괄 수정]</b> → 조합 체크박스 선택 후 가격/재고 일괄 반영(팝업).<br/>· 리스트에서 옵션 상품은 <b>라이브가(단독 인풋) + 옵션가(범위)</b>로 표기.</p>',
+        '<p>· <b>옵션 상품은 라이브가 하나만</b> — 상품가/상시 할인가 없음. 조합 가격 = <b>라이브가(판매가) + 추가 가격</b>.<br/>· <b>상품 옵션 관리 표에서 인라인 수정</b>: <b>옵션명·옵션값·재고·가격·자체 옵션 코드</b>를 클릭해 바로 수정. 표 컬럼 순서 = 옵션명·옵션값·재고·판매 가능·주문·점유·가격. <b>판매 가능·주문·점유는 비즈센터 연동값(읽기 전용)</b>.<br/>· <b>[옵션명 수정하기]</b> → 팝업에서 옵션 종류·값 추가/삭제. <b>[일괄 수정]</b> → 조합 체크박스 선택 후 가격/재고 일괄 반영(팝업).<br/>· 리스트에서 옵션 상품은 <b>라이브가(단독 인풋) + 옵션가(범위)</b>로 표기.</p>',
       flowHTML:
         '<span class="prd-k2">상품 옵션 관리 · 한 화면 처리 플로우</span>' +
         '<div class="fpath">' +
@@ -2980,7 +2981,7 @@
         { tag: '시작', t: '옵션 상품의 <b>가격·재고·옵션명</b>을 <b>모달 하나에서</b> 수정하는 흐름을 시연합니다. (Jira GRIPPGM-3336)', target: function () { var r = rowN(1); return r ? r.querySelector('.btn-option') : null; }, act: function () { resetUI(); } },
         { tag: '[옵션] 진입 & 요약', t: '옵션 상품의 <b>[옵션]</b> 버튼 → <b>상품 옵션 관리</b>. 요약은 <b>라이브가만</b> 보입니다.', target: function () { return q('#optionModal .opt-summary'); }, act: function () { var r = rowN(1); if (r) { var b = r.querySelector('.btn-option'); if (b) b.click(); } } },
         { tag: '표에서 바로 수정', t: '조합 표에서 <b>옵션명·옵션값·재고·가격·자체 옵션 코드</b>를 클릭해 바로 수정·저장합니다. (판매 가능·주문·점유는 비즈센터 연동값 — 읽기 전용)', target: function () { return q('#optGroup .opt-table'); }, act: function () { if (!q('#optionModal').classList.contains('open')) { var r = rowN(1); var b = r && r.querySelector('.btn-option'); if (b) b.click(); } } },
-        { tag: '옵션명 수정 팝업', t: '<b>[옵션명 수정하기]</b> → 팝업에서 <b>저장된 옵션 종류·값의 이름</b>을 수정합니다. (표에서 옵션명·옵션값을 클릭해 바로 수정할 수도 있어요.)', target: function () { return q('#optNameModal .modal'); }, act: function () { var eb = q('#optEditNameBtn'); if (eb && !q('#optNameModal').classList.contains('open')) eb.click(); } },
+        { tag: '옵션명 수정 팝업', t: '<b>[옵션명 수정하기]</b> → 팝업에서 <b>옵션 종류·값</b>을 편집하고 값/종류를 추가·삭제합니다. (표에서 옵션명·옵션값을 클릭해 바로 수정할 수도 있어요.)', target: function () { return q('#optNameModal .modal'); }, act: function () { var eb = q('#optEditNameBtn'); if (eb && !q('#optNameModal').classList.contains('open')) eb.click(); } },
         { tag: '일괄 수정 — 선택', t: '조합을 <b>체크박스로 선택</b>하면 상단 <b>[일괄 수정]</b> 버튼이 활성화됩니다.', target: function () { return q('#optBulkBtn'); }, act: function () { var nm = q('#optNameModal'); if (nm) nm.classList.remove('open'); var cbs = document.querySelectorAll('#optGroup .opt-rowsel'); [0, 1].forEach(function (i) { if (cbs[i] && !cbs[i].classList.contains('on')) cbs[i].click(); }); } },
         { tag: '일괄 수정 팝업', t: '<b>[일괄 수정]</b> → 작은 팝업에서 <b>가격/재고를 한 번에 입력·적용</b>합니다. (선택한 조합에만 반영)', target: function () { return q('#optBulkModal .modal'); }, act: function () { var bb = q('#optBulkBtn'); if (bb) bb.click(); } }
       ]
