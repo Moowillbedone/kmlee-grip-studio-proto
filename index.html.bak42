@@ -397,7 +397,7 @@
   /* 옵션 버튼 + 상품 옵션 관리 모달 */
   .btn-option { background:#fff; border:1px solid #e3e4e8; color:#5c606b; font-size:14px; font-weight:700; padding:11px 20px; border-radius:9px; flex:0 0 auto; cursor:pointer; }
   .btn-option:hover { background:#f6f7f9; border-color:#d7dae1; }
-  .opt-modal { max-width:1000px; display:flex; flex-direction:column; max-height:88vh; }
+  .opt-modal { max-width:720px; display:flex; flex-direction:column; max-height:88vh; }
   #optNameModal { z-index:120; }
   .opt-head { display:flex; align-items:center; justify-content:space-between; padding:20px 24px; border-bottom:1px solid var(--border); flex:0 0 auto; }
   .opt-h-title { font-size:18px; font-weight:800; color:#1d1f25; }
@@ -480,32 +480,6 @@
   .opt-table tbody tr.is-sel { background:var(--grip-soft); }
   .opt-code-inp { width:88px; border:1px solid #e3e4e8; border-radius:8px; padding:7px 9px; font-size:13px; outline:none; }
   .opt-code-inp:focus { border-color:var(--grip); }
-  .opt-th-name { min-width:120px; }
-  .opt-hname { width:100%; max-width:130px; border:1px solid transparent; background:transparent; font-weight:700; font-size:13px; color:#41444d; text-align:center; padding:6px 8px; border-radius:7px; outline:none; }
-  .opt-hname:hover { border-color:#e3e4e8; }
-  .opt-hname:focus { border-color:var(--grip); background:#fff; }
-  .opt-td-vname { text-align:center; }
-  .opt-vname { width:100%; max-width:140px; border:1px solid #e3e4e8; border-radius:8px; padding:7px 9px; font-size:13px; color:#1d1f25; text-align:center; outline:none; }
-  .opt-vname:focus { border-color:var(--grip); }
-  .opt-ro { color:#6b7280; font-weight:600; white-space:nowrap; }
-  .opt-ro b { color:#41444d; font-weight:700; }
-  .onm-eg { color:var(--grip); }
-  .onm-head { display:flex; gap:16px; padding:0 2px 8px; font-size:13px; font-weight:800; color:#41444d; }
-  .onm-h1 { width:210px; } .onm-h2 { flex:1; }
-  .onm-axis { display:flex; gap:16px; align-items:flex-start; padding:12px 0; border-top:1px solid #f0f1f3; }
-  .onm-col-type { width:210px; display:flex; flex-direction:column; gap:8px; }
-  .onm-col-vals { flex:1; display:flex; flex-direction:column; gap:8px; }
-  .onm-vrow { display:flex; align-items:center; gap:6px; }
-  .onm-vrow .opt-input { flex:1; margin:0; }
-  .onm-x { border:none; background:transparent; color:#c4c8d0; font-size:18px; cursor:pointer; padding:0 6px; line-height:1; flex:0 0 auto; }
-  .onm-x:hover { color:var(--grip); }
-  .onm-axdel { border:none; background:transparent; color:#aeb2bb; font-size:12px; font-weight:600; cursor:pointer; text-decoration:underline; align-self:flex-start; }
-  .onm-axdel:hover { color:var(--grip); }
-  .onm-vadd { border:1px dashed #cfd3da; background:#fff; color:#41444d; font-size:12px; font-weight:700; border-radius:8px; padding:8px; cursor:pointer; }
-  .onm-vadd:hover { border-color:var(--grip); color:var(--grip); }
-  .onm-axadd { border:1px dashed #cfd3da; background:#fff; color:#41444d; font-size:13px; font-weight:700; border-radius:9px; padding:10px 0; width:100%; cursor:pointer; margin-top:10px; }
-  .onm-axadd:hover { border-color:var(--grip); color:var(--grip); }
-  .onm-empty { padding:24px 0; text-align:center; color:#9aa0ab; font-size:13px; line-height:1.7; }
   .opt-td-code { color:#aeb2bb; }
   .opt-note { background:var(--grip-soft); color:#b0304e; font-size:13px; line-height:1.6; border-radius:10px; padding:14px 16px; margin-bottom:20px; }
   .opt-note b { color:var(--grip); }
@@ -1581,15 +1555,15 @@
   </div>
 </div>
 
-<!-- 옵션명 수정 (팝업) -->
+<!-- 옵션 일괄 수정 (중첩 팝업) -->
 <div class="modal-overlay" id="optNameModal">
-  <div class="modal" role="dialog" aria-modal="true" aria-label="옵션명 수정" style="max-width:620px;">
-    <div class="opt-head"><span class="opt-h-title">옵션명 수정</span><button class="opt-x" id="optNameClose" aria-label="닫기">&times;</button></div>
-    <div class="modal-body">
-      <div class="opt-note">옵션 종류(예: <b class="onm-eg">컬러</b>)와 옵션 값(예: <b class="onm-eg">그레이 / 블랙 / 화이트</b>)을 직접 입력하여 수정하세요.<br/><b>[수정하기]</b>를 누르면 아래 옵션 표·요약에 즉시 반영됩니다.</div>
+  <div class="modal opt-bulk-modal" role="dialog" aria-modal="true" aria-label="옵션 일괄 수정" style="max-width:900px;">
+    <div class="opt-head"><span class="opt-h-title">옵션 일괄 수정</span><button class="opt-x" id="optNameClose" aria-label="닫기">&times;</button></div>
+    <div class="modal-body opt-bulk-body">
+      <div class="opt-note">옵션 <b>종류·값</b>을 직접 입력하고 값 행을 <b>추가/삭제</b>할 수 있습니다. 아래 <b>옵션 상세</b>에서 조합별 <b>추가 가격·재고·판매 여부</b>를 설정하세요 (조합 가격 = <b>판매가 + 추가 가격</b>). <b>옵션 종류는 최대 3개</b>까지 추가할 수 있습니다.<br/><b>[옵션 적용 하기]</b>를 누르면 상품 옵션 관리 표·필터·요약에 즉시 반영됩니다.</div>
       <div id="optNameBody"></div>
     </div>
-    <div class="modal-foot" style="justify-content:flex-end;gap:12px;"><button class="btn-close" id="optNameReset">취소</button><button class="btn-apply" id="optNameSave">수정하기</button></div>
+    <div class="modal-foot" style="justify-content:center;gap:12px;"><button class="btn-close" id="optNameReset">초기화</button><button class="btn-apply" id="optNameSave">옵션 적용 하기</button></div>
   </div>
 </div>
 
@@ -2175,9 +2149,6 @@
     function buildCombos(axes) { var t = neededCount(axes), out = []; for (var i = 0; i < t; i++) out.push(defaultCombo(i)); return out; }
     function resizeCombos(axes, combos) { var need = neededCount(axes), out = combos.slice(0, need); for (var i = out.length; i < need; i++) out.push(defaultCombo(i)); return out; }
     function labelsOf(axes, ci) { var sizes = axes.map(function (a) { return Math.max(a.values.length, 1); }), rem = ci, out = []; for (var j = axes.length - 1; j >= 0; j--) { out[j] = (axes[j].values[rem % sizes[j]] || {}).name || ''; rem = Math.floor(rem / sizes[j]); } return out; }
-    function valIdxOf(axes, ci) { var sizes = axes.map(function (a) { return Math.max(a.values.length, 1); }), rem = ci, out = []; for (var j = axes.length - 1; j >= 0; j--) { out[j] = rem % sizes[j]; rem = Math.floor(rem / sizes[j]); } return out; }
-    function occOf(ci) { return ((ci % 9) + 1) * 3; }
-    function ordOf(ci) { return ((ci % 9) + 1) * 5; }
     function cloneAxes(axes) { return axes.map(function (a) { return { type: a.type, values: a.values.map(function (v) { return { name: v.name }; }) }; }); }
     function cloneCombos(cs) { return (cs || []).map(function (c) { return { addPrice: c.addPrice, stock: c.stock, sale: c.sale, code: c.code }; }); }
     function cloneState(s) { return { base: s.base, priceReg: s.priceReg, priceDis: s.priceDis, axes: cloneAxes(s.axes), combos: cloneCombos(s.combos) }; }
@@ -2279,7 +2250,7 @@
       if (!axes.length) {
         if (compose) compose.textContent = '옵션 없음';
         if (countEl) countEl.textContent = '판매 중 옵션 0';
-        group.innerHTML = '<div class="opt-empty">등록된 옵션이 없습니다.<br/><b>[옵션명 수정하기]</b>에서 옵션을 추가할 수 있습니다.</div>';
+        group.innerHTML = editAreaHTML() + '<div class="opt-empty">등록된 옵션이 없습니다.<br/><b>[옵션명 수정하기]</b>에서 <b>[+ 옵션 종류 추가]</b>로 옵션을 만들 수 있습니다.</div>';
         updateBulkBtn();
         return;
       }
@@ -2287,24 +2258,18 @@
       if (compose) compose.textContent = axes.map(function (a) { return a.type + '(' + a.values.length + ')'; }).join(' × ') + ' = 총 ' + total + '개 조합';
       if (countEl) countEl.textContent = '판매 중 옵션 ' + total;
       var selN = state.combos.filter(function (c) { return c._sel; }).length;
-      // 컬럼 순서: [선택] 옵션명 · 옵션값 · 재고 · 판매 가능 · 주문 · 점유 · 가격 · 판매 여부 · 자체 옵션 코드
-      // (판매 가능/주문/점유는 비즈센터 연동 값 — 읽기 전용)
       var head = '<tr><th class="opt-th-chk"><span class="cbox3 opt-selall' + (total && selN === total ? ' on' : '') + '"></span></th>' +
-        axes.map(function (a, ai) { return '<th class="opt-th-name"><input class="opt-hname" data-ax="' + ai + '" value="' + esc(a.type) + '" placeholder="옵션명" aria-label="옵션명" /></th>'; }).join('') +
-        '<th>재고</th><th>판매 가능</th><th>주문</th><th>점유</th><th>가격</th><th>판매 여부</th><th>자체 옵션 코드</th></tr>';
+        axes.map(function (a) { return '<th>' + esc(a.type) + '</th>'; }).join('') +
+        '<th>가격</th><th>재고</th><th>판매 여부</th><th>자체 옵션 코드</th></tr>';
       var body = state.combos.map(function (c, ci) {
-        var vcells = valIdxOf(axes, ci).map(function (vi, p) { return '<td class="opt-td-vname"><input class="opt-vname" data-ax="' + p + '" data-vi="' + vi + '" value="' + esc((axes[p].values[vi] || {}).name || '') + '" placeholder="옵션값" aria-label="옵션값" /></td>'; }).join('');
-        var occ = occOf(ci), ord = ordOf(ci), avail = Math.max(0, numOf(c.stock) - occ);
-        return '<tr' + (c._sel ? ' class="is-sel"' : '') + '><td class="opt-td-chk"><span class="cbox3 opt-rowsel' + (c._sel ? ' on' : '') + '" data-ci="' + ci + '"></span></td>' + vcells +
-          '<td><span class="opt-cell-box is-input"><input class="opt-cell-num opt-stock-inp" data-ci="' + ci + '" value="' + fmt(numOf(c.stock)) + '" inputmode="numeric" aria-label="재고" /><span class="opt-unit">개</span></span></td>' +
-          '<td class="opt-ro"><b class="opt-avail" data-ci="' + ci + '">' + fmt(avail) + '</b> <span class="opt-unit">개</span></td>' +
-          '<td class="opt-ro">' + fmt(ord) + ' <span class="opt-unit">개</span></td>' +
-          '<td class="opt-ro">' + fmt(occ) + ' <span class="opt-unit">개</span></td>' +
+        var cells = labelsOf(axes, ci).map(function (l) { return '<td class="opt-td-name">' + esc(l) + '</td>'; }).join('');
+        return '<tr' + (c._sel ? ' class="is-sel"' : '') + '><td class="opt-td-chk"><span class="cbox3 opt-rowsel' + (c._sel ? ' on' : '') + '" data-ci="' + ci + '"></span></td>' + cells +
           '<td><span class="opt-cell-box is-input"><input class="opt-cell-num opt-price-inp" data-ci="' + ci + '" value="' + fmt(state.base + numOf(c.addPrice)) + '" inputmode="numeric" aria-label="가격" /><span class="opt-unit">원</span></span></td>' +
+          '<td><span class="opt-cell-box is-input"><input class="opt-cell-num opt-stock-inp" data-ci="' + ci + '" value="' + fmt(numOf(c.stock)) + '" inputmode="numeric" aria-label="재고" /><span class="opt-unit">개</span></span></td>' +
           '<td><span class="opt-sw' + (c.sale ? ' on' : '') + '" data-sale="' + ci + '"></span></td>' +
           '<td><input class="opt-code-inp" data-ci="' + ci + '" value="' + esc(c.code || '') + '" placeholder="입력" /></td></tr>';
       }).join('');
-      group.innerHTML = '<div class="opt-table-wrap"><table class="opt-table"><thead>' + head + '</thead><tbody>' + body + '</tbody></table></div>';
+      group.innerHTML = editAreaHTML() + '<div class="opt-table-wrap"><table class="opt-table"><thead>' + head + '</thead><tbody>' + body + '</tbody></table></div>';
       updateBulkBtn();
     }
 
@@ -2338,21 +2303,28 @@
       if (selall) { var turnOn = !(state.combos.length && state.combos.every(function (c) { return c._sel; })); state.combos.forEach(function (c) { c._sel = turnOn; }); syncSel(); return; }
       var rsel = t.closest('.opt-rowsel');
       if (rsel) { var rci = parseInt(rsel.getAttribute('data-ci'), 10); if (state.combos[rci]) state.combos[rci]._sel = !state.combos[rci]._sel; syncSel(); return; }
+      var eva = t.closest('.opt-evadd');
+      if (eva) { var eai = parseInt(eva.getAttribute('data-ax'), 10); if (state.axes[eai]) { state.axes[eai].values.push({ name: '' }); state.combos = resizeCombos(state.axes, state.combos); persist(); updateRowPrice(currentRow); renderGroup(); } return; }
+      var evd = t.closest('.opt-evdel');
+      if (evd) { var da = parseInt(evd.getAttribute('data-ax'), 10), dv = parseInt(evd.getAttribute('data-vi'), 10); if (state.axes[da]) { state.axes[da].values.splice(dv, 1); if (!state.axes[da].values.length) state.axes.splice(da, 1); state.combos = resizeCombos(state.axes, state.combos); persist(); updateRowPrice(currentRow); renderGroup(); } return; }
+      var ead = t.closest('.opt-eaxdel');
+      if (ead) { var axd = parseInt(ead.getAttribute('data-ax'), 10); state.axes.splice(axd, 1); state.combos = resizeCombos(state.axes, state.combos); persist(); updateRowPrice(currentRow); renderGroup(); return; }
+      var eaa = t.closest('.opt-eaxadd');
+      if (eaa) { if (state.axes.length < MAX_AXES) { state.axes.push(newAxis(state.axes.length)); state.combos = resizeCombos(state.axes, state.combos); persist(); updateRowPrice(currentRow); renderGroup(); } return; }
     });
-    function syncCompose() { if (compose && state) compose.textContent = state.axes.map(function (a) { return a.type + '(' + a.values.length + ')'; }).join(' × ') + ' = 총 ' + state.combos.length + '개 조합'; }
     if (group) group.addEventListener('input', function (e) {
       if (!state) return;
       var t = e.target;
       var pe = t.closest && t.closest('.opt-price-inp');
       if (pe) { var pci = parseInt(pe.getAttribute('data-ci'), 10); if (state.combos[pci]) { state.combos[pci].addPrice = fmt(numOf(pe.value) - (state.base || 0)); persist(); updateRowPrice(currentRow); } return; }
       var se = t.closest && t.closest('.opt-stock-inp');
-      if (se) { var sci = parseInt(se.getAttribute('data-ci'), 10); if (state.combos[sci]) { state.combos[sci].stock = fmt(numOf(se.value)); persist(); var av = group.querySelector('.opt-avail[data-ci="' + sci + '"]'); if (av) av.textContent = fmt(Math.max(0, numOf(se.value) - occOf(sci))); } return; }
+      if (se) { var sci = parseInt(se.getAttribute('data-ci'), 10); if (state.combos[sci]) { state.combos[sci].stock = fmt(numOf(se.value)); persist(); } return; }
       var ce = t.closest && t.closest('.opt-code-inp');
       if (ce) { var cci = parseInt(ce.getAttribute('data-ci'), 10); if (state.combos[cci]) { state.combos[cci].code = ce.value; persist(); } return; }
-      var hn = t.closest && t.closest('.opt-hname');
-      if (hn) { var hai = parseInt(hn.getAttribute('data-ax'), 10); if (state.axes[hai]) { state.axes[hai].type = hn.value; persist(); syncCompose(); } return; }
-      var vn = t.closest && t.closest('.opt-vname');
-      if (vn) { var vai = parseInt(vn.getAttribute('data-ax'), 10), vvi = parseInt(vn.getAttribute('data-vi'), 10); if (state.axes[vai] && state.axes[vai].values[vvi]) { state.axes[vai].values[vvi].name = vn.value; persist(); Array.prototype.forEach.call(group.querySelectorAll('.opt-vname[data-ax="' + vai + '"][data-vi="' + vvi + '"]'), function (o) { if (o !== vn && o.value !== vn.value) o.value = vn.value; }); } return; }
+      var te = t.closest && t.closest('.opt-etype');
+      if (te) { var tai = parseInt(te.getAttribute('data-ax'), 10); if (state.axes[tai]) { state.axes[tai].type = te.value; persist(); syncComboLabels(); } return; }
+      var ve = t.closest && t.closest('.opt-eval');
+      if (ve) { var vai = parseInt(ve.getAttribute('data-ax'), 10), vvi = parseInt(ve.getAttribute('data-vi'), 10); if (state.axes[vai] && state.axes[vai].values[vvi]) { state.axes[vai].values[vvi].name = ve.value; persist(); syncComboLabels(); } return; }
     });
     var sellAll = document.getElementById('optSellAll');
     if (sellAll) sellAll.addEventListener('click', function () { sellAll.classList.toggle('on'); });
@@ -2360,34 +2332,64 @@
     // ---------- 옵션 일괄 수정 (옵션명/값 편집 + 옵션 상세[조합별 추가가격]) ----------
     function renderBody() {
       if (!nameBody || !draft) return;
-      var blocks = draft.axes.map(function (a, ai) {
+      // 섹션1: 옵션명/값
+      var axBlocks = draft.axes.map(function (a, ai) {
         var vrows = a.values.map(function (v, vi) {
-          return '<div class="onm-vrow"><input class="opt-input onm-val" value="' + esc(v.name) + '" placeholder="옵션 값" /><button class="onm-x" data-del-ax="' + ai + '" data-del-vi="' + vi + '" aria-label="옵션 값 삭제">&times;</button></div>';
+          return '<div class="optb-vrow2"><input class="opt-input optb-name" value="' + esc(v.name) + '" placeholder="옵션값 입력" /><button class="optb-del" data-del-ax="' + ai + '" data-del-vi="' + vi + '">삭제</button></div>';
         }).join('');
-        return '<div class="onm-axis">' +
-          '<div class="onm-col onm-col-type"><input class="opt-input onm-typei" value="' + esc(a.type) + '" placeholder="옵션 종류" /><button class="onm-axdel" data-axdel="' + ai + '">옵션 삭제</button></div>' +
-          '<div class="onm-col onm-col-vals">' + vrows + '<button class="onm-vadd" data-addval="' + ai + '">+ 옵션 값 추가</button></div>' +
+        return '<div class="optb-axis2">' +
+          '<div class="optb-axhead"><span class="optb-flbl">옵션명 ' + (ai + 1) + ' <em>*</em></span><button class="optb-axdel" data-axdel="' + ai + '">옵션 삭제</button></div>' +
+          '<input class="opt-input opt-type-input" value="' + esc(a.type) + '" placeholder="옵션명 입력" />' +
+          '<div class="optb-flbl optb-flbl2">옵션값 ' + (ai + 1) + ' <em>*</em></div>' +
+          '<div class="optb-vals2">' + vrows + '</div>' +
+          '<button class="optb-addval" data-addval="' + ai + '">옵션값 추가</button>' +
           '</div>';
       }).join('');
-      var addAxis = draft.axes.length < MAX_AXES ? '<button class="onm-axadd" data-addaxis="1">+ 옵션 종류 추가</button>' : '';
-      var emptyHint = draft.axes.length === 0 ? '<div class="onm-empty">옵션이 없습니다. <b>[+ 옵션 종류 추가]</b>로 추가하거나, 그대로 <b>[수정하기]</b>를 누르면 옵션 전체 삭제를 확인합니다.</div>' : '';
-      nameBody.innerHTML = '<div class="onm-head"><span class="onm-h1">옵션 종류</span><span class="onm-h2">옵션 값</span></div>' + blocks + emptyHint + addAxis;
+      var addAxis = draft.axes.length < MAX_AXES ? '<button class="optb-addaxis" data-addaxis="1">+ 옵션 추가</button>' : '';
+      var emptyHint = draft.axes.length === 0 ? '<div class="optb-empty">모든 옵션이 삭제된 상태입니다. 옵션을 추가하거나, 그대로 <b>[옵션 적용 하기]</b>를 누르면 옵션 전체 삭제를 확인합니다.</div>' : '';
+      // 섹션2: 옵션 상세(조합별 추가가격/재고/판매/코드)
+      var detail = '';
+      if (draft.axes.length) {
+        var total = draft.combos.length;
+        var bulkBar = bulkOpen ? '<div class="optd-bulkbar"><input class="opt-input" id="optdBulkPrice" placeholder="추가 가격" inputmode="numeric" /><input class="opt-input" id="optdBulkStock" placeholder="재고" inputmode="numeric" /><button class="btn-apply" id="optdBulkApply" style="padding:9px 16px;font-size:13px;">전체 적용</button></div>' : '';
+        var dhead = '<tr>' + draft.axes.map(function (a, ai) { return '<th>' + esc(a.type || ('옵션 ' + (ai + 1) + '번')) + '</th>'; }).join('') + '<th>추가 가격</th><th>재고</th><th>판매 여부</th><th>자체 옵션 코드</th></tr>';
+        var dbody = draft.combos.map(function (c, ci) {
+          var cells = labelsOf(draft.axes, ci).map(function (l) { return '<td class="optd-name">' + esc(l) + '</td>'; }).join('');
+          return '<tr>' + cells +
+            '<td><span class="optd-inp"><input class="opt-input optd-price" data-ci="' + ci + '" value="' + esc(c.addPrice) + '" inputmode="numeric" /><i>원</i></span></td>' +
+            '<td><span class="optd-inp"><input class="opt-input optd-stock" data-ci="' + ci + '" value="' + esc(c.stock) + '" inputmode="numeric" /><i>개</i></span></td>' +
+            '<td><span class="opt-sw' + (c.sale ? ' on' : '') + '" data-dsale="' + ci + '"></span></td>' +
+            '<td><input class="opt-input optd-code" data-ci="' + ci + '" value="' + esc(c.code) + '" placeholder="입력" /></td></tr>';
+        }).join('');
+        detail = '<div class="optd">' +
+          '<div class="optd-head"><span class="optd-title">옵션 상세 <em>*</em> · 총 <b>' + total + '</b>개 조합</span><button class="optd-bulk" id="optdBulkBtn">일괄 입력</button></div>' +
+          bulkBar +
+          '<div class="opt-table-wrap"><table class="opt-table optd-table"><thead>' + dhead + '</thead><tbody>' + dbody + '</tbody></table></div>' +
+          '<div class="optd-note">조합별 <b>추가 가격</b>은 상품 판매가에 더해집니다. (판매가 ' + fmt(draft.base) + '원 + 추가가 → 조합 가격)</div>' +
+          '</div>';
+      }
+      nameBody.innerHTML = axBlocks + addAxis + emptyHint + detail;
     }
     function readBody() {
       if (!nameBody || !draft) return;
-      Array.prototype.forEach.call(nameBody.querySelectorAll('.onm-axis'), function (axEl, ai) {
+      // 옵션명/값
+      Array.prototype.forEach.call(nameBody.querySelectorAll('.optb-axis2'), function (axEl, ai) {
         if (!draft.axes[ai]) return;
-        var t = axEl.querySelector('.onm-typei'); if (t) draft.axes[ai].type = t.value;
+        var t = axEl.querySelector('.opt-type-input'); if (t) draft.axes[ai].type = t.value;
         var vals = [];
-        Array.prototype.forEach.call(axEl.querySelectorAll('.onm-val'), function (inp) { vals.push({ name: inp.value }); });
+        Array.prototype.forEach.call(axEl.querySelectorAll('.optb-vrow2 .optb-name'), function (inp) { vals.push({ name: inp.value }); });
         draft.axes[ai].values = vals;
       });
+      // 옵션 상세(조합별)
+      Array.prototype.forEach.call(nameBody.querySelectorAll('.optd-price'), function (inp) { var ci = parseInt(inp.getAttribute('data-ci'), 10); if (draft.combos[ci]) draft.combos[ci].addPrice = inp.value; });
+      Array.prototype.forEach.call(nameBody.querySelectorAll('.optd-stock'), function (inp) { var ci = parseInt(inp.getAttribute('data-ci'), 10); if (draft.combos[ci]) draft.combos[ci].stock = inp.value; });
+      Array.prototype.forEach.call(nameBody.querySelectorAll('.optd-code'), function (inp) { var ci = parseInt(inp.getAttribute('data-ci'), 10); if (draft.combos[ci]) draft.combos[ci].code = inp.value; });
     }
     function syncCombos() { draft.combos = resizeCombos(draft.axes, draft.combos); }
     function openName() { draft = { base: state.base, priceReg: state.priceReg, priceDis: state.priceDis, axes: cloneAxes(state.axes), combos: cloneCombos(state.combos) }; bulkOpen = false; renderBody(); if (nameModal) nameModal.classList.add('open'); }
     function closeName() { if (nameModal) nameModal.classList.remove('open'); }
     var editNameBtn = document.getElementById('optEditNameBtn');
-    if (editNameBtn) editNameBtn.addEventListener('click', openName);
+    if (editNameBtn) editNameBtn.addEventListener('click', function () { nameEditOpen = !nameEditOpen; renderGroup(); });
     var optBulkBtn = document.getElementById('optBulkBtn');
     var optBulkModal = document.getElementById('optBulkModal');
     function openBulk() {
@@ -2416,7 +2418,7 @@
     });
     var nameClose = document.getElementById('optNameClose'), nameReset = document.getElementById('optNameReset'), nameSave = document.getElementById('optNameSave');
     if (nameClose) nameClose.addEventListener('click', closeName);
-    if (nameReset) nameReset.addEventListener('click', closeName);
+    if (nameReset) nameReset.addEventListener('click', function () { draft = { base: state.base, priceReg: state.priceReg, priceDis: state.priceDis, axes: cloneAxes(state.axes), combos: cloneCombos(state.combos) }; bulkOpen = false; renderBody(); toast('입력값을 초기화했습니다.', true); });
     if (nameModal) nameModal.addEventListener('click', function (e) { if (e.target === nameModal) closeName(); });
     if (nameBody) nameBody.addEventListener('click', function (e) {
       var addax = e.target.closest('[data-addaxis]');
@@ -2948,7 +2950,7 @@
         '<span class="prd-k2">배경 · 실제 문제</span>' +
         '<p>옵션이 많은 상품(다축·수십 조합)은 가격·재고·옵션명을 하나씩 고쳐야 해 번거롭고 실수가 잦다. 비즈센터·방송폰과 달리 스튜디오에는 옵션을 <b>일괄</b>로 관리하는 UI가 없었다.</p>' +
         '<span class="prd-k2">해결 (정책)</span>' +
-        '<p>· <b>옵션 상품은 라이브가 하나만</b> — 상품가/상시 할인가 없음. 조합 가격 = <b>라이브가(판매가) + 추가 가격</b>.<br/>· <b>상품 옵션 관리 표에서 인라인 수정</b>: <b>옵션명·옵션값·재고·가격·자체 옵션 코드</b>를 클릭해 바로 수정. 표 컬럼 순서 = 옵션명·옵션값·재고·판매 가능·주문·점유·가격. <b>판매 가능·주문·점유는 비즈센터 연동값(읽기 전용)</b>.<br/>· <b>[옵션명 수정하기]</b> → 팝업에서 옵션 종류·값 추가/삭제. <b>[일괄 수정]</b> → 조합 체크박스 선택 후 가격/재고 일괄 반영(팝업).<br/>· 리스트에서 옵션 상품은 <b>라이브가(단독 인풋) + 옵션가(범위)</b>로 표기.</p>',
+        '<p>· <b>옵션 상품은 라이브가 하나만</b> — 상품가/상시 할인가 없음. 조합 가격 = <b>라이브가(판매가) + 추가 가격</b>.<br/>· <b>상품 옵션 관리 모달 하나에서 전부</b> 처리(별도 중첩 팝업 없음): 옵션명·값 <b>인라인 수정</b> + <b>[+ 옵션 추가]</b>(값)·<b>[+ 옵션 종류 추가]</b>(최대 3), 조합별 <b>가격·재고·자체 옵션 코드 인라인</b>, <b>체크박스로 조합 선택 → 가격/재고 일괄 [선택 적용]</b>.<br/>· 리스트에서 옵션 상품은 <b>라이브가(단독 인풋) + 옵션가(범위)</b>로 표기.</p>',
       flowHTML:
         '<span class="prd-k2">상품 옵션 관리 · 한 화면 처리 플로우</span>' +
         '<div class="fpath">' +
@@ -2980,9 +2982,9 @@
       steps: [
         { tag: '시작', t: '옵션 상품의 <b>가격·재고·옵션명</b>을 <b>모달 하나에서</b> 수정하는 흐름을 시연합니다. (Jira GRIPPGM-3336)', target: function () { var r = rowN(1); return r ? r.querySelector('.btn-option') : null; }, act: function () { resetUI(); } },
         { tag: '[옵션] 진입 & 요약', t: '옵션 상품의 <b>[옵션]</b> 버튼 → <b>상품 옵션 관리</b>. 요약은 <b>라이브가만</b> 보입니다.', target: function () { return q('#optionModal .opt-summary'); }, act: function () { var r = rowN(1); if (r) { var b = r.querySelector('.btn-option'); if (b) b.click(); } } },
-        { tag: '표에서 바로 수정', t: '조합 표에서 <b>옵션명·옵션값·재고·가격·자체 옵션 코드</b>를 클릭해 바로 수정·저장합니다. (판매 가능·주문·점유는 비즈센터 연동값 — 읽기 전용)', target: function () { return q('#optGroup .opt-table'); }, act: function () { if (!q('#optionModal').classList.contains('open')) { var r = rowN(1); var b = r && r.querySelector('.btn-option'); if (b) b.click(); } } },
-        { tag: '옵션명 수정 팝업', t: '<b>[옵션명 수정하기]</b> → 팝업에서 <b>옵션 종류·값</b>을 편집하고 값/종류를 추가·삭제합니다. (표에서 옵션명·옵션값을 클릭해 바로 수정할 수도 있어요.)', target: function () { return q('#optNameModal .modal'); }, act: function () { var eb = q('#optEditNameBtn'); if (eb && !q('#optNameModal').classList.contains('open')) eb.click(); } },
-        { tag: '일괄 수정 — 선택', t: '조합을 <b>체크박스로 선택</b>하면 상단 <b>[일괄 수정]</b> 버튼이 활성화됩니다.', target: function () { return q('#optBulkBtn'); }, act: function () { var nm = q('#optNameModal'); if (nm) nm.classList.remove('open'); var cbs = document.querySelectorAll('#optGroup .opt-rowsel'); [0, 1].forEach(function (i) { if (cbs[i] && !cbs[i].classList.contains('on')) cbs[i].click(); }); } },
+        { tag: '가격·재고·코드 인라인', t: '기본 화면은 <b>조합 표</b>. 조합별 <b>가격·재고·자체 옵션 코드</b>를 표에서 바로 수정·저장합니다.', target: function () { return q('#optGroup .opt-table'); }, act: function () { if (!q('#optionModal').classList.contains('open')) { var r = rowN(1); var b = r && r.querySelector('.btn-option'); if (b) b.click(); } } },
+        { tag: '옵션명·값 편집', t: '<b>[옵션명 수정하기]</b>를 누르면 옵션 <b>종류명·값</b> 편집 영역이 열립니다. 클릭 인라인 수정 + <b>[+ 옵션 추가]</b>·<b>[+ 옵션 종류 추가]</b>(최대 3).', target: function () { return q('#optGroup .opt-edit'); }, act: function () { var eb = q('#optEditNameBtn'); if (eb && !q('#optGroup .opt-edit')) eb.click(); } },
+        { tag: '일괄 수정 — 선택', t: '조합을 <b>체크박스로 선택</b>하면 상단 <b>[일괄 수정]</b> 버튼이 활성화됩니다.', target: function () { return q('#optBulkBtn'); }, act: function () { var cbs = document.querySelectorAll('#optGroup .opt-rowsel'); [0, 1].forEach(function (i) { if (cbs[i] && !cbs[i].classList.contains('on')) cbs[i].click(); }); } },
         { tag: '일괄 수정 팝업', t: '<b>[일괄 수정]</b> → 작은 팝업에서 <b>가격/재고를 한 번에 입력·적용</b>합니다. (선택한 조합에만 반영)', target: function () { return q('#optBulkModal .modal'); }, act: function () { var bb = q('#optBulkBtn'); if (bb) bb.click(); } }
       ]
     });
