@@ -3006,50 +3006,38 @@
         '<span class="prd-k2">배경 · 실제 문제</span>' +
         '<p>“답변 = 전체 공개”만 있어, 무관/방해성 질문에 답하면 그대로 전체 Q&amp;A·방송에 박제되어 방송 흐름을 해친다.</p>' +
         '<span class="prd-k2">해결 (정책)</span>' +
-        '<p>답변 시 <b>[전체 유저 / 본인만 보기] 노출 범위</b>를 선택한다. 이 기능은 <b>스튜디오(매니저 PC)뿐 아니라 모바일 앱(코어 서비스)</b>까지 함께 동작한다.</p>' +
-        '<p>· <b>공통(저장·스튜디오):</b> 전체·본인만 <b>모두</b> 채팅탭 우측 <b>Q&amp;A 목록에 질문·답변이 저장</b>되고, <b>스튜디오(매니저) 방송 프리뷰의 Q&amp;A 띠지에도 모두 노출</b>된다(<b>🌐 전체 / 🔒 본인만</b> 배지로 구분). 매니저는 자신이 등록한 Q&amp;A를 전부 본다.<br/>· <b>모바일 앱(시청자):</b> Q&amp;A <b>띠지·모달의 노출 대상</b>이 범위에 따라 갈린다. <b>전체 유저</b> = 모든 시청자에게 띠지·모달 노출. <b>본인만</b> = 문의한 <b>본인에게만</b> 띠지·모달 노출(다른 시청자에겐 미노출). 어느 쪽이든 문의한 본인은 답변을 정상적으로 본다.<br/>· 등록 후에도 <b>Q&amp;A 탭 ⋮ → 수정하기</b>로 답변·노출 범위를 다시 조정 가능(첫 답변과 동일 UX).</p>' +
-        '<span class="prd-k2">적용 범위 (중요)</span>' +
-        '<p>스튜디오(PC 매니저 콘솔)와 <b>모바일 앱(코어 서비스)</b> 양쪽에 영향. <b>모바일 동작</b>(매니저가 유저 채팅 텍스트 탭 → 답변 토글 → 시청자별 띠지·모달 노출)은 이 프로토타입 화면엔 없지만 본 PRD/컨플루언스에 명세로 기록한다.</p>',
+        '<p>답변 박스에 <b>[본인만 보기] 토글</b> 제공.<br/>· <b>OFF(기본) = 전체 공개</b>: <b>모든 시청자의 모바일 앱 Q&amp;A</b> + 방송 화면에 노출.<br/>· <b>ON = 본인만</b>: 문의한 <b>본인(A)의 모바일 앱에는 전체 공개처럼 Q&amp;A가 그대로 노출</b>(A는 답변받은 것으로 보임)되고, <b>다른 시청자·방송 화면에는 노출 안 됨</b>.<br/>· 등록 후에도 <b>Q&amp;A 탭 ⋮ → 수정하기</b>로 답변·노출 범위를 다시 조정 가능(첫 답변과 동일 UX).</p>' +
+        '<span class="prd-k2">참고</span>' +
+        '<p>후속으로 “작성 시점부터 Q&amp;A 미노출(완전 비공개)” 옵션도 확장 가능.</p>',
       flowHTML:
-        '<span class="prd-k2">노출 범위 흐름 · 스튜디오 vs 모바일</span>' +
+        '<span class="prd-k2">검증 플로우 · 노출 범위</span>' +
         '<div class="fpath">' +
-          '<div class="fpath-h"><span class="fpath-tag a">답변 작성</span> (스튜디오/모바일 공통)</div>' +
-          '<div class="frow"><span class="fnode">유저 메시지 탭 · 답변하기</span><span class="farr">→</span><span class="fnode">답변 입력 + [전체 유저 / 본인만] 선택</span></div>' +
+          '<div class="fpath-h"><span class="fpath-tag a">경로</span> 답변 작성 → 노출 범위 선택</div>' +
+          '<div class="frow"><span class="fnode">유저 메시지 ⋮ · 답변하기</span><span class="farr">→</span><span class="fnode">답변 입력 + [본인만 보기] 토글 (기본 OFF)</span></div>' +
+          '<div class="fdec">본인만 보기 = ON ?</div>' +
+          '<div class="fbranch"><span class="fout no">아니오(기본) → 전체 공개: 모든 유저 Q&amp;A + 방송 띠지</span><span class="fout ok">예 → 본인만: 문의자에게만 · 다른 유저·방송 미노출</span></div>' +
         '</div>' +
-        '<div class="fmerge">↓ Q&amp;A 등록(저장)</div>' +
-        '<div class="fpath">' +
-          '<div class="fpath-h"><span class="fpath-tag a">스튜디오(매니저)</span> — 범위 무관 모두 노출</div>' +
-          '<div class="frow"><span class="fnode">채팅탭 우측 Q&amp;A 목록 저장</span><span class="farr">+</span><span class="fnode">방송 프리뷰 Q&amp;A 띠지(🌐 전체 / 🔒 본인만)</span></div>' +
-        '</div>' +
-        '<div class="fpath">' +
-          '<div class="fpath-h"><span class="fpath-tag a">모바일 앱(시청자)</span> — 범위별 노출 대상</div>' +
-          '<div class="fbranch"><span class="fout no">전체 유저 → 모든 시청자에게 띠지·모달</span><span class="fout ok">본인만 → 문의자 본인에게만 띠지·모달</span></div>' +
-        '</div>' +
-        '<div class="fnode final">스튜디오·문의자 본인 화면엔 항상 노출 · “미노출”은 <b>모바일에서 본인만 항목을 다른 시청자에게</b> 안 보이는 것 · ⋮ → 수정하기로 범위 재조정</div>',
+        '<div class="fmerge">↓ Q&amp;A 등록</div>' +
+        '<div class="fnode final">등록 후에도 ⋮ → 수정하기로 노출 범위 재조정 가능 · 전체 공개 항목만 방송 프리뷰 띠지에 노출</div>',
       prd: [
-        { n: 1, target: '#chatFeed', title: '답변 시 노출 범위 토글 (전체 / 본인만)', tag: '진입',
-          def: '답변 작성 시 [전체 유저 / 본인만 보기] 노출 범위를 선택한다(기본 = 전체 공개). 스튜디오·모바일 공통 진입.',
-          asis: ['답변 = 전체 공개만 있어 무관/방해성 문의도 전체에 박제.'],
-          tobe: ['답변 시 노출 범위 선택(기본 전체, 필요 시 본인만).'],
-          features: ['답변 박스 하단 <b>[본인만 보기] 토글</b>(기본 꺼짐 = 전체 공개).', '전체·본인만 <b>모두</b> 채팅탭 우측 Q&amp;A 목록에 저장 + 스튜디오 방송 프리뷰 띠지에 노출(명세 2).', '범위에 따라 갈리는 것은 <b>모바일 시청자 노출 대상</b>(명세 3).'] },
-        { n: 2, target: '#ovQa', title: '[스튜디오] Q&A 저장 · 방송 프리뷰 띠지 (전체·본인만 모두)', tag: '스튜디오 · 핵심',
-          def: '전체 공개든 본인만이든, 스튜디오(매니저) 화면에서는 답변한 Q&A가 채팅탭 우측 Q&A에 저장되고 방송 프리뷰 하단 Q&A 띠지에도 모두 노출된다. 매니저는 자신이 등록한 Q&A를 전부 관리한다.',
-          asis: ['(이전 오해) 전체 공개 항목만 띠지 노출 · 본인만은 스튜디오 띠지에서 미노출로 구성됨.'],
-          tobe: ['전체·본인만 <b>모두</b> 스튜디오 방송 프리뷰 띠지 + 채팅탭 Q&amp;A에 노출. <b>🌐 전체 / 🔒 본인만</b> 배지로 구분.'],
-          features: ['답변한 Q&amp;A는 범위와 무관하게 <b>채팅탭 우측 Q&amp;A 목록에 저장</b>된다.', '<b>방송 프리뷰 하단 Q&amp;A 띠지</b>에도 전체·본인만 <b>모두</b> 노출.', '띠지·목록에 <b>🌐 전체 / 🔒 본인만</b> 배지로 노출 범위 표시.'] },
-        { n: 3, target: '#ovQa', title: '[모바일 앱] 시청자 노출 대상 (전체=모두 / 본인만=본인)', tag: '모바일 · 코어 서비스',
-          def: '모바일 앱에서는 매니저가 유저 채팅 텍스트를 탭 → 답변(전체/본인만 토글). Q&A 띠지·모달의 노출 대상이 범위에 따라 갈린다. (프로토타입 화면엔 없고 명세로만 기록)',
-          features: ['<b>[모바일]</b> 매니저가 <b>유저 채팅 텍스트를 탭</b>하면 답변 가능 · 답변 시 <b>전체 유저 / 본인만</b> 토글.', '<b>전체 유저</b>: 모든 시청자에게 <b>Q&amp;A 띠지</b> 노출 + 띠지 탭 시 <b>Q&amp;A 모달도 모두에게</b>.', '<b>본인만</b>: 문의한 <b>본인에게만</b> 띠지 노출 + 띠지 탭 시 <b>모달도 본인에게만</b>(다른 시청자 미노출).', '<b>코어 서비스(모바일 앱) 영향</b> — 별도 모바일 PRD로 상세화 예정.'] },
-        { n: 4, target: '.chat-tab[data-tab="qa"]', title: 'Q&A 탭에서 노출 범위 수정', tag: '사후 수정',
+        { n: 1, target: '#chatFeed', title: '답변 시 노출 범위 토글', tag: '전체/본인만',
+          def: '답변 작성 박스에 [본인만 보기] 토글 제공(기본 꺼짐 = 전체 공개).',
+          asis: ['답변 = 전체 공개만 있어 무관 문의도 전체 Q&amp;A·방송에 박제.'],
+          tobe: ['답변 시 노출 범위를 선택. 기본은 전체 공개, 필요 시 본인만.'],
+          features: ['<b>OFF(기본) = 전체 공개</b>: 모든 유저 Q&amp;A + 방송 프리뷰 띠지 노출.', '<b>ON = 본인만</b>: 문의한 본인에게만 노출.', '토글은 답변 박스 하단에 위치.'] },
+        { n: 2, target: '.chat-tab[data-tab="qa"]', title: '본인만 = 다른 유저 미노출', tag: '핵심',
+          def: '본인만 보기로 답해도 문의한 A의 모바일 앱에는 전체 공개와 똑같이 Q&A가 정상 노출된다(A는 답변받은 것으로 보임). 다만 다른 시청자·방송 화면에는 노출되지 않는다.',
+          features: ['<b>시청자(모바일) 기준:</b> 문의한 <b>A의 앱에는 전체 공개와 동일하게 Q&amp;A 정상 노출</b>(A는 답변받은 것으로 보임).', '<b>다른 시청자 앱·방송 화면에는 노출 안 됨</b> (A에게 숨기는 게 아니라 A에게만 보여주는 것).', '무관/방해성 문의 대응에 사용.'] },
+        { n: 3, target: '.chat-tab[data-tab="qa"]', title: 'Q&A 탭에서 노출 범위 수정', tag: '사후 수정',
           def: '등록된 답변의 ⋮ → 수정하기로, 처음 답변할 때처럼 답변 내용과 노출 범위 토글을 그 자리에서 다시 선택해 수정한다.',
-          features: ['Q&amp;A 항목 우측 <b>⋮ → 수정하기</b>.', '답변 입력 + <b>[본인만 보기] 토글</b>이 인라인으로 함께 표시(첫 답변과 동일 UX).', '<b>[저장]</b> 시 노출 범위(전체 공개 ↔ 본인만) 즉시 반영 · 배지·스튜디오 방송 프리뷰 띠지 갱신.'] }
+          features: ['Q&amp;A 항목 우측 <b>⋮ → 수정하기</b>.', '답변 입력 + <b>[본인만 보기] 토글</b>이 인라인으로 함께 표시(첫 답변과 동일 UX).', '<b>[저장]</b> 시 노출 범위(전체 공개 ↔ 본인만) 즉시 반영 · 배지·방송 프리뷰 띠지 갱신.'] }
       ],
       steps: [
         { tag: '시작', t: '채팅 답변의 <b>노출 범위(전체/본인만)</b>를 제어하는 흐름을 시연합니다. (Jira GRIPPGM-3402)', target: function () { return q('#chatFeed'); }, act: function () { resetUI(); } },
         { tag: '답변 작성', t: '유저 메시지 <b>⋮ → 답변하기</b>로 답변 박스를 엽니다.', target: function () { return q('#chatReply'); }, act: function () { var cm = document.querySelector('#chatFeed .cm:not(.me)'); if (cm) { var b = cm.querySelector('.cm-menu'); if (b) b.click(); var am = document.querySelector('.chat-menu.on button[data-a="answer"]'); if (am) am.click(); } } },
         { tag: '노출 범위 토글', t: '답변 박스 하단 <b>[본인만 보기]</b> 토글 — <b>기본 꺼짐 = 전체 공개</b>.', target: function () { return q('#crLiveLbl'); }, act: function () { var i = document.getElementById('crInput'); if (i) i.value = '재입고되면 안내드릴게요'; } },
-        { tag: '전체 공개 (기본)', t: '기본(전체 공개)으로 답변 → 채팅탭 Q&amp;A 저장 + <b>방송 프리뷰 띠지(🌐 전체)</b>. 모바일에선 <b>모든 시청자</b>에게 노출됩니다.', target: function () { return q('#ovQa'); }, act: function () { var s = document.getElementById('crSubmit'); if (s) s.click(); } },
-        { tag: '본인만 보기', t: '무관/방해성 문의는 <b>[본인만 보기]</b>를 켜서 답변 → <b>스튜디오 화면엔 띠지(🔒 본인만)·Q&amp;A 저장 그대로</b>. 모바일에선 <b>문의한 A 본인에게만</b> 띠지·모달 노출, <b>다른 시청자에겐 미노출</b>.', target: function () { return q('#qaPanel'); }, act: function () { var cms = document.querySelectorAll('#chatFeed .cm:not(.me)'); var cm = cms[1] || cms[0]; if (cm) { var b = cm.querySelector('.cm-menu'); if (b) b.click(); var am = document.querySelector('.chat-menu.on button[data-a="answer"]'); if (am) am.click(); } var i = document.getElementById('crInput'); if (i) i.value = '개별적으로 안내드릴게요'; var lb = document.getElementById('crLiveBox'); if (lb && !lb.classList.contains('on')) lb.click(); var s = document.getElementById('crSubmit'); if (s) s.click(); var t = document.querySelector('.chat-tab[data-tab="qa"]'); if (t) t.click(); } },
+        { tag: '전체 공개 (기본)', t: '기본(전체 공개)으로 답변 → <b>모든 유저 Q&amp;A + 방송 프리뷰 띠지</b>에 노출됩니다.', target: function () { return q('#ovQa'); }, act: function () { var s = document.getElementById('crSubmit'); if (s) s.click(); } },
+        { tag: '본인만 보기', t: '무관/방해성 문의는 <b>[본인만 보기]</b>를 켜서 답변 → 문의한 <b>A 모바일엔 (전체 공개처럼) 정상 노출</b>, <b>다른 시청자·방송엔 안 뜸</b>.', target: function () { return q('#qaPanel'); }, act: function () { var cms = document.querySelectorAll('#chatFeed .cm:not(.me)'); var cm = cms[1] || cms[0]; if (cm) { var b = cm.querySelector('.cm-menu'); if (b) b.click(); var am = document.querySelector('.chat-menu.on button[data-a="answer"]'); if (am) am.click(); } var i = document.getElementById('crInput'); if (i) i.value = '개별적으로 안내드릴게요'; var lb = document.getElementById('crLiveBox'); if (lb && !lb.classList.contains('on')) lb.click(); var s = document.getElementById('crSubmit'); if (s) s.click(); var t = document.querySelector('.chat-tab[data-tab="qa"]'); if (t) t.click(); } },
         { tag: '사후 수정 — 수정하기', t: '등록 후에도 Q&amp;A 탭에서 답변의 <b>⋮ → 수정하기</b>를 누르면, <b>답변 내용과 [본인만 보기] 토글이 처음 답변할 때처럼</b> 그 자리에 함께 나타납니다.', target: function () { return q('#qaPanel .qa-ans-edit') || q('#qaPanel'); }, act: function () { var tb = document.querySelector('.chat-tab[data-tab="qa"]'); if (tb) tb.click(); var item = document.querySelector('#qaPanel .qa-item'); if (item) { var mb = item.querySelector('.qa-menu'); if (mb) mb.click(); var eb = document.querySelector('.chat-menu.on button[data-a="edit"]'); if (eb) eb.click(); } } },
         { tag: '노출 방식 변경·저장', t: '그 자리에서 <b>[본인만 보기]</b>를 켜고 <b>[저장]</b> → 노출 범위가 바뀌고 배지도 <b>🔒 본인만</b>으로 갱신됩니다.', target: function () { return q('#qaPanel'); }, act: function () { var lv = document.querySelector('#qaPanel .qa-edit-live'); if (lv) lv.click(); var ok = document.querySelector('#qaPanel .qa-ans-ok'); if (ok) ok.click(); } }
       ]
