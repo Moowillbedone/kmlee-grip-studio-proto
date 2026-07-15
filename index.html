@@ -854,6 +854,10 @@
   .tour-dots span.on { background: var(--grip); width: 16px; border-radius: 4px; }
   .tour-end { background: rgba(255,255,255,.14); color: #fff; border: 0; border-radius: 8px; padding: 8px 16px; font-size: 12.5px; font-weight: 700; cursor: pointer; flex: 0 0 auto; }
   .tour-end:hover { background: rgba(255,255,255,.24); }
+  .tour-pause { background: rgba(255,255,255,.14); color: #fff; border: 0; border-radius: 8px; padding: 8px 14px; font-size: 12.5px; font-weight: 700; cursor: pointer; flex: 0 0 auto; min-width: 86px; text-align: center; }
+  .tour-pause:hover { background: rgba(255,255,255,.24); }
+  .tour-pause.is-paused { background: var(--grip); }
+  .tour-pause.is-paused:hover { background: #e02950; }
 
   /* 상품 삭제 버튼 (행) */
   .pr-del { width:30px; height:30px; display:inline-flex; align-items:center; justify-content:center; border:1px solid transparent; border-radius:8px; background:transparent; color:#b0b4bd; cursor:pointer; flex-shrink:0; align-self:flex-start; transition:background .12s,color .12s,border-color .12s; }
@@ -1669,6 +1673,7 @@
   <div class="tour-bar">
     <span class="tour-bar-title">▶ 자동 데모<span class="demo-loop">↻ 자동 반복</span></span>
     <span class="tour-dots" id="tourDots"></span>
+    <button class="tour-pause" id="tourPause">⏸ 일시정지</button>
     <button class="tour-end" id="tourEnd">종료</button>
   </div>
 </div>
@@ -3124,6 +3129,7 @@
     var overlay = document.getElementById('tourOverlay');
     var launch = document.getElementById('demoLaunch');
     var endBtn = document.getElementById('tourEnd');
+    var pauseBtn = document.getElementById('tourPause');
     var spot = document.getElementById('tourSpot'), callout = document.getElementById('tourCallout');
     var tcStep = document.getElementById('tcStep'), tcText = document.getElementById('tcText'), dotsWrap = document.getElementById('tourDots');
     var pfsBtn = document.getElementById('pfsBtn'), pfsLabel = document.getElementById('pfsLabel'), menuEl = document.getElementById('pfsMenu');
@@ -3232,7 +3238,9 @@
       callout.style.top = coTop + 'px'; callout.style.left = coLeft + 'px';
     }
 
-    var idx = 0, timer = null;
+    var idx = 0, timer = null, paused = false;
+    function updatePauseBtn() { if (!pauseBtn) return; pauseBtn.textContent = paused ? '▶ 재생' : '⏸ 일시정지'; pauseBtn.classList.toggle('is-paused', paused); }
+    function setPaused(p) { paused = p; if (paused) { clearInterval(timer); timer = null; } else { arm(); } updatePauseBtn(); }
     function rebuild(target) {
       window.__tourSilent = true;
       for (var k = 0; k < target; k++) { var st = steps[k]; if (st && st.act) { try { st.act(); } catch (e) {} } }
@@ -3246,21 +3254,23 @@
       dotEls.forEach(function (d, i) { d.classList.toggle('on', i === idx); });
       [240, 460, 700].forEach(function (d) { setTimeout(function () { if (idx === ci) placeSpot(s.target ? s.target() : null); }, d); });
     }
-    function arm() { clearInterval(timer); timer = setInterval(function () { go(1); }, 3200); }
+    function arm() { clearInterval(timer); timer = null; if (paused) return; timer = setInterval(function () { go(1); }, 3200); }
     function go(delta) { idx = (idx + delta + steps.length) % steps.length; renderStep(); arm(); }
     function start() {
       if (document.body.classList.contains('prd-on') && closeBtn) closeBtn.click();
       snapshot(); spot.style.opacity = '0'; overlay.classList.add('on');
-      idx = 0; renderStep(); arm();
+      idx = 0; paused = false; updatePauseBtn(); renderStep(); arm();
     }
-    function stop() { clearInterval(timer); timer = null; if (overlay) overlay.classList.remove('on'); resetUI(); }
+    function stop() { clearInterval(timer); timer = null; paused = false; updatePauseBtn(); if (overlay) overlay.classList.remove('on'); resetUI(); }
     if (launch) launch.addEventListener('click', start);
     if (endBtn) endBtn.addEventListener('click', stop);
+    if (pauseBtn) pauseBtn.addEventListener('click', function () { setPaused(!paused); });
     document.addEventListener('keydown', function (e) {
       if (!overlay || !overlay.classList.contains('on')) return;
       if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
       else if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
       else if (e.key === 'Escape') { e.preventDefault(); stop(); }
+      else if (e.key === ' ' || e.code === 'Space') { e.preventDefault(); setPaused(!paused); }
     });
 
     // ---------- 초기화 ----------
