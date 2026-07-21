@@ -3297,7 +3297,7 @@
       ],
       steps: [
         { tag: '시작', t: '스튜디오에서 <b>상품 이미지를 확대(캡처 확대)</b>해 보는 흐름을 시연합니다. (Jira GRIPPGM-3433)', target: function () { return q('.product-list'); }, act: function () { resetUI(); } },
-        { tag: '썸네일 → 확대', t: '상품 <b>썸네일을 클릭</b>하면 이미지 확대 뷰어가 열립니다.', target: function () { var r = rowN(0); return r ? r.querySelector('.pr-thumb') : null; }, act: function () { if (!q('#imgCapModal').classList.contains('open') && window.__gripImgOpen) window.__gripImgOpen(0); } },
+        { tag: '썸네일 → 확대', t: '상품 <b>썸네일을 클릭</b>하면 이미지 확대 뷰어가 열립니다.', target: function () { var r = rowN(0); return r ? r.querySelector('.pr-thumb') : null; }, act: function () { var m = q('#imgCapModal'); if (m) m.classList.remove('open'); var r = rowN(0); if (r) { var th = r.querySelector('.pr-thumb'); if (th) th.scrollIntoView({ block: 'center' }); } } },
         { tag: '확대(100~400%)', t: '<b>+ / −</b> 버튼으로 <b>100~400%</b>까지 확대·축소하며 디테일을 확인합니다.', target: function () { return q('#imgCapModal .imgcap-stage'); }, act: function () { if (!q('#imgCapModal').classList.contains('open') && window.__gripImgOpen) window.__gripImgOpen(0); var b = document.getElementById('imgCapIn'); if (b) { b.click(); b.click(); } } },
         { tag: '방송 화면 캡처', t: '<b>[📸 방송 화면 캡처]</b>로 현재 방송 프레임을 이미지 후보로 담습니다. (담은 이미지는 대표 지정으로 연결 — GRIPPGM-3434)', target: function () { return q('#imgCapShot'); }, act: function () { var b = document.getElementById('imgCapShot'); if (b) b.click(); } }
       ]
