@@ -305,31 +305,6 @@
   .pr-stats .stat-cell { padding-right: 20px; }
   .stat-cell.stat-occ .val { color: #c97a12; }
   #optStockSummary .opt-occ-hl { color: #c97a12; font-weight: 700; }
-  /* 이미지 캡처 확대(3433) + 대표 빠른 수정(3434) */
-  .pr-thumb { cursor: zoom-in; }
-  .imgcap-modal { max-width: 640px; width: 640px; }
-  .imgcap-head { display:flex; align-items:center; justify-content:space-between; padding:18px 22px 12px; }
-  .imgcap-title { font-size:16px; font-weight:800; color:#20222a; }
-  .imgcap-title b { color:var(--grip); }
-  .imgcap-x { background:none; border:0; font-size:24px; color:#9aa0ab; cursor:pointer; line-height:1; }
-  .imgcap-stage { margin:0 22px; }
-  .imgcap-viewport { position:relative; height:300px; background:#101218; border-radius:12px; overflow:hidden; display:flex; align-items:center; justify-content:center; }
-  .imgcap-viewport img { max-width:100%; max-height:100%; transition:transform .2s ease; transform-origin:center; }
-  .imgcap-zoombar { display:flex; align-items:center; gap:8px; margin-top:10px; }
-  .ic-zbtn { width:34px; height:34px; border-radius:9px; border:1px solid #e3e4e8; background:#fff; font-size:18px; font-weight:800; color:#41444d; cursor:pointer; }
-  .ic-zbtn:hover { border-color:var(--grip); color:var(--grip); }
-  .ic-zlvl { font-size:13px; font-weight:800; color:#41444d; min-width:52px; text-align:center; }
-  .ic-cap { margin-left:auto; background:#1d1f25; color:#fff; border:0; border-radius:9px; padding:9px 14px; font-size:13px; font-weight:700; cursor:pointer; }
-  .ic-cap:hover { background:#2c2f38; }
-  .imgcap-film { display:flex; gap:8px; padding:14px 22px 4px; overflow-x:auto; }
-  .ic-film { position:relative; flex:0 0 auto; width:72px; height:72px; border-radius:10px; border:2px solid #e3e4e8; background:#2b2d34 center/cover no-repeat; cursor:pointer; padding:0; }
-  .ic-film.sel { border-color:var(--grip); box-shadow:0 0 0 3px var(--grip-soft); }
-  .ic-repbadge { position:absolute; left:0; right:0; bottom:0; background:var(--grip); color:#fff; font-size:9px; font-weight:800; text-align:center; padding:2px 0; }
-  .ic-captag { position:absolute; top:3px; right:3px; background:rgba(29,31,37,.82); color:#fff; font-size:8.5px; font-weight:800; padding:1px 5px; border-radius:5px; }
-  .imgcap-foot { display:flex; align-items:center; gap:12px; padding:14px 22px 18px; }
-  .imgcap-hint { font-size:12px; color:#9aa0ab; flex:1; line-height:1.5; } .imgcap-hint b { color:var(--grip); }
-  .imgcap-setrep { background:var(--grip); color:#fff; border:0; border-radius:10px; padding:11px 18px; font-size:14px; font-weight:800; cursor:pointer; flex:0 0 auto; }
-  .imgcap-setrep:hover { background:#e02950; }
   .pr-thumb {
     width: 92px; height: 92px; border-radius: 10px; flex: 0 0 auto;
     background: var(--product-img) center/cover no-repeat, #f1f2f4;
@@ -1667,27 +1642,6 @@
   </div>
 </div>
 
-<!-- 이미지 캡처 확대(3433) + 대표 빠른 수정(3434) -->
-<div class="modal-overlay" id="imgCapModal">
-  <div class="modal imgcap-modal" role="dialog" aria-modal="true" aria-label="상품 이미지 캡처">
-    <div class="imgcap-head"><span class="imgcap-title">상품 이미지 · <b id="imgCapName">상품</b></span><button class="imgcap-x" id="imgCapClose" aria-label="닫기">&times;</button></div>
-    <div class="imgcap-stage">
-      <div class="imgcap-viewport" id="imgCapVp"><img id="imgCapBig" alt="상품 이미지" /></div>
-      <div class="imgcap-zoombar">
-        <button class="ic-zbtn" id="imgCapOut" aria-label="축소">&minus;</button>
-        <span class="ic-zlvl" id="imgCapZ">100%</span>
-        <button class="ic-zbtn" id="imgCapIn" aria-label="확대">+</button>
-        <button class="ic-cap" id="imgCapShot">📸 방송 화면 캡처</button>
-      </div>
-    </div>
-    <div class="imgcap-film" id="imgCapFilm"></div>
-    <div class="imgcap-foot">
-      <span class="imgcap-hint">이미지를 선택하고 <b>대표 이미지로 지정</b>하면 리스트·방송 프리뷰에 즉시 반영됩니다.</span>
-      <button class="imgcap-setrep" id="imgCapSetRep">대표 이미지로 지정</button>
-    </div>
-  </div>
-</div>
-
 <!-- PRD 모드 -->
 <button class="prd-toggle" id="prdToggle"><span class="dot"></span> PRD 모드</button>
 <aside class="prd-panel" id="prdPanel" aria-label="PRD 기능 명세">
@@ -2065,53 +2019,6 @@
       // 썸네일 이미지 적용
       var t = r.querySelector('.pr-thumb'); var m = meta(r); if (t && m.img) t.style.backgroundImage = 'url(' + m.img + ')';
     });
-
-    // ===== 이미지 캡처 확대(3433) + 대표 이미지 빠른 수정(3434) =====
-    (function () {
-      var modal = document.getElementById('imgCapModal'); if (!modal) return;
-      var big = document.getElementById('imgCapBig'), nameEl = document.getElementById('imgCapName');
-      var film = document.getElementById('imgCapFilm'), zEl = document.getElementById('imgCapZ');
-      var POOL = ['p1.png', 'p2.png', 'p3.png', 'p4.png', 'p5.png', 'p6.png'];
-      var GAL = {}, curIdx = -1;
-      function gal(idx) {
-        if (!GAL[idx]) {
-          var base = (META[idx] || {}).img || 'product.png';
-          var extras = POOL.filter(function (p) { return p !== base; }).slice(0, 2);
-          GAL[idx] = { imgs: [{ src: base, cap: false }].concat(extras.map(function (s) { return { src: s, cap: false }; })), rep: 0, sel: 0, zoom: 100 };
-        }
-        return GAL[idx];
-      }
-      function renderBig() { var g = gal(curIdx); big.src = g.imgs[g.sel].src; big.style.transform = 'scale(' + (g.zoom / 100) + ')'; zEl.textContent = g.zoom + '%'; }
-      function renderFilm() {
-        var g = gal(curIdx);
-        film.innerHTML = g.imgs.map(function (im, i) {
-          return '<button class="ic-film' + (i === g.sel ? ' sel' : '') + '" data-i="' + i + '" style="background-image:url(' + im.src + ')">' +
-            (i === g.rep ? '<span class="ic-repbadge">★ 대표</span>' : '') + (im.cap ? '<span class="ic-captag">캡처</span>' : '') + '</button>';
-        }).join('');
-      }
-      function openCap(idx) {
-        curIdx = idx; var g = gal(idx); g.sel = g.rep; g.zoom = 100;
-        var row = order[idx]; nameEl.textContent = (row && (row.querySelector('.pr-name-input') || {}).value) || '상품';
-        renderBig(); renderFilm(); modal.classList.add('open');
-      }
-      function closeCap() { modal.classList.remove('open'); }
-      window.__gripImgOpen = openCap;
-      window.__gripImgReset = function () { GAL = {}; closeCap(); };
-      listEl.addEventListener('click', function (e) { var th = e.target.closest && e.target.closest('.pr-thumb'); if (!th) return; var row = th.closest('.product-row'); var idx = idxOf(row); if (idx < 0) return; openCap(idx); });
-      document.getElementById('imgCapIn').addEventListener('click', function () { var g = gal(curIdx); g.zoom = Math.min(400, g.zoom + 50); renderBig(); });
-      document.getElementById('imgCapOut').addEventListener('click', function () { var g = gal(curIdx); g.zoom = Math.max(100, g.zoom - 50); renderBig(); });
-      document.getElementById('imgCapShot').addEventListener('click', function () { var g = gal(curIdx); g.imgs.push({ src: 'product.png', cap: true }); g.sel = g.imgs.length - 1; g.zoom = 100; renderFilm(); renderBig(); toast('방송 화면을 캡처했습니다.', true); });
-      film.addEventListener('click', function (e) { var b = e.target.closest('.ic-film'); if (!b) return; gal(curIdx).sel = parseInt(b.getAttribute('data-i'), 10); renderBig(); renderFilm(); });
-      document.getElementById('imgCapSetRep').addEventListener('click', function () {
-        var g = gal(curIdx); g.rep = g.sel; var src = g.imgs[g.sel].src;
-        if (META[curIdx]) META[curIdx].img = src;
-        var row = order[curIdx];
-        if (row) { var th = row.querySelector('.pr-thumb'); if (th) th.style.backgroundImage = 'url(' + src + ')'; updateCard(row); }
-        renderFilm(); toast('대표 이미지로 지정했습니다. (리스트·프리뷰 반영)', true);
-      });
-      document.getElementById('imgCapClose').addEventListener('click', closeCap);
-      modal.addEventListener('click', function (e) { if (e.target === modal) closeCap(); });
-    })();
 
     function resetUpState() {
       upOrder = []; everUp = []; checked = {}; storeOn = {};
@@ -3266,84 +3173,6 @@
       ]
     });
 
-    // ===== 기능 7: 이미지 캡처 확대 (GRIPPGM-3433) =====
-    FEATURES.push({
-      id: 'capzoom', demoMode: 'limited', jira: 'GRIPPGM-3433', name: '[스튜디오] 이미지 캡처 확대 기능 개발',
-      overviewHTML:
-        '<div class="ov-title">🎯 과제 개요</div>' +
-        '<span class="prd-k2">과제의 목적</span>' +
-        '<p>스튜디오에서 <b>등록된 상품의 이미지를 크게 확대(캡처 확대)</b>해 방송 중 디테일(라벨·소재·문구)을 바로 확인할 수 있게 한다. (Jira <b>GRIPPGM-3433</b>)</p>' +
-        '<span class="prd-k2">배경 · 실제 문제</span>' +
-        '<p>리스트의 상품 <b>썸네일이 작아</b> 방송 중 이미지를 자세히 보려면 앱/비즈센터로 이동해야 했다.</p>' +
-        '<span class="prd-k2">해결</span>' +
-        '<p>상품 <b>썸네일 클릭 → 확대 뷰어</b> 팝업. <b>확대/축소(100~400%)</b>로 디테일 확인, <b>[📸 방송 화면 캡처]</b>로 현재 방송 프레임을 이미지 후보로 담을 수 있다. (담은 이미지는 대표 지정으로 이어짐 &mdash; GRIPPGM-3434)</p>',
-      flowHTML:
-        '<span class="prd-k2">검증 플로우 · 이미지 확대</span>' +
-        '<div class="fpath">' +
-          '<div class="fpath-h"><span class="fpath-tag a">경로</span> 상품 썸네일</div>' +
-          '<div class="frow"><span class="fnode">썸네일 클릭</span><span class="farr">→</span><span class="fnode">확대 뷰어 팝업</span><span class="farr">→</span><span class="fnode">+ / − 로 100~400% 확대</span></div>' +
-          '<div class="frow"><span class="fnode">[📸 방송 화면 캡처]</span><span class="farr">→</span><span class="fnode">현재 프레임을 이미지 후보로 추가</span></div>' +
-        '</div>' +
-        '<div class="fnode final">확대로 디테일 확인 · 캡처한 이미지는 대표 이미지 지정(GRIPPGM-3434)으로 연결</div>',
-      prd: [
-        { n: 1, target: '.pr-thumb', title: '썸네일 → 확대 뷰어 진입', tag: '진입',
-          def: '상품 리스트의 썸네일을 클릭하면 이미지 확대 뷰어가 열린다.',
-          asis: ['썸네일이 작아 이미지 디테일 확인이 어렵고, 크게 보려면 다른 화면으로 이동해야 함.'],
-          tobe: ['썸네일 클릭 → 확대 뷰어 팝업에서 크게 확인.'],
-          features: ['모든 상품 행 썸네일 클릭으로 진입.', '뷰어에 현재 대표 이미지 + 후보 이미지들이 필름스트립으로 노출.'] },
-        { n: 2, target: '#imgCapModal .imgcap-stage', title: '확대/축소 · 방송 화면 캡처', tag: '확대 · 캡처',
-          def: '뷰어에서 이미지를 100~400%로 확대/축소하고, 방송 화면을 캡처해 이미지 후보로 담는다.',
-          features: ['<b>+ / −</b> 버튼으로 100% ~ 400% 단계 확대/축소.', '<b>[📸 방송 화면 캡처]</b>로 현재 방송 프레임을 후보 이미지로 추가(캡처 태그).', '필름스트립에서 이미지 선택 시 확대 뷰가 전환.'] }
-      ],
-      steps: [
-        { tag: '시작', t: '스튜디오에서 <b>상품 이미지를 확대(캡처 확대)</b>해 보는 흐름을 시연합니다. (Jira GRIPPGM-3433)', target: function () { return q('.product-list'); }, act: function () { resetUI(); } },
-        { tag: '썸네일 → 확대', t: '상품 <b>썸네일을 클릭</b>하면 이미지 확대 뷰어가 열립니다.', target: function () { var r = rowN(0); return r ? r.querySelector('.pr-thumb') : null; }, act: function () { if (!q('#imgCapModal').classList.contains('open') && window.__gripImgOpen) window.__gripImgOpen(0); } },
-        { tag: '확대(100~400%)', t: '<b>+ / −</b> 버튼으로 <b>100~400%</b>까지 확대·축소하며 디테일을 확인합니다.', target: function () { return q('#imgCapModal .imgcap-stage'); }, act: function () { if (!q('#imgCapModal').classList.contains('open') && window.__gripImgOpen) window.__gripImgOpen(0); var b = document.getElementById('imgCapIn'); if (b) { b.click(); b.click(); } } },
-        { tag: '방송 화면 캡처', t: '<b>[📸 방송 화면 캡처]</b>로 현재 방송 프레임을 이미지 후보로 담습니다. (담은 이미지는 대표 지정으로 연결 — GRIPPGM-3434)', target: function () { return q('#imgCapShot'); }, act: function () { var b = document.getElementById('imgCapShot'); if (b) b.click(); } }
-      ]
-    });
-
-    // ===== 기능 8: 이미지 캡처 후 대표사진 빠른 수정 (GRIPPGM-3434) =====
-    FEATURES.push({
-      id: 'repimg', demoMode: 'limited', jira: 'GRIPPGM-3434', name: '[스튜디오] 이미지 캡처 후, 대표사진 빠른 수정 기능 개발',
-      overviewHTML:
-        '<div class="ov-title">🎯 과제 개요</div>' +
-        '<span class="prd-k2">과제의 목적</span>' +
-        '<p>이미지 캡처 확대 뷰어에서 원하는 이미지를 <b>대표 이미지로 1클릭 지정</b>해, 방송 중 대표 사진을 빠르게 바꿀 수 있게 한다. (Jira <b>GRIPPGM-3434</b>)</p>' +
-        '<span class="prd-k2">배경 · 실제 문제</span>' +
-        '<p><b>대표 이미지</b> = 리스트·방송 프리뷰에 노출되는 상품 대표 사진. 지금은 대표 이미지를 바꾸려면 <b>상품 수정 진입 → 이미지 관리에서 선택·저장</b>의 <b>2뎁스</b>가 필요해 방송 중 즉시 바꾸기 어렵다.</p>' +
-        '<span class="prd-k2">해결</span>' +
-        '<p>캡처 확대 뷰어(GRIPPGM-3433) 안에서 이미지 선택 후 <b>[대표 이미지로 지정] 1클릭(1뎁스)</b> → <b>리스트 썸네일·방송 프리뷰에 즉시 반영</b>. 현재 대표는 <b>★ 대표</b> 배지로 표시.</p>',
-      flowHTML:
-        '<span class="prd-k2">대표 이미지 수정 · 2뎁스 → 1뎁스</span>' +
-        '<div class="fpath">' +
-          '<div class="fpath-h"><span class="fpath-tag a">AS-IS</span> 2뎁스</div>' +
-          '<div class="frow"><span class="fnode">상품 수정 진입</span><span class="farr">→</span><span class="fnode">이미지 관리에서 선택·저장</span></div>' +
-        '</div>' +
-        '<div class="fmerge">↓ 개선</div>' +
-        '<div class="fpath">' +
-          '<div class="fpath-h"><span class="fpath-tag a">TO-BE</span> 1뎁스</div>' +
-          '<div class="frow"><span class="fnode">캡처 확대 뷰어에서 이미지 선택</span><span class="farr">→</span><span class="fnode">[대표 이미지로 지정] 1클릭</span><span class="farr">→</span><span class="fnode">리스트·프리뷰 즉시 반영</span></div>' +
-        '</div>' +
-        '<div class="fnode final">현재 대표는 ★ 대표 배지 · 방송 중 대표 사진을 즉시 교체</div>',
-      prd: [
-        { n: 1, target: '#imgCapFilm', title: '대표 이미지 개념 · 2뎁스 → 1뎁스', tag: '핵심',
-          def: '대표 이미지(리스트·프리뷰 노출 사진)를 바꾸는 동선을 2뎁스에서 1뎁스로 줄인다.',
-          asis: ['대표 이미지 변경 = 상품 수정 진입 → 이미지 관리에서 선택·저장(2뎁스). 방송 중 빠르게 못 바꿈.'],
-          tobe: ['캡처 확대 뷰어에서 이미지 선택 → [대표 이미지로 지정] 1클릭(1뎁스)으로 즉시 반영.'],
-          features: ['뷰어 필름스트립에 대표 + 후보(캡처 포함) 이미지 노출, 현재 대표는 <b>★ 대표</b> 배지.', '이미지 클릭으로 선택 → 확대 뷰 전환.'] },
-        { n: 2, target: '#imgCapSetRep', title: '[대표 이미지로 지정] 1클릭 반영', tag: '1클릭',
-          def: '선택한 이미지를 대표로 1클릭 지정하면 리스트 썸네일과 방송 프리뷰에 즉시 반영된다.',
-          features: ['<b>[대표 이미지로 지정]</b> 1클릭 → META 대표 교체.', '리스트 상품 <b>썸네일</b>과 좌측 <b>방송 프리뷰 카드</b>가 즉시 갱신.', '방송 중 캡처한 최신 프레임을 바로 대표로 올릴 수 있음.'] }
-      ],
-      steps: [
-        { tag: '시작', t: '캡처한 이미지를 <b>대표 사진으로 빠르게(1뎁스) 지정</b>하는 흐름을 시연합니다. (Jira GRIPPGM-3434)', target: function () { return q('.product-list'); }, act: function () { resetUI(); } },
-        { tag: '확대 뷰어 열기', t: '상품 썸네일 클릭 → 확대 뷰어. 필름스트립에 <b>대표(★) + 후보 이미지</b>가 보입니다.', target: function () { return q('#imgCapModal .imgcap-film'); }, act: function () { if (window.__gripImgOpen) window.__gripImgOpen(0); } },
-        { tag: '다른 이미지 선택', t: '대표로 쓰고 싶은 <b>다른 이미지를 선택</b>합니다. (AS-IS는 상품 수정→이미지 관리 2뎁스)', target: function () { return q('#imgCapFilm'); }, act: function () { if (!q('#imgCapModal').classList.contains('open') && window.__gripImgOpen) window.__gripImgOpen(0); var b = q('#imgCapFilm .ic-film[data-i="1"]'); if (b) b.click(); } },
-        { tag: '대표로 지정 (1클릭)', t: '<b>[대표 이미지로 지정]</b> 1클릭 → 리스트 썸네일·방송 프리뷰에 <b>즉시 반영</b>됩니다.', target: function () { return q('#imgCapSetRep'); }, act: function () { var b = document.getElementById('imgCapSetRep'); if (b) b.click(); } }
-      ]
-    });
-
     var cur = 0;
     function feat() { return FEATURES[cur]; }
 
@@ -3441,9 +3270,8 @@
     function snapshot() { var r = rowN(0); if (r) snap = { reg: r.querySelector('.pi-regular-input').value, dis: r.querySelector('.pi-discount-input').value, live: r.querySelector('.pi-live-input').value }; }
     function resetUI() {
       if (window.__gripSetMode) window.__gripSetMode(feat().demoMode || 'limited');
-      ['#priceModal', '#failModal', '#deleteModal', '#upListModal', '#upMaxModal', '#optionModal', '#optNameModal', '#optDelAllModal', '#optBulkModal', '#imgCapModal'].forEach(function (sel) { var m = q(sel); if (m) m.classList.remove('open'); });
+      ['#priceModal', '#failModal', '#deleteModal', '#upListModal', '#upMaxModal', '#optionModal', '#optNameModal', '#optDelAllModal', '#optBulkModal'].forEach(function (sel) { var m = q(sel); if (m) m.classList.remove('open'); });
       if (window.__gripChatReset) window.__gripChatReset();
-      if (window.__gripImgReset) window.__gripImgReset();
       var tw = document.getElementById('toastWrap'); if (tw) tw.innerHTML = '';
       if (window.__gripRestoreRows) window.__gripRestoreRows();
       Array.prototype.slice.call(rows()).forEach(function (r) { var cb = r.querySelector('.cbox'); if (cb && cb.classList.contains('checked')) cb.click(); });

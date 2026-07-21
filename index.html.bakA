@@ -302,34 +302,7 @@
     margin-top: 11px; padding-top: 11px;
     border-top: 1px solid var(--border);
   }
-  .pr-stats .stat-cell { padding-right: 20px; }
-  .stat-cell.stat-occ .val { color: #c97a12; }
-  #optStockSummary .opt-occ-hl { color: #c97a12; font-weight: 700; }
-  /* 이미지 캡처 확대(3433) + 대표 빠른 수정(3434) */
-  .pr-thumb { cursor: zoom-in; }
-  .imgcap-modal { max-width: 640px; width: 640px; }
-  .imgcap-head { display:flex; align-items:center; justify-content:space-between; padding:18px 22px 12px; }
-  .imgcap-title { font-size:16px; font-weight:800; color:#20222a; }
-  .imgcap-title b { color:var(--grip); }
-  .imgcap-x { background:none; border:0; font-size:24px; color:#9aa0ab; cursor:pointer; line-height:1; }
-  .imgcap-stage { margin:0 22px; }
-  .imgcap-viewport { position:relative; height:300px; background:#101218; border-radius:12px; overflow:hidden; display:flex; align-items:center; justify-content:center; }
-  .imgcap-viewport img { max-width:100%; max-height:100%; transition:transform .2s ease; transform-origin:center; }
-  .imgcap-zoombar { display:flex; align-items:center; gap:8px; margin-top:10px; }
-  .ic-zbtn { width:34px; height:34px; border-radius:9px; border:1px solid #e3e4e8; background:#fff; font-size:18px; font-weight:800; color:#41444d; cursor:pointer; }
-  .ic-zbtn:hover { border-color:var(--grip); color:var(--grip); }
-  .ic-zlvl { font-size:13px; font-weight:800; color:#41444d; min-width:52px; text-align:center; }
-  .ic-cap { margin-left:auto; background:#1d1f25; color:#fff; border:0; border-radius:9px; padding:9px 14px; font-size:13px; font-weight:700; cursor:pointer; }
-  .ic-cap:hover { background:#2c2f38; }
-  .imgcap-film { display:flex; gap:8px; padding:14px 22px 4px; overflow-x:auto; }
-  .ic-film { position:relative; flex:0 0 auto; width:72px; height:72px; border-radius:10px; border:2px solid #e3e4e8; background:#2b2d34 center/cover no-repeat; cursor:pointer; padding:0; }
-  .ic-film.sel { border-color:var(--grip); box-shadow:0 0 0 3px var(--grip-soft); }
-  .ic-repbadge { position:absolute; left:0; right:0; bottom:0; background:var(--grip); color:#fff; font-size:9px; font-weight:800; text-align:center; padding:2px 0; }
-  .ic-captag { position:absolute; top:3px; right:3px; background:rgba(29,31,37,.82); color:#fff; font-size:8.5px; font-weight:800; padding:1px 5px; border-radius:5px; }
-  .imgcap-foot { display:flex; align-items:center; gap:12px; padding:14px 22px 18px; }
-  .imgcap-hint { font-size:12px; color:#9aa0ab; flex:1; line-height:1.5; } .imgcap-hint b { color:var(--grip); }
-  .imgcap-setrep { background:var(--grip); color:#fff; border:0; border-radius:10px; padding:11px 18px; font-size:14px; font-weight:800; cursor:pointer; flex:0 0 auto; }
-  .imgcap-setrep:hover { background:#e02950; }
+  .pr-stats .stat-cell { padding-right: 30px; }
   .pr-thumb {
     width: 92px; height: 92px; border-radius: 10px; flex: 0 0 auto;
     background: var(--product-img) center/cover no-repeat, #f1f2f4;
@@ -1257,7 +1230,7 @@
           <div class="pr-stats">
             <div class="stat-cell"><span class="lbl">장바구니 수량</span><span class="val">0</span></div>
             <div class="stat-cell"><span class="lbl">실주문 수량</span><span class="val">0</span></div>
-            <div class="stat-cell"><span class="lbl">재고</span><span class="val">123,300</span></div><div class="stat-cell stat-occ" title="게임·결제 진행 중 점유 (정상 동작)"><span class="lbl">점유</span><span class="val">87</span></div><div class="stat-cell" style="padding-left:10px"><span class="lbl">판매가능 수량</span><input class="val-box" type="text" inputmode="numeric" value="123,213" aria-label="판매가능 수량" /></div>
+            <div class="stat-cell" style="padding-left:10px"><span class="lbl">판매가능 수량</span><input class="val-box" type="text" inputmode="numeric" value="123,213" aria-label="판매가능 수량" /></div>
             <div class="stat-div"></div>
             <div class="stat-cell right"><span class="lbl">라이브 매출</span><span class="val">₩0</span></div>
           </div>
@@ -1293,7 +1266,7 @@
           <div class="pr-stats">
             <div class="stat-cell"><span class="lbl">장바구니 수량</span><span class="val">0</span></div>
             <div class="stat-cell"><span class="lbl">실주문 수량</span><span class="val">0</span></div>
-            <div class="stat-cell"><span class="lbl">재고</span><span class="val">8,540</span></div><div class="stat-cell stat-occ" title="게임·결제 진행 중 점유 (정상 동작)"><span class="lbl">점유</span><span class="val">40</span></div><div class="stat-cell" style="padding-left:10px"><span class="lbl">판매가능 수량</span><input class="val-box" type="text" inputmode="numeric" value="8,500" aria-label="판매가능 수량" /></div>
+            <div class="stat-cell" style="padding-left:10px"><span class="lbl">판매가능 수량</span><input class="val-box" type="text" inputmode="numeric" value="8,500" aria-label="판매가능 수량" /></div>
             <div class="stat-div"></div>
             <div class="stat-cell right"><span class="lbl">라이브 매출</span><span class="val">₩0</span></div>
           </div>
@@ -1329,7 +1302,7 @@
           <div class="pr-stats">
             <div class="stat-cell"><span class="lbl">장바구니 수량</span><span class="val">0</span></div>
             <div class="stat-cell"><span class="lbl">실주문 수량</span><span class="val">0</span></div>
-            <div class="stat-cell"><span class="lbl">재고</span><span class="val">30</span></div><div class="stat-cell stat-occ" title="게임·결제 진행 중 점유 (정상 동작)"><span class="lbl">점유</span><span class="val">30</span></div><div class="stat-cell" style="padding-left:10px"><span class="lbl">판매가능 수량</span><input class="val-box" type="text" inputmode="numeric" value="0" aria-label="판매가능 수량" /></div>
+            <div class="stat-cell" style="padding-left:10px"><span class="lbl">판매가능 수량</span><input class="val-box" type="text" inputmode="numeric" value="0" aria-label="판매가능 수량" /></div>
             <div class="stat-div"></div>
             <div class="stat-cell right"><span class="lbl">라이브 매출</span><span class="val">₩0</span></div>
           </div>
@@ -1365,7 +1338,7 @@
           <div class="pr-stats">
             <div class="stat-cell"><span class="lbl">장바구니 수량</span><span class="val">0</span></div>
             <div class="stat-cell"><span class="lbl">실주문 수량</span><span class="val">0</span></div>
-            <div class="stat-cell"><span class="lbl">재고</span><span class="val">4,225</span></div><div class="stat-cell stat-occ" title="게임·결제 진행 중 점유 (정상 동작)"><span class="lbl">점유</span><span class="val">25</span></div><div class="stat-cell" style="padding-left:10px"><span class="lbl">판매가능 수량</span><input class="val-box" type="text" inputmode="numeric" value="4,200" aria-label="판매가능 수량" /></div>
+            <div class="stat-cell" style="padding-left:10px"><span class="lbl">판매가능 수량</span><input class="val-box" type="text" inputmode="numeric" value="4,200" aria-label="판매가능 수량" /></div>
             <div class="stat-div"></div>
             <div class="stat-cell right"><span class="lbl">라이브 매출</span><span class="val">₩0</span></div>
           </div>
@@ -1401,7 +1374,7 @@
           <div class="pr-stats">
             <div class="stat-cell"><span class="lbl">장바구니 수량</span><span class="val">0</span></div>
             <div class="stat-cell"><span class="lbl">실주문 수량</span><span class="val">0</span></div>
-            <div class="stat-cell"><span class="lbl">재고</span><span class="val">12,063</span></div><div class="stat-cell stat-occ" title="게임·결제 진행 중 점유 (정상 동작)"><span class="lbl">점유</span><span class="val">63</span></div><div class="stat-cell" style="padding-left:10px"><span class="lbl">판매가능 수량</span><input class="val-box" type="text" inputmode="numeric" value="12,000" aria-label="판매가능 수량" /></div>
+            <div class="stat-cell" style="padding-left:10px"><span class="lbl">판매가능 수량</span><input class="val-box" type="text" inputmode="numeric" value="12,000" aria-label="판매가능 수량" /></div>
             <div class="stat-div"></div>
             <div class="stat-cell right"><span class="lbl">라이브 매출</span><span class="val">₩0</span></div>
           </div>
@@ -1437,7 +1410,7 @@
           <div class="pr-stats">
             <div class="stat-cell"><span class="lbl">장바구니 수량</span><span class="val">0</span></div>
             <div class="stat-cell"><span class="lbl">실주문 수량</span><span class="val">0</span></div>
-            <div class="stat-cell"><span class="lbl">재고</span><span class="val">1,011</span></div><div class="stat-cell stat-occ" title="게임·결제 진행 중 점유 (정상 동작)"><span class="lbl">점유</span><span class="val">12</span></div><div class="stat-cell" style="padding-left:10px"><span class="lbl">판매가능 수량</span><input class="val-box" type="text" inputmode="numeric" value="999" aria-label="판매가능 수량" /></div>
+            <div class="stat-cell" style="padding-left:10px"><span class="lbl">판매가능 수량</span><input class="val-box" type="text" inputmode="numeric" value="999" aria-label="판매가능 수량" /></div>
             <div class="stat-div"></div>
             <div class="stat-cell right"><span class="lbl">라이브 매출</span><span class="val">₩0</span></div>
           </div>
@@ -1621,7 +1594,7 @@
     <div class="opt-head"><span class="opt-h-title">상품 옵션 관리</span><button class="opt-x" id="optClose" aria-label="닫기">&times;</button></div>
     <div class="opt-body">
       <div class="opt-prod"><span class="opt-thumb" id="optThumb"></span><div><div class="opt-prod-lbl">상품명</div><div class="opt-prod-name" id="optProdName">상품</div></div></div>
-      <div class="opt-summary-line"><span><b id="optCount">판매 중 옵션 3</b><span id="optStockSummary"> · 판매 가능 <b>53</b> · <span class="opt-occ-hl">점유 8</span></span></span><span class="opt-filters"><span class="opt-drop">판매 여부 전체 &#9662;</span><span class="opt-drop">기본순 &#9662;</span></span></div>
+      <div class="opt-summary-line"><span><b id="optCount">판매 중 옵션 3</b> · 총 재고 26,477,567</span><span class="opt-filters"><span class="opt-drop">판매 여부 전체 &#9662;</span><span class="opt-drop">기본순 &#9662;</span></span></div>
       <div class="opt-summary">
         <div class="opt-price-row"><span>상품가 <s id="optPriceRegular">-</s></span><span>상시 할인가 <b id="optPriceDiscount">-</b></span><span class="opt-live">라이브가 <b id="optPriceLive">-</b></span><label class="opt-sell-all"><span>전체 판매</span><span class="opt-sw on" id="optSellAll"></span></label></div>
         <div class="opt-compose">옵션 구성 <b id="optCompose">응 되긴하네(3) = 총 3개 조합</b></div>
@@ -1664,27 +1637,6 @@
       <div class="obk-row"><label>재고</label><span class="opt-cell-box is-input"><input class="opt-cell-num" id="optBulkStockI" placeholder="변경 안 함" inputmode="numeric" /><span class="opt-unit">개</span></span></div>
     </div>
     <div class="modal-foot" style="justify-content:center;gap:12px;"><button class="btn-close" id="optBulkCancel">닫기</button><button class="btn-apply" id="optBulkApply">적용</button></div>
-  </div>
-</div>
-
-<!-- 이미지 캡처 확대(3433) + 대표 빠른 수정(3434) -->
-<div class="modal-overlay" id="imgCapModal">
-  <div class="modal imgcap-modal" role="dialog" aria-modal="true" aria-label="상품 이미지 캡처">
-    <div class="imgcap-head"><span class="imgcap-title">상품 이미지 · <b id="imgCapName">상품</b></span><button class="imgcap-x" id="imgCapClose" aria-label="닫기">&times;</button></div>
-    <div class="imgcap-stage">
-      <div class="imgcap-viewport" id="imgCapVp"><img id="imgCapBig" alt="상품 이미지" /></div>
-      <div class="imgcap-zoombar">
-        <button class="ic-zbtn" id="imgCapOut" aria-label="축소">&minus;</button>
-        <span class="ic-zlvl" id="imgCapZ">100%</span>
-        <button class="ic-zbtn" id="imgCapIn" aria-label="확대">+</button>
-        <button class="ic-cap" id="imgCapShot">📸 방송 화면 캡처</button>
-      </div>
-    </div>
-    <div class="imgcap-film" id="imgCapFilm"></div>
-    <div class="imgcap-foot">
-      <span class="imgcap-hint">이미지를 선택하고 <b>대표 이미지로 지정</b>하면 리스트·방송 프리뷰에 즉시 반영됩니다.</span>
-      <button class="imgcap-setrep" id="imgCapSetRep">대표 이미지로 지정</button>
-    </div>
   </div>
 </div>
 
@@ -2066,53 +2018,6 @@
       var t = r.querySelector('.pr-thumb'); var m = meta(r); if (t && m.img) t.style.backgroundImage = 'url(' + m.img + ')';
     });
 
-    // ===== 이미지 캡처 확대(3433) + 대표 이미지 빠른 수정(3434) =====
-    (function () {
-      var modal = document.getElementById('imgCapModal'); if (!modal) return;
-      var big = document.getElementById('imgCapBig'), nameEl = document.getElementById('imgCapName');
-      var film = document.getElementById('imgCapFilm'), zEl = document.getElementById('imgCapZ');
-      var POOL = ['p1.png', 'p2.png', 'p3.png', 'p4.png', 'p5.png', 'p6.png'];
-      var GAL = {}, curIdx = -1;
-      function gal(idx) {
-        if (!GAL[idx]) {
-          var base = (META[idx] || {}).img || 'product.png';
-          var extras = POOL.filter(function (p) { return p !== base; }).slice(0, 2);
-          GAL[idx] = { imgs: [{ src: base, cap: false }].concat(extras.map(function (s) { return { src: s, cap: false }; })), rep: 0, sel: 0, zoom: 100 };
-        }
-        return GAL[idx];
-      }
-      function renderBig() { var g = gal(curIdx); big.src = g.imgs[g.sel].src; big.style.transform = 'scale(' + (g.zoom / 100) + ')'; zEl.textContent = g.zoom + '%'; }
-      function renderFilm() {
-        var g = gal(curIdx);
-        film.innerHTML = g.imgs.map(function (im, i) {
-          return '<button class="ic-film' + (i === g.sel ? ' sel' : '') + '" data-i="' + i + '" style="background-image:url(' + im.src + ')">' +
-            (i === g.rep ? '<span class="ic-repbadge">★ 대표</span>' : '') + (im.cap ? '<span class="ic-captag">캡처</span>' : '') + '</button>';
-        }).join('');
-      }
-      function openCap(idx) {
-        curIdx = idx; var g = gal(idx); g.sel = g.rep; g.zoom = 100;
-        var row = order[idx]; nameEl.textContent = (row && (row.querySelector('.pr-name-input') || {}).value) || '상품';
-        renderBig(); renderFilm(); modal.classList.add('open');
-      }
-      function closeCap() { modal.classList.remove('open'); }
-      window.__gripImgOpen = openCap;
-      window.__gripImgReset = function () { GAL = {}; closeCap(); };
-      listEl.addEventListener('click', function (e) { var th = e.target.closest && e.target.closest('.pr-thumb'); if (!th) return; var row = th.closest('.product-row'); var idx = idxOf(row); if (idx < 0) return; openCap(idx); });
-      document.getElementById('imgCapIn').addEventListener('click', function () { var g = gal(curIdx); g.zoom = Math.min(400, g.zoom + 50); renderBig(); });
-      document.getElementById('imgCapOut').addEventListener('click', function () { var g = gal(curIdx); g.zoom = Math.max(100, g.zoom - 50); renderBig(); });
-      document.getElementById('imgCapShot').addEventListener('click', function () { var g = gal(curIdx); g.imgs.push({ src: 'product.png', cap: true }); g.sel = g.imgs.length - 1; g.zoom = 100; renderFilm(); renderBig(); toast('방송 화면을 캡처했습니다.', true); });
-      film.addEventListener('click', function (e) { var b = e.target.closest('.ic-film'); if (!b) return; gal(curIdx).sel = parseInt(b.getAttribute('data-i'), 10); renderBig(); renderFilm(); });
-      document.getElementById('imgCapSetRep').addEventListener('click', function () {
-        var g = gal(curIdx); g.rep = g.sel; var src = g.imgs[g.sel].src;
-        if (META[curIdx]) META[curIdx].img = src;
-        var row = order[curIdx];
-        if (row) { var th = row.querySelector('.pr-thumb'); if (th) th.style.backgroundImage = 'url(' + src + ')'; updateCard(row); }
-        renderFilm(); toast('대표 이미지로 지정했습니다. (리스트·프리뷰 반영)', true);
-      });
-      document.getElementById('imgCapClose').addEventListener('click', closeCap);
-      modal.addEventListener('click', function (e) { if (e.target === modal) closeCap(); });
-    })();
-
     function resetUpState() {
       upOrder = []; everUp = []; checked = {}; storeOn = {};
       order.forEach(function (r) { var b = r.querySelector('.btn-up'); if (b) b.classList.remove('on'); });
@@ -2321,15 +2226,6 @@
     function valIdxOf(axes, ci) { var sizes = axes.map(function (a) { return Math.max(a.values.length, 1); }), rem = ci, out = []; for (var j = axes.length - 1; j >= 0; j--) { out[j] = rem % sizes[j]; rem = Math.floor(rem / sizes[j]); } return out; }
     function occOf(ci) { return ((ci % 9) + 1) * 3; }
     function ordOf(ci) { return ((ci % 9) + 1) * 5; }
-    // GRIPPGM-3319: 옵션 모달 헤더 '총 재고' → '판매 가능 · 점유'(조합 합계). 판매가능=Σmax(0,재고−점유), 점유=Σ점유.
-    function updateStockSummary() {
-      var ss = document.getElementById('optStockSummary');
-      if (!ss || !state) return;
-      if (!state.axes || !state.axes.length) { ss.innerHTML = ''; return; }
-      var availSum = 0, occSum = 0;
-      state.combos.forEach(function (c, ci) { var occ = occOf(ci); occSum += occ; availSum += Math.max(0, numOf(c.stock) - occ); });
-      ss.innerHTML = ' · 판매 가능 <b>' + fmt(availSum) + '</b> · <span class="opt-occ-hl">점유 ' + fmt(occSum) + '</span>';
-    }
     function cloneAxes(axes) { return axes.map(function (a) { return { type: a.type, values: a.values.map(function (v) { return { name: v.name }; }) }; }); }
     function cloneCombos(cs) { return (cs || []).map(function (c) { return { addPrice: c.addPrice, stock: c.stock, sale: c.sale, code: c.code }; }); }
     function cloneState(s) { return { base: s.base, priceReg: s.priceReg, priceDis: s.priceDis, axes: cloneAxes(s.axes), combos: cloneCombos(s.combos) }; }
@@ -2449,7 +2345,6 @@
       if (!axes.length) {
         if (compose) compose.textContent = '옵션 없음';
         if (countEl) countEl.textContent = '판매 중 옵션 0';
-        updateStockSummary();
         group.innerHTML = '<div class="opt-empty">등록된 옵션이 없습니다.<br/><b>[옵션 정보 수정]</b>에서 옵션을 추가할 수 있습니다.</div>';
         updateBulkBtn();
         return;
@@ -2457,7 +2352,6 @@
       var total = state.combos.length;
       if (compose) compose.textContent = axes.map(function (a) { return a.type + '(' + a.values.length + ')'; }).join(' × ') + ' = 총 ' + total + '개 조합';
       if (countEl) countEl.textContent = '판매 중 옵션 ' + total;
-      updateStockSummary();
       var selN = state.combos.filter(function (c) { return c._sel; }).length;
       // 컬럼 순서: [선택] 옵션명 · 옵션값 · 재고 · 판매 가능 · 주문 · 점유 · 가격 · 판매 여부 · 자체 옵션 코드
       // (판매 가능/주문/점유는 비즈센터 연동 값 — 읽기 전용)
@@ -2518,7 +2412,7 @@
       var pe = t.closest && t.closest('.opt-price-inp');
       if (pe) { var pcv = pe.value.replace(/[^\d,]/g, ''); if (pcv !== pe.value) pe.value = pcv; var pci = parseInt(pe.getAttribute('data-ci'), 10); if (state.combos[pci]) { state.combos[pci].addPrice = fmt(numOf(pe.value) - (state.base || 0)); persist(); updateRowPrice(currentRow); } return; }
       var se = t.closest && t.closest('.opt-stock-inp');
-      if (se) { var scv = se.value.replace(/[^\d,]/g, ''); if (scv !== se.value) se.value = scv; var sci = parseInt(se.getAttribute('data-ci'), 10); if (state.combos[sci]) { state.combos[sci].stock = fmt(numOf(se.value)); persist(); var av = group.querySelector('.opt-avail[data-ci="' + sci + '"]'); if (av) av.textContent = fmt(Math.max(0, numOf(se.value) - occOf(sci))); updateStockSummary(); } return; }
+      if (se) { var scv = se.value.replace(/[^\d,]/g, ''); if (scv !== se.value) se.value = scv; var sci = parseInt(se.getAttribute('data-ci'), 10); if (state.combos[sci]) { state.combos[sci].stock = fmt(numOf(se.value)); persist(); var av = group.querySelector('.opt-avail[data-ci="' + sci + '"]'); if (av) av.textContent = fmt(Math.max(0, numOf(se.value) - occOf(sci))); } return; }
       var ce = t.closest && t.closest('.opt-code-inp');
       if (ce) { var cci = parseInt(ce.getAttribute('data-ci'), 10); if (state.combos[cci]) { state.combos[cci].code = ce.value; persist(); } return; }
       var hn = t.closest && t.closest('.opt-hname');
@@ -3223,127 +3117,6 @@
       ]
     });
 
-    // ===== 기능 6: 홈 재고·점유 + 옵션 모달 재고 표기 개선 (GRIPPGM-3319) =====
-    FEATURES.push({
-      id: 'stock', demoMode: 'limited', jira: 'GRIPPGM-3319', name: '[스튜디오] 홈_재고 및 점유 추가, 옵션 모달_옵션 재고 노출 방법 개선',
-      overviewHTML:
-        '<div class="ov-title">🎯 과제 개요</div>' +
-        '<span class="prd-k2">과제의 목적</span>' +
-        '<p>스튜디오 <b>홈 리스트</b>와 <b>상품 옵션 관리 모달</b>에서 재고 숫자의 기준을 <b>판매 가능 / 점유</b>로 명확히 노출해, 게임 점유를 &lsquo;에러&rsquo;로 오인하는 문제를 없앤다. (Jira <b>GRIPPGM-3319</b>)</p>' +
-        '<span class="prd-k2">배경 · 실제 문제</span>' +
-        '<p>· <b>홈:</b> 재고·점유 값이 안 보여, 셀러가 게임(장바구니 점유 등)으로 점유가 발생하면 <b>에러로 오인</b>해 이슈 채널에 반복 인입.<br/>· <b>옵션 모달:</b> 헤더가 <b>&lsquo;총 재고&rsquo;(점유 포함)</b>만 보여 상품 목록의 &lsquo;판매가능 수량&rsquo;과 안 맞아 매니저가 혼동.</p>' +
-        '<span class="prd-k2">해결</span>' +
-        '<p>· <b>[홈]</b> 각 상품 행에 <b>재고·점유</b>를 함께 노출(판매가능 = 재고 − 점유). 점유는 &lsquo;결제 진행 중&rsquo;이라는 정상 신호로 보이게 한다.<br/>· <b>[옵션 모달]</b> 헤더 <b>&lsquo;총 재고&rsquo;를 &lsquo;판매 가능 · 점유&rsquo;로 분리</b> — 조합 합계로 계산되어 상품 목록 판매가능 수량과 일치.</p>',
-      flowHTML:
-        '<span class="prd-k2">재고 표기 · 홈 vs 옵션 모달</span>' +
-        '<div class="fpath">' +
-          '<div class="fpath-h"><span class="fpath-tag a">홈</span> 상품 행 통계</div>' +
-          '<div class="frow"><span class="fnode">AS-IS: 재고·점유 미노출</span><span class="farr">→</span><span class="fnode">TO-BE: 재고 · 점유 · 판매가능 함께 노출</span></div>' +
-          '<div class="frow"><span class="fnode">예: 재고 30 · 점유 30</span><span class="farr">→</span><span class="fnode">판매가능 0은 &ldquo;에러&rdquo;가 아니라 &ldquo;전량 점유&rdquo;임이 한눈에</span></div>' +
-        '</div>' +
-        '<div class="fmerge">↓ [옵션] 버튼</div>' +
-        '<div class="fpath">' +
-          '<div class="fpath-h"><span class="fpath-tag a">옵션 모달</span> 헤더</div>' +
-          '<div class="frow"><span class="fnode">AS-IS: 총 재고 N (점유 포함)</span><span class="farr">→</span><span class="fnode">TO-BE: 판매 가능 Σ · 점유 Σ (조합 합계)</span></div>' +
-        '</div>' +
-        '<div class="fnode final">판매가능 = 상품 목록 수량 = 조합 행 합계 (세 곳이 한 기준으로 일치) · 점유는 보조 노출</div>',
-      prd: [
-        { n: 1, target: '.pr-stats', title: '[홈] 상품 재고·점유 노출', tag: '홈 · 통계',
-          def: '스튜디오 홈 상품 행 통계에 재고와 점유를 함께 노출한다(판매가능 = 재고 − 점유).',
-          asis: ['홈에 상품 재고·점유 값이 미노출 → 게임 점유 발생 시 셀러가 에러로 오인, 이슈 반복 인입.'],
-          tobe: ['각 상품 행에 <b>재고 · 점유</b>를 함께 노출. 판매가능 0이어도 재고·점유로 &ldquo;전량 점유&rdquo;임을 바로 인지.'],
-          features: ['통계행 = 장바구니 · 실주문 · <b>재고 · 점유</b> · 판매가능 · 라이브 매출.', '점유는 &lsquo;게임·결제 진행 중 점유(정상 동작)&rsquo; 안내(툴팁)와 앰버 색으로 강조.'] },
-        { n: 2, target: '.opt-summary', title: '[옵션 모달] 총 재고 → 판매 가능 · 점유', tag: '모달 · 헤더',
-          def: '옵션 관리 모달 헤더의 총 재고를 판매 가능·점유로 분리해, 상품 목록의 판매가능 수량과 기준을 맞춘다.',
-          asis: ['헤더가 <b>&lsquo;총 재고&rsquo;(점유 포함)</b>만 보여 상품 목록 &lsquo;판매가능 수량&rsquo;과 불일치 → 매니저 혼동.'],
-          tobe: ['헤더 <b>&lsquo;판매 가능 Σ · 점유 Σ&rsquo;</b>로 분리(조합 합계 동적 계산). 세 군데 숫자가 한 기준으로 일치.'],
-          features: ['판매 가능 = Σ max(0, 조합 재고 − 점유), 점유 = Σ 점유.', '조합 재고를 수정하면 헤더 판매가능·점유가 실시간 갱신.', '&lsquo;총 재고&rsquo; 모호 라벨 제거(이번 문의의 근본 원인).'] }
-      ],
-      steps: [
-        { tag: '시작', t: '스튜디오 홈과 옵션 모달의 <b>재고 표기</b>를 명확히 하는 개선을 시연합니다. (Jira GRIPPGM-3319)', target: function () { return q('.product-list'); }, act: function () { resetUI(); } },
-        { tag: '[홈] 재고·점유 노출', t: '각 상품 행에 <b>재고 · 점유</b>가 함께 보입니다. 이 상품은 <b>재고 30 · 점유 30 · 판매가능 0</b> — &ldquo;에러&rdquo;가 아니라 게임/결제로 <b>전량 점유</b>된 정상 상태임을 바로 알 수 있어요.', target: function () { var r = rowN(2); return r ? r.querySelector('.pr-stats') : null; }, act: function () { ['#optionModal', '#optNameModal', '#optBulkModal', '#optDelAllModal'].forEach(function (s) { var m = q(s); if (m) m.classList.remove('open'); }); var r = rowN(2); if (r) r.scrollIntoView({ block: 'center' }); } },
-        { tag: '[옵션 모달] 판매가능·점유', t: '옵션 상품의 <b>[옵션]</b> → 상품 옵션 관리. 헤더가 <b>&lsquo;총 재고&rsquo;가 아니라 &lsquo;판매 가능 · 점유&rsquo;</b>로 분리되어 상품 목록·조합 합계와 일치합니다.', target: function () { return q('#optStockSummary'); }, act: function () { var r = rowN(1); if (r) { var b = r.querySelector('.btn-option'); if (b) b.click(); } } }
-      ]
-    });
-
-    // ===== 기능 7: 이미지 캡처 확대 (GRIPPGM-3433) =====
-    FEATURES.push({
-      id: 'capzoom', demoMode: 'limited', jira: 'GRIPPGM-3433', name: '[스튜디오] 이미지 캡처 확대 기능 개발',
-      overviewHTML:
-        '<div class="ov-title">🎯 과제 개요</div>' +
-        '<span class="prd-k2">과제의 목적</span>' +
-        '<p>스튜디오에서 <b>등록된 상품의 이미지를 크게 확대(캡처 확대)</b>해 방송 중 디테일(라벨·소재·문구)을 바로 확인할 수 있게 한다. (Jira <b>GRIPPGM-3433</b>)</p>' +
-        '<span class="prd-k2">배경 · 실제 문제</span>' +
-        '<p>리스트의 상품 <b>썸네일이 작아</b> 방송 중 이미지를 자세히 보려면 앱/비즈센터로 이동해야 했다.</p>' +
-        '<span class="prd-k2">해결</span>' +
-        '<p>상품 <b>썸네일 클릭 → 확대 뷰어</b> 팝업. <b>확대/축소(100~400%)</b>로 디테일 확인, <b>[📸 방송 화면 캡처]</b>로 현재 방송 프레임을 이미지 후보로 담을 수 있다. (담은 이미지는 대표 지정으로 이어짐 &mdash; GRIPPGM-3434)</p>',
-      flowHTML:
-        '<span class="prd-k2">검증 플로우 · 이미지 확대</span>' +
-        '<div class="fpath">' +
-          '<div class="fpath-h"><span class="fpath-tag a">경로</span> 상품 썸네일</div>' +
-          '<div class="frow"><span class="fnode">썸네일 클릭</span><span class="farr">→</span><span class="fnode">확대 뷰어 팝업</span><span class="farr">→</span><span class="fnode">+ / − 로 100~400% 확대</span></div>' +
-          '<div class="frow"><span class="fnode">[📸 방송 화면 캡처]</span><span class="farr">→</span><span class="fnode">현재 프레임을 이미지 후보로 추가</span></div>' +
-        '</div>' +
-        '<div class="fnode final">확대로 디테일 확인 · 캡처한 이미지는 대표 이미지 지정(GRIPPGM-3434)으로 연결</div>',
-      prd: [
-        { n: 1, target: '.pr-thumb', title: '썸네일 → 확대 뷰어 진입', tag: '진입',
-          def: '상품 리스트의 썸네일을 클릭하면 이미지 확대 뷰어가 열린다.',
-          asis: ['썸네일이 작아 이미지 디테일 확인이 어렵고, 크게 보려면 다른 화면으로 이동해야 함.'],
-          tobe: ['썸네일 클릭 → 확대 뷰어 팝업에서 크게 확인.'],
-          features: ['모든 상품 행 썸네일 클릭으로 진입.', '뷰어에 현재 대표 이미지 + 후보 이미지들이 필름스트립으로 노출.'] },
-        { n: 2, target: '#imgCapModal .imgcap-stage', title: '확대/축소 · 방송 화면 캡처', tag: '확대 · 캡처',
-          def: '뷰어에서 이미지를 100~400%로 확대/축소하고, 방송 화면을 캡처해 이미지 후보로 담는다.',
-          features: ['<b>+ / −</b> 버튼으로 100% ~ 400% 단계 확대/축소.', '<b>[📸 방송 화면 캡처]</b>로 현재 방송 프레임을 후보 이미지로 추가(캡처 태그).', '필름스트립에서 이미지 선택 시 확대 뷰가 전환.'] }
-      ],
-      steps: [
-        { tag: '시작', t: '스튜디오에서 <b>상품 이미지를 확대(캡처 확대)</b>해 보는 흐름을 시연합니다. (Jira GRIPPGM-3433)', target: function () { return q('.product-list'); }, act: function () { resetUI(); } },
-        { tag: '썸네일 → 확대', t: '상품 <b>썸네일을 클릭</b>하면 이미지 확대 뷰어가 열립니다.', target: function () { var r = rowN(0); return r ? r.querySelector('.pr-thumb') : null; }, act: function () { if (!q('#imgCapModal').classList.contains('open') && window.__gripImgOpen) window.__gripImgOpen(0); } },
-        { tag: '확대(100~400%)', t: '<b>+ / −</b> 버튼으로 <b>100~400%</b>까지 확대·축소하며 디테일을 확인합니다.', target: function () { return q('#imgCapModal .imgcap-stage'); }, act: function () { if (!q('#imgCapModal').classList.contains('open') && window.__gripImgOpen) window.__gripImgOpen(0); var b = document.getElementById('imgCapIn'); if (b) { b.click(); b.click(); } } },
-        { tag: '방송 화면 캡처', t: '<b>[📸 방송 화면 캡처]</b>로 현재 방송 프레임을 이미지 후보로 담습니다. (담은 이미지는 대표 지정으로 연결 — GRIPPGM-3434)', target: function () { return q('#imgCapShot'); }, act: function () { var b = document.getElementById('imgCapShot'); if (b) b.click(); } }
-      ]
-    });
-
-    // ===== 기능 8: 이미지 캡처 후 대표사진 빠른 수정 (GRIPPGM-3434) =====
-    FEATURES.push({
-      id: 'repimg', demoMode: 'limited', jira: 'GRIPPGM-3434', name: '[스튜디오] 이미지 캡처 후, 대표사진 빠른 수정 기능 개발',
-      overviewHTML:
-        '<div class="ov-title">🎯 과제 개요</div>' +
-        '<span class="prd-k2">과제의 목적</span>' +
-        '<p>이미지 캡처 확대 뷰어에서 원하는 이미지를 <b>대표 이미지로 1클릭 지정</b>해, 방송 중 대표 사진을 빠르게 바꿀 수 있게 한다. (Jira <b>GRIPPGM-3434</b>)</p>' +
-        '<span class="prd-k2">배경 · 실제 문제</span>' +
-        '<p><b>대표 이미지</b> = 리스트·방송 프리뷰에 노출되는 상품 대표 사진. 지금은 대표 이미지를 바꾸려면 <b>상품 수정 진입 → 이미지 관리에서 선택·저장</b>의 <b>2뎁스</b>가 필요해 방송 중 즉시 바꾸기 어렵다.</p>' +
-        '<span class="prd-k2">해결</span>' +
-        '<p>캡처 확대 뷰어(GRIPPGM-3433) 안에서 이미지 선택 후 <b>[대표 이미지로 지정] 1클릭(1뎁스)</b> → <b>리스트 썸네일·방송 프리뷰에 즉시 반영</b>. 현재 대표는 <b>★ 대표</b> 배지로 표시.</p>',
-      flowHTML:
-        '<span class="prd-k2">대표 이미지 수정 · 2뎁스 → 1뎁스</span>' +
-        '<div class="fpath">' +
-          '<div class="fpath-h"><span class="fpath-tag a">AS-IS</span> 2뎁스</div>' +
-          '<div class="frow"><span class="fnode">상품 수정 진입</span><span class="farr">→</span><span class="fnode">이미지 관리에서 선택·저장</span></div>' +
-        '</div>' +
-        '<div class="fmerge">↓ 개선</div>' +
-        '<div class="fpath">' +
-          '<div class="fpath-h"><span class="fpath-tag a">TO-BE</span> 1뎁스</div>' +
-          '<div class="frow"><span class="fnode">캡처 확대 뷰어에서 이미지 선택</span><span class="farr">→</span><span class="fnode">[대표 이미지로 지정] 1클릭</span><span class="farr">→</span><span class="fnode">리스트·프리뷰 즉시 반영</span></div>' +
-        '</div>' +
-        '<div class="fnode final">현재 대표는 ★ 대표 배지 · 방송 중 대표 사진을 즉시 교체</div>',
-      prd: [
-        { n: 1, target: '#imgCapFilm', title: '대표 이미지 개념 · 2뎁스 → 1뎁스', tag: '핵심',
-          def: '대표 이미지(리스트·프리뷰 노출 사진)를 바꾸는 동선을 2뎁스에서 1뎁스로 줄인다.',
-          asis: ['대표 이미지 변경 = 상품 수정 진입 → 이미지 관리에서 선택·저장(2뎁스). 방송 중 빠르게 못 바꿈.'],
-          tobe: ['캡처 확대 뷰어에서 이미지 선택 → [대표 이미지로 지정] 1클릭(1뎁스)으로 즉시 반영.'],
-          features: ['뷰어 필름스트립에 대표 + 후보(캡처 포함) 이미지 노출, 현재 대표는 <b>★ 대표</b> 배지.', '이미지 클릭으로 선택 → 확대 뷰 전환.'] },
-        { n: 2, target: '#imgCapSetRep', title: '[대표 이미지로 지정] 1클릭 반영', tag: '1클릭',
-          def: '선택한 이미지를 대표로 1클릭 지정하면 리스트 썸네일과 방송 프리뷰에 즉시 반영된다.',
-          features: ['<b>[대표 이미지로 지정]</b> 1클릭 → META 대표 교체.', '리스트 상품 <b>썸네일</b>과 좌측 <b>방송 프리뷰 카드</b>가 즉시 갱신.', '방송 중 캡처한 최신 프레임을 바로 대표로 올릴 수 있음.'] }
-      ],
-      steps: [
-        { tag: '시작', t: '캡처한 이미지를 <b>대표 사진으로 빠르게(1뎁스) 지정</b>하는 흐름을 시연합니다. (Jira GRIPPGM-3434)', target: function () { return q('.product-list'); }, act: function () { resetUI(); } },
-        { tag: '확대 뷰어 열기', t: '상품 썸네일 클릭 → 확대 뷰어. 필름스트립에 <b>대표(★) + 후보 이미지</b>가 보입니다.', target: function () { return q('#imgCapModal .imgcap-film'); }, act: function () { if (window.__gripImgOpen) window.__gripImgOpen(0); } },
-        { tag: '다른 이미지 선택', t: '대표로 쓰고 싶은 <b>다른 이미지를 선택</b>합니다. (AS-IS는 상품 수정→이미지 관리 2뎁스)', target: function () { return q('#imgCapFilm'); }, act: function () { if (!q('#imgCapModal').classList.contains('open') && window.__gripImgOpen) window.__gripImgOpen(0); var b = q('#imgCapFilm .ic-film[data-i="1"]'); if (b) b.click(); } },
-        { tag: '대표로 지정 (1클릭)', t: '<b>[대표 이미지로 지정]</b> 1클릭 → 리스트 썸네일·방송 프리뷰에 <b>즉시 반영</b>됩니다.', target: function () { return q('#imgCapSetRep'); }, act: function () { var b = document.getElementById('imgCapSetRep'); if (b) b.click(); } }
-      ]
-    });
-
     var cur = 0;
     function feat() { return FEATURES[cur]; }
 
@@ -3441,9 +3214,8 @@
     function snapshot() { var r = rowN(0); if (r) snap = { reg: r.querySelector('.pi-regular-input').value, dis: r.querySelector('.pi-discount-input').value, live: r.querySelector('.pi-live-input').value }; }
     function resetUI() {
       if (window.__gripSetMode) window.__gripSetMode(feat().demoMode || 'limited');
-      ['#priceModal', '#failModal', '#deleteModal', '#upListModal', '#upMaxModal', '#optionModal', '#optNameModal', '#optDelAllModal', '#optBulkModal', '#imgCapModal'].forEach(function (sel) { var m = q(sel); if (m) m.classList.remove('open'); });
+      ['#priceModal', '#failModal', '#deleteModal', '#upListModal', '#upMaxModal', '#optionModal', '#optNameModal', '#optDelAllModal', '#optBulkModal'].forEach(function (sel) { var m = q(sel); if (m) m.classList.remove('open'); });
       if (window.__gripChatReset) window.__gripChatReset();
-      if (window.__gripImgReset) window.__gripImgReset();
       var tw = document.getElementById('toastWrap'); if (tw) tw.innerHTML = '';
       if (window.__gripRestoreRows) window.__gripRestoreRows();
       Array.prototype.slice.call(rows()).forEach(function (r) { var cb = r.querySelector('.cbox'); if (cb && cb.classList.contains('checked')) cb.click(); });
