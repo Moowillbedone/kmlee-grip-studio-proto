@@ -1261,8 +1261,8 @@
         <div class="sales-note">한정판매 상품은 1개씩만 판매 가능합니다.</div>
 
         <div class="toolbar">
-          <div class="select">전체 <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <div class="select">상품명 <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="select" data-sort="name">이름순 <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="select" data-sort="name">상품명 <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <div class="search">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.2-3.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
             <input placeholder="검색어를 입력하세요" />
@@ -2187,25 +2187,37 @@
       function escAttr(v) { return String(v == null ? '' : v).replace(/"/g, '&quot;'); }
       var flSeq = 0;
 
-      // ---- 방송 화면 캡처(모의): 좌측 방송 프레임 모양을 캔버스로 그려 dataURL 생성 ----
-      var capSeq = 0;
-      function makeBroadcastFrame() {
-        capSeq++;
-        var c = document.createElement('canvas'); c.width = 480; c.height = 480;
-        var x = c.getContext('2d');
-        var g = x.createRadialGradient(240, 210, 40, 240, 240, 400);
-        g.addColorStop(0, '#3b414c'); g.addColorStop(1, '#14161c');
-        x.fillStyle = g; x.fillRect(0, 0, 480, 480);
-        x.save(); x.translate(240, 250); x.rotate((capSeq % 5 - 2) * 0.05);
-        x.fillStyle = 'rgba(255,255,255,.12)';
-        if (x.roundRect) { x.beginPath(); x.roundRect(-90, -110, 180, 220, 28); x.fill(); } else { x.fillRect(-90, -110, 180, 220); }
-        x.fillStyle = 'rgba(255,255,255,.22)'; x.fillRect(-90, -110, 180, 30);
-        x.restore();
-        x.fillStyle = 'rgba(245,55,91,.92)'; x.beginPath(); x.arc(42, 42, 7, 0, 6.29); x.fill();
-        x.fillStyle = '#fff'; x.font = 'bold 21px sans-serif'; x.fillText('LIVE', 58, 49);
-        x.font = '15px sans-serif'; x.fillStyle = 'rgba(255,255,255,.65)'; x.fillText('캡처 프레임 #' + capSeq, 42, 452);
-        return c.toDataURL('image/png');
+      // ---- 방송 화면 캡처(모의): 다운로드에 저장된 방송 스틸 5종 중 랜덤 사용 ----
+      var FLASH_POOL = ['flash1.png', 'flash2.png', 'flash3.png', 'flash4.png', 'flash5.png'];
+      function makeBroadcastFrame() { return FLASH_POOL[Math.floor(Math.random() * FLASH_POOL.length)]; }
+
+      // ---- 프레이밍(확대/위치)을 실제로 구운 썸네일 dataURL 생성 (스테이지 320px 기준 → 400px 캔버스) ----
+      function bakeImage(o, cb) {
+        var img = new Image();
+        img.onload = function () {
+          var SZ = 400, c = document.createElement('canvas'); c.width = SZ; c.height = SZ; var x = c.getContext('2d');
+          x.fillStyle = '#15171d'; x.fillRect(0, 0, SZ, SZ);
+          var iw = img.naturalWidth || img.width || SZ, ih = img.naturalHeight || img.height || SZ;
+          var cover = Math.max(SZ / iw, SZ / ih), s = cover * ((o.zoom || 100) / 100);
+          var dw = iw * s, dh = ih * s, k = SZ / 320;
+          var cx = SZ / 2 + (o.panX || 0) * k, cy = SZ / 2 + (o.panY || 0) * k;
+          try { x.drawImage(img, cx - dw / 2, cy - dh / 2, dw, dh); cb(c.toDataURL('image/png')); } catch (e) { cb(o.src); }
+        };
+        img.onerror = function () { cb(o.src); };
+        img.src = o.src;
       }
+
+      // ---- 이름순(오름차순) 정렬: 표시 DOM만 재정렬(order 배열·옵션 설정 불변 → 데모 rowN 안전) ----
+      function sortListView() {
+        var rs = Array.prototype.slice.call(listEl.querySelectorAll('.product-row'));
+        rs.sort(function (a, b) {
+          var na = (a.querySelector('.pr-name-input') || {}).value || '', nb = (b.querySelector('.pr-name-input') || {}).value || '';
+          return na.localeCompare(nb, 'ko-KR', { numeric: true });
+        });
+        rs.forEach(function (r) { listEl.appendChild(r); });
+      }
+      window.__gripSortList = sortListView;
+      Array.prototype.forEach.call(document.querySelectorAll('.toolbar .select[data-sort]'), function (el) { el.style.cursor = 'pointer'; el.addEventListener('click', function () { sortListView(); }); });
 
       // ---- 리스트 행 생성/추가 (가져온 상품 · 플래시 상품) ----
       function buildRowEl(o) {
@@ -2236,7 +2248,8 @@
           '</div>';
         return row;
       }
-      function addRow(o) { var el = buildRowEl(o); listEl.appendChild(el); order.push(el); META.push({ img: o.img, code: o.code || '' }); return el; }
+      function addRow(o) { var el = buildRowEl(o); listEl.appendChild(el); order.push(el); META.push({ img: o.img, code: o.code || '' }); sortListView(); return el; }
+      setTimeout(sortListView, 0);   // 초기 표시를 이름순으로 (옵션 초기화 등 동기 실행 이후에 정렬)
 
       // ================= 플래시 상품 등록/수정 =================
       var flStage = document.getElementById('flashStage'), flBig = document.getElementById('flashBig'), flEmpty = document.getElementById('flashEmpty');
@@ -2244,22 +2257,25 @@
       var flName = document.getElementById('flashName'), flPrice = document.getElementById('flashPrice'), flQty = document.getElementById('flashQty'), flNotice = document.getElementById('flashNotice');
       var flZLvl = document.getElementById('flashZLvl'), flZIn = document.getElementById('flashZIn'), flZOut = document.getElementById('flashZOut');
       var FL = null, flUploadTarget = -1;
-      function blankFL() { return { imgs: [], rep: 0, zoom: 100, panX: 0, panY: 0, name: '', price: '', qty: '', optUse: 'off', notice: '', startNow: false, editRow: null }; }
+      function blankFL() { return { imgs: [], rep: 0, name: '', price: '', qty: '', optUse: 'off', notice: '', startNow: false, editRow: null }; }
+      function repImg() { return FL.imgs[FL.rep]; }
       function setImgMode(m) { document.getElementById('flashUpload').classList.toggle('on', m === 'upload'); document.getElementById('flashCapture').classList.toggle('on', m === 'capture'); }
       function renderFlashBig() {
-        if (!FL.imgs.length) { flBig.style.backgroundImage = ''; flEmpty.style.display = 'flex'; }
-        else { flEmpty.style.display = 'none'; flBig.style.backgroundImage = 'url(' + FL.imgs[FL.rep] + ')'; }
-        if (FL.zoom <= 100) { FL.panX = 0; FL.panY = 0; }
-        flBig.style.transform = 'translate(' + FL.panX + 'px,' + FL.panY + 'px) scale(' + (FL.zoom / 100) + ')';
-        flZLvl.textContent = FL.zoom + '%';
-        flZOut.disabled = (FL.zoom <= 100) || !FL.imgs.length;
-        flZIn.disabled = (FL.zoom >= 400) || !FL.imgs.length;
+        if (!FL.imgs.length) { flBig.style.backgroundImage = ''; flBig.style.transform = 'none'; flEmpty.style.display = 'flex'; flZLvl.textContent = '100%'; flZOut.disabled = true; flZIn.disabled = true; return; }
+        flEmpty.style.display = 'none';
+        var g = repImg();
+        if (g.zoom <= 100) { g.panX = 0; g.panY = 0; }
+        flBig.style.backgroundImage = 'url(' + g.src + ')';
+        flBig.style.transform = 'translate(' + g.panX + 'px,' + g.panY + 'px) scale(' + (g.zoom / 100) + ')';
+        flZLvl.textContent = g.zoom + '%';
+        flZOut.disabled = (g.zoom <= 100);
+        flZIn.disabled = (g.zoom >= 400);
       }
       function renderFlashSlots() {
         var html = '';
         for (var i = 0; i < 5; i++) {
           if (i < FL.imgs.length) {
-            html += '<div class="flash-slot filled' + (i === FL.rep ? ' rep' : '') + '" data-i="' + i + '" style="background-image:url(' + FL.imgs[i] + ')" title="' + (i === FL.rep ? '대표 이미지 — 클릭 시 파일 업로드로 교체' : '클릭 시 대표로 지정') + '">' +
+            html += '<div class="flash-slot filled' + (i === FL.rep ? ' rep' : '') + '" data-i="' + i + '" style="background-image:url(' + FL.imgs[i].src + ')" title="' + (i === FL.rep ? '대표 이미지 — 클릭 시 파일 업로드로 교체' : '클릭 시 대표로 지정') + '">' +
               (i === FL.rep ? '<span class="flash-repbadge">대표</span>' : '') +
               '<button class="flash-del" data-del="' + i + '" aria-label="삭제">&times;</button></div>';
           } else {
@@ -2278,7 +2294,7 @@
       }
       function openFlash(editRow) {
         FL = blankFL();
-        if (editRow && editRow.__flash) { var s = editRow.__flash; FL.imgs = s.imgs.slice(); FL.rep = s.rep; FL.name = s.name; FL.price = s.price; FL.qty = s.qty; FL.optUse = s.optUse; FL.notice = s.notice || ''; FL.editRow = editRow; }
+        if (editRow && editRow.__flash) { var s = editRow.__flash; FL.imgs = (s.imgs || []).map(function (im) { return (typeof im === 'string') ? { src: im, zoom: 100, panX: 0, panY: 0 } : { src: im.src, zoom: im.zoom || 100, panX: im.panX || 0, panY: im.panY || 0 }; }); FL.rep = s.rep || 0; FL.name = s.name; FL.price = s.price; FL.qty = s.qty; FL.optUse = s.optUse; FL.notice = s.notice || ''; FL.editRow = editRow; }
         document.getElementById('flashTitle').textContent = editRow ? '플래시 상품 수정' : '플래시 상품 등록';
         setImgMode('capture'); renderFlash(); flashModal.classList.add('open');
       }
@@ -2288,7 +2304,7 @@
       document.getElementById('flashCapture').addEventListener('click', function () {
         setImgMode('capture');
         if (FL.imgs.length >= 5) { toast('이미지는 최대 5개까지 담을 수 있습니다.', false); return; }
-        FL.imgs.push(makeBroadcastFrame()); FL.rep = FL.imgs.length - 1; FL.zoom = 100; renderFlash();
+        FL.imgs.push({ src: makeBroadcastFrame(), zoom: 100, panX: 0, panY: 0 }); FL.rep = FL.imgs.length - 1; renderFlash();
         toast('현재 방송 화면을 캡처했습니다.', true);
       });
       document.getElementById('flashUpload').addEventListener('click', function () { setImgMode('upload'); flUploadTarget = -1; flFile.value = ''; flFile.click(); });
@@ -2296,29 +2312,29 @@
         var f = flFile.files && flFile.files[0]; if (!f) return;
         var rd = new FileReader();
         rd.onload = function () {
-          if (flUploadTarget >= 0 && flUploadTarget < FL.imgs.length) { FL.imgs[flUploadTarget] = rd.result; FL.rep = flUploadTarget; }
-          else { if (FL.imgs.length >= 5) { toast('이미지는 최대 5개까지 담을 수 있습니다.', false); return; } FL.imgs.push(rd.result); FL.rep = FL.imgs.length - 1; }
-          FL.zoom = 100; renderFlash(); toast('이미지를 업로드했습니다.', true);
+          if (flUploadTarget >= 0 && flUploadTarget < FL.imgs.length) { FL.imgs[flUploadTarget] = { src: rd.result, zoom: 100, panX: 0, panY: 0 }; FL.rep = flUploadTarget; }
+          else { if (FL.imgs.length >= 5) { toast('이미지는 최대 5개까지 담을 수 있습니다.', false); return; } FL.imgs.push({ src: rd.result, zoom: 100, panX: 0, panY: 0 }); FL.rep = FL.imgs.length - 1; }
+          renderFlash(); toast('이미지를 업로드했습니다.', true);
         };
         rd.readAsDataURL(f);
       });
       // 슬롯: 대표 클릭→파일업로드 교체(3434) / 비대표→대표 지정 / 빈 슬롯→업로드 추가 / 삭제
       flSlots.addEventListener('click', function (e) {
         var del = e.target.closest('.flash-del');
-        if (del) { var di = parseInt(del.getAttribute('data-del'), 10); FL.imgs.splice(di, 1); if (FL.rep >= FL.imgs.length) FL.rep = Math.max(0, FL.imgs.length - 1); FL.zoom = 100; renderFlash(); e.stopPropagation(); return; }
+        if (del) { var di = parseInt(del.getAttribute('data-del'), 10); FL.imgs.splice(di, 1); if (FL.rep >= FL.imgs.length) FL.rep = Math.max(0, FL.imgs.length - 1); renderFlash(); e.stopPropagation(); return; }
         var slot = e.target.closest('.flash-slot'); if (!slot) return;
         if (slot.getAttribute('data-add')) { setImgMode('upload'); flUploadTarget = -1; flFile.value = ''; flFile.click(); return; }
         var i = parseInt(slot.getAttribute('data-i'), 10);
         if (i === FL.rep) { setImgMode('upload'); flUploadTarget = i; flFile.value = ''; flFile.click(); }
-        else { FL.rep = i; FL.zoom = 100; renderFlash(); }
+        else { FL.rep = i; renderFlash(); }
       });
       // 확대/축소(3433) + 팬
-      flZIn.addEventListener('click', function () { if (!FL.imgs.length) return; FL.zoom = Math.min(400, FL.zoom + 25); renderFlashBig(); });
-      flZOut.addEventListener('click', function () { if (!FL.imgs.length) return; FL.zoom = Math.max(100, FL.zoom - 25); renderFlashBig(); });
+      flZIn.addEventListener('click', function () { if (!FL.imgs.length) return; var g = repImg(); g.zoom = Math.min(400, g.zoom + 25); renderFlashBig(); });
+      flZOut.addEventListener('click', function () { if (!FL.imgs.length) return; var g = repImg(); g.zoom = Math.max(100, g.zoom - 25); renderFlashBig(); });
       (function () {
         var dragging = false, sx = 0, sy = 0, ox = 0, oy = 0;
-        flStage.addEventListener('pointerdown', function (e) { if (!FL || FL.zoom <= 100 || !FL.imgs.length) return; dragging = true; sx = e.clientX; sy = e.clientY; ox = FL.panX; oy = FL.panY; if (flStage.setPointerCapture) flStage.setPointerCapture(e.pointerId); e.preventDefault(); });
-        flStage.addEventListener('pointermove', function (e) { if (!dragging) return; var scale = FL.zoom / 100, lim = flStage.clientWidth * (scale - 1) / 2; FL.panX = Math.max(-lim, Math.min(lim, ox + (e.clientX - sx))); FL.panY = Math.max(-lim, Math.min(lim, oy + (e.clientY - sy))); flBig.style.transform = 'translate(' + FL.panX + 'px,' + FL.panY + 'px) scale(' + scale + ')'; });
+        flStage.addEventListener('pointerdown', function (e) { if (!FL || !FL.imgs.length || repImg().zoom <= 100) return; var g = repImg(); dragging = true; sx = e.clientX; sy = e.clientY; ox = g.panX; oy = g.panY; if (flStage.setPointerCapture) flStage.setPointerCapture(e.pointerId); e.preventDefault(); });
+        flStage.addEventListener('pointermove', function (e) { if (!dragging) return; var g = repImg(), scale = g.zoom / 100, lim = flStage.clientWidth * (scale - 1) / 2; g.panX = Math.max(-lim, Math.min(lim, ox + (e.clientX - sx))); g.panY = Math.max(-lim, Math.min(lim, oy + (e.clientY - sy))); flBig.style.transform = 'translate(' + g.panX + 'px,' + g.panY + 'px) scale(' + scale + ')'; });
         function end() { dragging = false; } flStage.addEventListener('pointerup', end); flStage.addEventListener('pointerleave', end);
       })();
       // 폼
@@ -2333,18 +2349,22 @@
         if (!FL.name.trim()) { toast('상품명을 입력해 주세요.', false); return; }
         if (!FL.price) { toast('가격을 입력해 주세요.', false); return; }
         if (!FL.qty) { toast('수량을 입력해 주세요.', false); return; }
-        var data = { img: FL.imgs[FL.rep], imgs: FL.imgs.slice(), rep: FL.rep, name: FL.name.trim(), price: FL.price, qty: FL.qty, optUse: FL.optUse, notice: FL.notice };
-        if (FL.editRow) {
-          FL.editRow.__flash = data;
-          var th = FL.editRow.querySelector('.pr-thumb'); if (th) th.style.backgroundImage = 'url(' + data.img + ')';
-          var ni = FL.editRow.querySelector('.pr-name-input'); if (ni) ni.value = data.name;
-          var pi = FL.editRow.querySelector('.pi-live-input'); if (pi) pi.value = fmtN(data.price);
-          var ix = idxOf(FL.editRow); if (ix >= 0 && META[ix]) META[ix].img = data.img;
-          updateCard(FL.editRow); toast('플래시 상품을 수정했습니다.', true);
-        } else {
-          var row = addRow({ img: data.img, name: data.name, price: data.price, qty: data.qty, flash: true, code: 'flash-' + (++flSeq) });
-          row.__flash = data; toast('플래시 상품을 등록했습니다.', true);
-        }
+        var editRow = FL.editRow;
+        var payload = { imgs: FL.imgs.map(function (im) { return { src: im.src, zoom: im.zoom, panX: im.panX, panY: im.panY }; }), rep: FL.rep, name: FL.name.trim(), price: FL.price, qty: FL.qty, optUse: FL.optUse, notice: FL.notice };
+        bakeImage(FL.imgs[FL.rep], function (baked) {
+          var data = { img: baked }; for (var k in payload) data[k] = payload[k];
+          if (editRow) {
+            editRow.__flash = data;
+            var th = editRow.querySelector('.pr-thumb'); if (th) th.style.backgroundImage = 'url(' + baked + ')';
+            var ni = editRow.querySelector('.pr-name-input'); if (ni) ni.value = data.name;
+            var pi = editRow.querySelector('.pi-live-input'); if (pi) pi.value = fmtN(data.price);
+            var ix = idxOf(editRow); if (ix >= 0 && META[ix]) META[ix].img = baked;
+            updateCard(editRow); sortListView(); toast('플래시 상품을 수정했습니다.', true);
+          } else {
+            var row = addRow({ img: baked, name: data.name, price: data.price, qty: data.qty, flash: true, code: 'flash-' + (++flSeq) });
+            row.__flash = data; toast('플래시 상품을 등록했습니다.', true);
+          }
+        });
         closeFlash();
       });
       document.getElementById('flashClose').addEventListener('click', closeFlash);
@@ -3804,6 +3824,7 @@
     function go(delta) { idx = (idx + delta + steps.length) % steps.length; renderStep(); arm(); }
     function start() {
       if (document.body.classList.contains('prd-on') && closeBtn) closeBtn.click();
+      if (window.__gripRestoreRows) window.__gripRestoreRows();   // 정렬된 표시를 원래 순서로 되돌려 스냅샷/rowN 일관성 확보
       snapshot(); spot.style.opacity = '0'; overlay.classList.add('on');
       idx = 0; paused = false; updatePauseBtn(); renderStep(); arm();
     }
