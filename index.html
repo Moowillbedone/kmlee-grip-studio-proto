@@ -1767,7 +1767,7 @@
         <div class="flash-row">
           <span class="fr-lbl">상품 이미지</span>
           <div class="fr-body">
-            <div class="flash-imgbtns"><button id="flashUpload">파일 업로드</button><span class="flash-imghint">· 상품 리스트 썸네일의 <b>📸 캡처</b>로 방송 화면을 담을 수 있어요</span></div>
+            <div class="flash-imgbtns"><button id="flashUpload">파일 업로드</button><button id="flashCapture" class="on">현재 화면 캡처</button></div>
             <div class="flash-slots" id="flashSlots"></div>
             <div class="flash-ratio">· 1:1 비율 (비율이 다를 경우 자동 반영됩니다.)</div>
           </div>
@@ -2265,7 +2265,7 @@
       var FL = null, flUploadTarget = -1;
       function blankFL() { return { imgs: [], rep: 0, name: '', price: '', qty: '', optUse: 'off', notice: '', startNow: false, editRow: null }; }
       function repImg() { return FL.imgs[FL.rep]; }
-      function setImgMode(m) { var u = document.getElementById('flashUpload'); if (u) u.classList.toggle('on', m === 'upload'); }
+      function setImgMode(m) { var u = document.getElementById('flashUpload'), c = document.getElementById('flashCapture'); if (u) u.classList.toggle('on', m === 'upload'); if (c) c.classList.toggle('on', m === 'capture'); }
       function renderFlashBig() {
         if (!FL.imgs.length) { flBig.style.backgroundImage = ''; flBig.style.transform = 'none'; flEmpty.style.display = 'flex'; flZLvl.textContent = '100%'; flZOut.disabled = true; flZIn.disabled = true; return; }
         flEmpty.style.display = 'none';
@@ -2310,6 +2310,13 @@
       function closeFlash() { flashModal.classList.remove('open'); }
       window.__gripFlashOpen = openFlash;
 
+      var flCap = document.getElementById('flashCapture');
+      if (flCap) flCap.addEventListener('click', function () {
+        setImgMode('capture'); if (!FL) return;
+        if (FL.imgs.length >= 5) { toast('이미지는 최대 5개까지 담을 수 있습니다.', false); return; }
+        FL.imgs.push({ src: makeBroadcastFrame(), zoom: 100, panX: 0, panY: 0 }); FL.rep = FL.imgs.length - 1; renderFlash();
+        toast('현재 방송 화면을 캡처했습니다.', true);
+      });
       document.getElementById('flashUpload').addEventListener('click', function () { setImgMode('upload'); flUploadTarget = -1; flFile.value = ''; flFile.click(); });
       flFile.addEventListener('change', function () {
         var f = flFile.files && flFile.files[0]; if (!f) return;
@@ -3632,10 +3639,10 @@
         '<div class="fnode final">등록된 상품 가져오기 이미지는 수정 불가 · 캡처·확대·대표수정은 플래시 상품 전용 · 리스트 [수정]으로 재진입</div>',
       prd: [
         { n: 1, target: '#flashSlots', title: '플래시 상품 · 현재 화면 캡처', tag: '캡처',
-          def: '방송 화면(1:1 영역)을 캡처해 상품 이미지로 담는다. 캡처는 플래시 상품 등록 시(모달 진입 시 자동)와 리스트 썸네일 [📸 캡처]로 실행.',
+          def: '방송 화면(1:1 영역)을 캡처해 상품 이미지로 담는다. 모달 [현재 화면 캡처] · 리스트 썸네일 [📸 캡처] · 플래시 상품 등록 진입 시 자동으로 실행.',
           asis: ['캡처 이미지의 프레이밍(구도)을 방송 중 다듬을 수단이 부족했음.'],
           tobe: ['방송 프레임을 캡처해 담고, 확대/축소·이동으로 프레이밍을 조정.'],
-          features: ['<b>[플래시 상품 등록]</b> 진입 시 현재 방송 1:1 영역 자동 캡처, 리스트 썸네일 <b>[📸 캡처]</b>로 재캡처(최대 5장).', '<b>[파일 업로드]</b>로도 이미지 추가.', '<b>등록된 상품 가져오기</b> 이미지는 수정 불가 — 캡처·확대는 플래시 상품 전용.'] },
+          features: ['방송 1:1 영역 캡처(최대 5장) — <b>모달 [현재 화면 캡처]</b> · 리스트 썸네일 <b>[📸 캡처]</b> · 플래시 상품 등록 진입 시 자동.', '<b>[파일 업로드]</b>로도 이미지 추가.', '<b>등록된 상품 가져오기</b> 이미지는 수정 불가 — 캡처·확대는 플래시 상품 전용.'] },
         { n: 2, target: '#flashStage', title: '이미지 확대/축소 · 위치 조정', tag: '확대',
           def: '모달 좌측 미리보기에서 이미지를 100~400%로 확대/축소하고 드래그로 위치를 잡아 지정·저장한다.',
           features: ['<b>+ / −</b> 100~400% 단계 확대/축소.', '확대 상태에서 <b>드래그로 위치(프레이밍) 조정</b>.', '조정한 이미지를 그대로 대표로 지정·저장 → 리스트 반영.'] }
