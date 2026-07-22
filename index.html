@@ -305,32 +305,87 @@
   .pr-stats .stat-cell { padding-right: 20px; }
   .stat-cell.stat-occ .val { color: #c97a12; }
   #optStockSummary .opt-occ-hl { color: #c97a12; font-weight: 700; }
-  /* 이미지 캡처 확대(3433) + 대표 빠른 수정(3434) */
-  .pr-thumb { cursor: zoom-in; }
-  .imgcap-modal { max-width: 640px; width: 640px; }
-  .imgcap-head { display:flex; align-items:center; justify-content:space-between; padding:18px 22px 12px; }
-  .imgcap-title { font-size:16px; font-weight:800; color:#20222a; }
-  .imgcap-title b { color:var(--grip); }
-  .imgcap-x { background:none; border:0; font-size:24px; color:#9aa0ab; cursor:pointer; line-height:1; }
-  .imgcap-stage { margin:0 22px; }
-  .imgcap-viewport { position:relative; height:300px; background:#101218; border-radius:12px; overflow:hidden; display:flex; align-items:center; justify-content:center; }
-  .imgcap-viewport img { max-width:100%; max-height:100%; transition:transform .2s ease; transform-origin:center; }
-  .imgcap-zoombar { display:flex; align-items:center; gap:8px; margin-top:10px; }
-  .ic-zbtn:disabled { opacity:.4; cursor:default; }
-  .ic-zbtn { width:34px; height:34px; border-radius:9px; border:1px solid #e3e4e8; background:#fff; font-size:18px; font-weight:800; color:#41444d; cursor:pointer; }
-  .ic-zbtn:hover { border-color:var(--grip); color:var(--grip); }
-  .ic-zlvl { font-size:13px; font-weight:800; color:#41444d; min-width:52px; text-align:center; }
-  .ic-cap { margin-left:auto; background:#1d1f25; color:#fff; border:0; border-radius:9px; padding:9px 14px; font-size:13px; font-weight:700; cursor:pointer; }
-  .ic-cap:hover { background:#2c2f38; }
-  .imgcap-film { display:flex; gap:8px; padding:14px 22px 4px; overflow-x:auto; }
-  .ic-film { position:relative; flex:0 0 auto; width:72px; height:72px; border-radius:10px; border:2px solid #e3e4e8; background:#2b2d34 center/cover no-repeat; cursor:pointer; padding:0; }
-  .ic-film.sel { border-color:var(--grip); box-shadow:0 0 0 3px var(--grip-soft); }
-  .ic-repbadge { position:absolute; left:0; right:0; bottom:0; background:var(--grip); color:#fff; font-size:9px; font-weight:800; text-align:center; padding:2px 0; }
-  .ic-captag { position:absolute; top:3px; right:3px; background:rgba(29,31,37,.82); color:#fff; font-size:8.5px; font-weight:800; padding:1px 5px; border-radius:5px; }
-  .imgcap-foot { display:flex; align-items:center; gap:12px; padding:14px 22px 18px; }
-  .imgcap-hint { font-size:12px; color:#9aa0ab; flex:1; line-height:1.5; } .imgcap-hint b { color:var(--grip); }
-  .imgcap-setrep { background:var(--grip); color:#fff; border:0; border-radius:10px; padding:11px 18px; font-size:14px; font-weight:800; cursor:pointer; flex:0 0 auto; }
-  .imgcap-setrep:hover { background:#e02950; }
+  /* ===== 등록된 상품 가져오기(import) 모달 (이미지1) ===== */
+  .modal.imp-modal { max-width: 560px; width: 560px; }
+  .imp-head { display:flex; align-items:center; justify-content:space-between; padding:22px 24px 8px; }
+  .imp-title { font-size:20px; font-weight:800; color:#1d1f25; }
+  .imp-x, .flash-x { background:none; border:0; font-size:26px; color:#9aa0ab; cursor:pointer; line-height:1; }
+  .imp-filters { display:flex; gap:8px; padding:14px 24px 6px; }
+  .imp-filters input, .imp-filters .imp-drop { height:46px; border:1px solid #e3e4e8; border-radius:12px; font-size:14px; padding:0 14px; background:#fff; color:#41444d; }
+  .imp-filters .imp-date { flex:0 0 150px; color:#9aa0ab; }
+  .imp-filters .imp-drop { flex:0 0 110px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; }
+  .imp-search { flex:1; position:relative; }
+  .imp-search input { width:100%; padding-left:38px; }
+  .imp-search svg { position:absolute; left:13px; top:50%; transform:translateY(-50%); }
+  .imp-go { flex:0 0 auto; background:#1d1f25; color:#fff; border:0; border-radius:12px; padding:0 20px; font-size:14px; font-weight:700; cursor:pointer; }
+  .imp-subbar { display:flex; align-items:center; justify-content:space-between; padding:10px 24px; }
+  .imp-check { display:flex; align-items:center; gap:9px; font-size:14px; color:#41444d; cursor:pointer; }
+  .imp-per { border:1px solid #e3e4e8; border-radius:10px; padding:8px 12px; font-size:13px; color:#41444d; }
+  .imp-list { min-height:360px; max-height:52vh; overflow-y:auto; padding:0 24px; }
+  .imp-item { display:flex; align-items:center; gap:14px; padding:14px 4px; border-top:1px solid #f0f1f3; }
+  .imp-item:first-child { border-top:0; }
+  .imp-item .imp-thumb { width:96px; height:96px; border-radius:12px; background:#f4f5f7 center/cover no-repeat; flex:0 0 auto; border:1px solid #eceef1; }
+  .imp-item .imp-info .imp-name { font-size:16px; font-weight:700; color:#1d1f25; }
+  .imp-item .imp-info .imp-code { font-size:13px; color:#9aa0ab; margin-top:4px; }
+  .imp-item .imp-info .imp-price { font-size:17px; font-weight:800; color:#1d1f25; margin-top:8px; }
+  .cbox-sq { width:22px; height:22px; border-radius:6px; border:2px solid #d7dae1; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; flex:0 0 auto; color:#fff; }
+  .cbox-sq.on { background:var(--grip); border-color:var(--grip); }
+  .cbox-sq svg { opacity:0; } .cbox-sq.on svg { opacity:1; }
+  .imp-foot, .flash-foot { display:flex; gap:12px; padding:16px 24px 20px; }
+  .imp-foot .btn-cancel, .flash-foot .btn-cancel { flex:0 0 150px; background:#eef0f2; color:#41444d; border:0; border-radius:12px; padding:15px 0; font-size:15px; font-weight:700; cursor:pointer; }
+  .imp-foot .btn-go, .flash-foot .btn-go { flex:1; background:var(--grip); color:#fff; border:0; border-radius:12px; padding:15px 0; font-size:15px; font-weight:800; cursor:pointer; }
+  .imp-foot .btn-go[disabled] { background:#f7b8c6; cursor:default; }
+
+  /* ===== 플래시 상품 등록/수정 모달 (이미지2·3) ===== */
+  .modal.flash-modal { max-width: 900px; width: 900px; max-height: 92vh; overflow-y: auto; }
+  .flash-head { display:flex; align-items:center; justify-content:space-between; padding:22px 26px 10px; }
+  .flash-title { font-size:20px; font-weight:800; color:#1d1f25; }
+  .flash-body { display:flex; gap:26px; padding:8px 26px 4px; }
+  .flash-left { flex:0 0 320px; }
+  .flash-stage { position:relative; width:320px; height:320px; border-radius:12px; overflow:hidden; background:#15171d; touch-action:none; }
+  .flash-stage .fs-img { position:absolute; inset:0; width:100%; height:100%; background-position:center; background-size:cover; background-repeat:no-repeat; transform-origin:center; }
+  .flash-stage .fs-empty { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#6b7078; font-size:13px; text-align:center; padding:0 20px; line-height:1.6; }
+  /* 1:1 크롭 가이드(흰 밴드) */
+  .flash-stage .fs-crop { position:absolute; left:0; right:0; top:0; bottom:0; pointer-events:none; box-shadow: inset 0 0 0 2px rgba(255,255,255,.9); }
+  .flash-stage .fs-crop::before, .flash-stage .fs-crop::after { content:''; position:absolute; left:0; right:0; height:22%; background:rgba(10,12,16,.42); }
+  .flash-stage .fs-crop::before { top:0; } .flash-stage .fs-crop::after { bottom:0; }
+  .flash-zoom { display:flex; align-items:center; gap:8px; margin-top:12px; }
+  .flash-zoom .fz-btn { width:38px; height:38px; border-radius:10px; border:1px solid #e3e4e8; background:#fff; font-size:19px; font-weight:800; color:#41444d; cursor:pointer; }
+  .flash-zoom .fz-btn:hover:not(:disabled) { border-color:var(--grip); color:var(--grip); }
+  .flash-zoom .fz-btn:disabled { opacity:.4; cursor:default; }
+  .flash-zoom .fz-lvl { font-size:13px; font-weight:800; color:#41444d; min-width:52px; text-align:center; }
+  .flash-zoom .fz-hint { font-size:11.5px; color:#9aa0ab; margin-left:auto; }
+  .flash-right { flex:1; min-width:0; }
+  .flash-row { display:flex; align-items:flex-start; gap:16px; margin-bottom:16px; }
+  .flash-row > .fr-lbl { flex:0 0 92px; font-size:14px; font-weight:700; color:#33363e; padding-top:11px; }
+  .flash-row > .fr-lbl .req { color:var(--grip); }
+  .flash-row .fr-body { flex:1; min-width:0; }
+  .flash-imgbtns { display:flex; gap:8px; margin-bottom:10px; }
+  .flash-imgbtns button { border:1px solid #e3e4e8; background:#fff; border-radius:10px; padding:9px 14px; font-size:13px; font-weight:700; color:#41444d; cursor:pointer; }
+  .flash-imgbtns button.on { background:#1d1f25; color:#fff; border-color:#1d1f25; }
+  .flash-slots { display:flex; gap:8px; }
+  .flash-slot { position:relative; width:62px; height:62px; border-radius:10px; background:#f4f5f7 center/cover no-repeat; border:1px solid #e6e8eb; display:flex; align-items:center; justify-content:center; color:#c4c8ce; cursor:pointer; flex:0 0 auto; }
+  .flash-slot.filled { border:1px solid #e6e8eb; }
+  .flash-slot.rep { cursor:pointer; }
+  .flash-repbadge { position:absolute; top:-8px; left:-4px; background:#7b61ff; color:#fff; font-size:9.5px; font-weight:800; padding:2px 6px; border-radius:6px; }
+  .flash-del { position:absolute; top:-7px; right:-7px; width:19px; height:19px; border-radius:50%; background:#33363e; color:#fff; border:0; font-size:12px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .flash-ratio { font-size:11.5px; color:#9aa0ab; margin-top:8px; }
+  .flash-input { width:100%; height:46px; border:1px solid #e3e4e8; border-radius:12px; padding:0 14px; font-size:14px; color:#1d1f25; }
+  .flash-input.short { width:180px; }
+  .flash-inwrap { position:relative; }
+  .flash-inwrap .fi-unit { position:absolute; right:14px; top:50%; transform:translateY(-50%); font-size:13px; color:#9aa0ab; }
+  .flash-inwrap .fi-count { position:absolute; right:14px; top:50%; transform:translateY(-50%); font-size:12px; color:#b6b9c0; }
+  .flash-seg { display:inline-flex; border:1px solid #e3e4e8; border-radius:10px; overflow:hidden; }
+  .flash-seg button { border:0; background:#fff; padding:11px 20px; font-size:14px; font-weight:700; color:#8a8f98; cursor:pointer; }
+  .flash-seg button.on { color:var(--grip); box-shadow: inset 0 0 0 2px var(--grip); border-radius:10px; }
+  .flash-ta { width:100%; height:92px; border:1px solid #e3e4e8; border-radius:12px; padding:12px 14px; font-size:14px; color:#1d1f25; resize:none; font-family:inherit; }
+  .flash-ta-count { text-align:right; font-size:12px; color:#b6b9c0; margin-top:4px; }
+  .flash-notes { font-size:12px; color:#9aa0ab; line-height:1.7; margin:2px 0 0 108px; }
+  .flash-startnow { display:flex; align-items:center; gap:9px; font-size:14px; color:#41444d; cursor:pointer; padding:6px 26px 0; }
+  /* 리스트: 플래시 상품 배지 + 수정 오버레이 */
+  .pr-thumb.pt-flash::before { content:'플래시 상품'; position:absolute; top:0; left:0; background:#7b61ff; color:#fff; font-size:8.5px; font-weight:800; padding:2px 5px; border-radius:8px 0 8px 0; }
+  .pr-thumb.pt-flash { position:relative; }
+  .pr-thumb .pt-edit { position:absolute; left:0; right:0; bottom:0; background:rgba(29,31,37,.72); color:#fff; font-size:10px; font-weight:700; text-align:center; padding:3px 0; cursor:pointer; }
   .pr-thumb {
     width: 92px; height: 92px; border-radius: 10px; flex: 0 0 auto;
     background: var(--product-img) center/cover no-repeat, #f1f2f4;
@@ -1198,8 +1253,8 @@
           <h1 class="sales-title">한정판매</h1>
           <div class="head-btns">
             <button class="btn-ghost" id="btnUpList">UP한 상품 목록</button>
-            <button class="btn-ghost">등록된 상품 가져오기</button>
-            <button class="btn-ghost">플래시 상품 등록</button>
+            <button class="btn-ghost" id="btnImport">등록된 상품 가져오기</button>
+            <button class="btn-ghost" id="btnFlash">플래시 상품 등록</button>
           </div>
         </div>
 
@@ -1668,24 +1723,78 @@
   </div>
 </div>
 
-<!-- 이미지 캡처 확대(3433) + 대표 빠른 수정(3434) -->
-<div class="modal-overlay" id="imgCapModal">
-  <div class="modal imgcap-modal" role="dialog" aria-modal="true" aria-label="상품 이미지 캡처">
-    <div class="imgcap-head"><span class="imgcap-title">상품 이미지 · <b id="imgCapName">상품</b></span><button class="imgcap-x" id="imgCapClose" aria-label="닫기">&times;</button></div>
-    <div class="imgcap-stage">
-      <div class="imgcap-viewport" id="imgCapVp"><img id="imgCapBig" alt="상품 이미지" /></div>
-      <div class="imgcap-zoombar">
-        <button class="ic-zbtn" id="imgCapOut" aria-label="축소">&minus;</button>
-        <span class="ic-zlvl" id="imgCapZ">100%</span>
-        <button class="ic-zbtn" id="imgCapIn" aria-label="확대">+</button>
-        <button class="ic-cap" id="imgCapShot">📸 방송 화면 캡처</button>
+<!-- 등록된 상품 가져오기 (한정/스토어 공통 · 캡처/확대와 무관 · 이미지 수정 불가) -->
+<div class="modal-overlay" id="impModal">
+  <div class="modal imp-modal" role="dialog" aria-modal="true" aria-label="등록된 상품 가져오기">
+    <div class="imp-head"><span class="imp-title">등록 된 상품</span><button class="imp-x" id="impClose" aria-label="닫기">&times;</button></div>
+    <div class="imp-filters">
+      <input class="imp-date" placeholder="상품 등록일" />
+      <span class="imp-drop">상품명 <span>&#9662;</span></span>
+      <span class="imp-search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#9aa0ab" stroke-width="2"/><path d="m20 20-3.2-3.2" stroke="#9aa0ab" stroke-width="2" stroke-linecap="round"/></svg><input id="impSearch" placeholder="검색어를 입력하세요" /></span>
+      <button class="imp-go" id="impGo">검색</button>
+    </div>
+    <div class="imp-subbar">
+      <label class="imp-check"><span class="cbox-sq" id="impAll"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m5 12 5 5 9-10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span> 전체 선택</label>
+      <span class="imp-per">10개씩 &#9662;</span>
+    </div>
+    <div class="imp-list" id="impList"></div>
+    <div class="imp-foot"><button class="btn-cancel" id="impCancel">취소</button><button class="btn-go" id="impApply" disabled>적용</button></div>
+  </div>
+</div>
+
+<!-- 플래시 상품 등록/수정 (이미지 캡처 확대 GRIPPGM-3433 · 대표 빠른 수정 GRIPPGM-3434) -->
+<div class="modal-overlay" id="flashModal">
+  <div class="modal flash-modal" role="dialog" aria-modal="true" aria-label="플래시 상품 등록">
+    <div class="flash-head"><span class="flash-title" id="flashTitle">플래시 상품 등록</span><button class="flash-x" id="flashClose" aria-label="닫기">&times;</button></div>
+    <div class="flash-body">
+      <div class="flash-left">
+        <div class="flash-stage" id="flashStage">
+          <div class="fs-img" id="flashBig"></div>
+          <div class="fs-empty" id="flashEmpty">[현재 화면 캡처] 또는 [파일 업로드]로<br/>상품 이미지를 추가하세요.</div>
+          <div class="fs-crop"></div>
+        </div>
+        <div class="flash-zoom">
+          <button class="fz-btn" id="flashZOut" aria-label="축소">&minus;</button>
+          <span class="fz-lvl" id="flashZLvl">100%</span>
+          <button class="fz-btn" id="flashZIn" aria-label="확대">+</button>
+          <span class="fz-hint">확대 후 드래그로 위치 조정</span>
+        </div>
+      </div>
+      <div class="flash-right">
+        <div class="flash-row">
+          <span class="fr-lbl">상품 이미지</span>
+          <div class="fr-body">
+            <div class="flash-imgbtns"><button id="flashUpload">파일 업로드</button><button id="flashCapture" class="on">현재 화면 캡처</button></div>
+            <div class="flash-slots" id="flashSlots"></div>
+            <div class="flash-ratio">· 1:1 비율 (비율이 다를 경우 자동 반영됩니다.)</div>
+          </div>
+        </div>
+        <div class="flash-row">
+          <span class="fr-lbl">상품 정보<span class="req">*</span></span>
+          <div class="fr-body"><span class="flash-inwrap" style="display:block"><input class="flash-input" id="flashName" maxlength="50" placeholder="상품명" /><span class="fi-count" id="flashNameCount">0/50</span></span></div>
+        </div>
+        <div class="flash-row">
+          <span class="fr-lbl">가격<span class="req">*</span></span>
+          <div class="fr-body"><span class="flash-inwrap" style="display:inline-block;width:180px"><input class="flash-input short" id="flashPrice" inputmode="numeric" placeholder="가격" /><span class="fi-unit">원</span></span></div>
+        </div>
+        <div class="flash-row">
+          <span class="fr-lbl">수량<span class="req">*</span></span>
+          <div class="fr-body"><span class="flash-inwrap" style="display:inline-block;width:180px"><input class="flash-input short" id="flashQty" inputmode="numeric" placeholder="판매가능수량" /><span class="fi-unit">개</span></span></div>
+        </div>
+        <div class="flash-row">
+          <span class="fr-lbl">옵션 사용</span>
+          <div class="fr-body"><div class="flash-seg" id="flashOpt"><button class="on" data-opt="off">사용안함</button><button data-opt="on">사용함</button></div></div>
+        </div>
+        <div class="flash-row">
+          <span class="fr-lbl">상품 안내사항</span>
+          <div class="fr-body"><textarea class="flash-ta" id="flashNotice" maxlength="80" placeholder="사이즈, 유통기한, 구성품, 주의사항 등 구매 전 안내가 필요한 내용을 입력"></textarea><div class="flash-ta-count" id="flashNoticeCount">0/80</div></div>
+        </div>
       </div>
     </div>
-    <div class="imgcap-film" id="imgCapFilm"></div>
-    <div class="imgcap-foot">
-      <span class="imgcap-hint">이미지를 선택하고 <b>대표 이미지로 지정</b>하면 리스트·방송 프리뷰에 즉시 반영됩니다.</span>
-      <button class="imgcap-setrep" id="imgCapSetRep">대표 이미지로 지정</button>
-    </div>
+    <p class="flash-notes">· 상품 안내사항은 상품 상세, 상품 구매 팝업에 노출됩니다.<br/>· 최대 80자, 3줄까지 입력할 수 있습니다. 꼭 안내가 필요한 내용만 간략히 입력해 주세요.</p>
+    <label class="flash-startnow"><span class="cbox-sq" id="flashStartNow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m5 12 5 5 9-10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span> 한정판매 즉시 시작</label>
+    <div class="flash-foot"><button class="btn-cancel" id="flashCancel">취소</button><button class="btn-go" id="flashApply">적용</button></div>
+    <input type="file" id="flashFile" accept="image/*" style="display:none" />
   </div>
 </div>
 
@@ -2070,61 +2179,224 @@
       var t = r.querySelector('.pr-thumb'); var m = meta(r); if (t && m.img) t.style.backgroundImage = 'url(' + m.img + ')';
     });
 
-    // ===== 이미지 캡처 확대(3433) + 대표 이미지 빠른 수정(3434) =====
+    // ===== 등록된 상품 가져오기 + 플래시 상품 등록/수정 (캡처확대 3433 · 대표 빠른수정 3434) =====
     (function () {
-      var modal = document.getElementById('imgCapModal'); if (!modal) return;
-      var big = document.getElementById('imgCapBig'), nameEl = document.getElementById('imgCapName');
-      var film = document.getElementById('imgCapFilm'), zEl = document.getElementById('imgCapZ');
-      var POOL = ['p1.png', 'p2.png', 'p3.png', 'p4.png', 'p5.png', 'p6.png'];
-      var GAL = {}, curIdx = -1;
-      var ORIG_IMG = (META || []).map(function (m) { return m ? m.img : undefined; });
-      function gal(idx) {
-        if (idx < 0) return { imgs: [{ src: 'product.png', cap: false }], rep: 0, sel: 0, zoom: 100 };
-        if (!GAL[idx]) {
-          var base = (META[idx] || {}).img || 'product.png';
-          var extras = POOL.filter(function (p) { return p !== base; }).slice(0, 2);
-          GAL[idx] = { imgs: [{ src: base, cap: false }].concat(extras.map(function (s) { return { src: s, cap: false }; })), rep: 0, sel: 0, zoom: 100 };
+      var flashModal = document.getElementById('flashModal'), impModal = document.getElementById('impModal');
+      if (!flashModal || !impModal) return;
+      function fmtN(v) { return num(v).toLocaleString('en-US'); }
+      function escAttr(v) { return String(v == null ? '' : v).replace(/"/g, '&quot;'); }
+      var flSeq = 0;
+
+      // ---- 방송 화면 캡처(모의): 좌측 방송 프레임 모양을 캔버스로 그려 dataURL 생성 ----
+      var capSeq = 0;
+      function makeBroadcastFrame() {
+        capSeq++;
+        var c = document.createElement('canvas'); c.width = 480; c.height = 480;
+        var x = c.getContext('2d');
+        var g = x.createRadialGradient(240, 210, 40, 240, 240, 400);
+        g.addColorStop(0, '#3b414c'); g.addColorStop(1, '#14161c');
+        x.fillStyle = g; x.fillRect(0, 0, 480, 480);
+        x.save(); x.translate(240, 250); x.rotate((capSeq % 5 - 2) * 0.05);
+        x.fillStyle = 'rgba(255,255,255,.12)';
+        if (x.roundRect) { x.beginPath(); x.roundRect(-90, -110, 180, 220, 28); x.fill(); } else { x.fillRect(-90, -110, 180, 220); }
+        x.fillStyle = 'rgba(255,255,255,.22)'; x.fillRect(-90, -110, 180, 30);
+        x.restore();
+        x.fillStyle = 'rgba(245,55,91,.92)'; x.beginPath(); x.arc(42, 42, 7, 0, 6.29); x.fill();
+        x.fillStyle = '#fff'; x.font = 'bold 21px sans-serif'; x.fillText('LIVE', 58, 49);
+        x.font = '15px sans-serif'; x.fillStyle = 'rgba(255,255,255,.65)'; x.fillText('캡처 프레임 #' + capSeq, 42, 452);
+        return c.toDataURL('image/png');
+      }
+
+      // ---- 리스트 행 생성/추가 (가져온 상품 · 플래시 상품) ----
+      function buildRowEl(o) {
+        var row = document.createElement('div'); row.className = 'product-row';
+        var thumbCls = 'pr-thumb' + (o.flash ? ' pt-flash' : '');
+        var editOv = o.flash ? '<span class="pt-edit">수정</span>' : '';
+        row.innerHTML =
+          '<div class="pr-head">' +
+            '<label class="cbox"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="m5 12 5 5 9-10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></label>' +
+            '<span class="' + thumbCls + '" style="background-image:url(' + o.img + ')">' + editOv + '</span>' +
+            '<div class="pr-main">' +
+              '<div class="pr-top"><input class="pr-name-input" value="' + escAttr(o.name) + '" />' +
+                '<div class="pr-actions"><button class="btn-up">&#9650; UP</button><button class="btn-storeoff">스토어 OFF</button></div></div>' +
+              '<div class="pr-bottom"><div class="pi-prices">' +
+                '<div class="pi-cell pi-cell--live"><span class="pi-label">라이브가</span><div class="pi-live-field"><input class="pi-live-input" value="' + fmtN(o.price) + '" inputmode="numeric" aria-label="라이브가" /><span class="pi-live-unit">원</span></div></div>' +
+              '</div>' +
+              '<div class="pr-sale-btns"><button class="btn-sale active">판매예정</button><button class="btn-sale">판매시작</button><button class="btn-sale">품절</button></div></div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="pr-stats">' +
+            '<div class="stat-cell"><span class="lbl">장바구니 수량</span><span class="val">0</span></div>' +
+            '<div class="stat-cell"><span class="lbl">실주문 수량</span><span class="val">0</span></div>' +
+            '<div class="stat-cell"><span class="lbl">재고</span><span class="val">' + fmtN(o.qty) + '</span></div>' +
+            '<div class="stat-cell stat-occ" title="게임·결제 진행 중 점유 (정상 동작)"><span class="lbl">점유</span><span class="val">0</span></div>' +
+            '<div class="stat-cell" style="padding-left:10px"><span class="lbl">판매가능 수량</span><input class="val-box" type="text" inputmode="numeric" value="' + fmtN(o.qty) + '" aria-label="판매가능 수량" /></div>' +
+            '<div class="stat-div"></div>' +
+            '<div class="stat-cell right"><span class="lbl">라이브 매출</span><span class="val">₩0</span></div>' +
+          '</div>';
+        return row;
+      }
+      function addRow(o) { var el = buildRowEl(o); listEl.appendChild(el); order.push(el); META.push({ img: o.img, code: o.code || '' }); return el; }
+
+      // ================= 플래시 상품 등록/수정 =================
+      var flStage = document.getElementById('flashStage'), flBig = document.getElementById('flashBig'), flEmpty = document.getElementById('flashEmpty');
+      var flSlots = document.getElementById('flashSlots'), flFile = document.getElementById('flashFile');
+      var flName = document.getElementById('flashName'), flPrice = document.getElementById('flashPrice'), flQty = document.getElementById('flashQty'), flNotice = document.getElementById('flashNotice');
+      var flZLvl = document.getElementById('flashZLvl'), flZIn = document.getElementById('flashZIn'), flZOut = document.getElementById('flashZOut');
+      var FL = null, flUploadTarget = -1;
+      function blankFL() { return { imgs: [], rep: 0, zoom: 100, panX: 0, panY: 0, name: '', price: '', qty: '', optUse: 'off', notice: '', startNow: false, editRow: null }; }
+      function setImgMode(m) { document.getElementById('flashUpload').classList.toggle('on', m === 'upload'); document.getElementById('flashCapture').classList.toggle('on', m === 'capture'); }
+      function renderFlashBig() {
+        if (!FL.imgs.length) { flBig.style.backgroundImage = ''; flEmpty.style.display = 'flex'; }
+        else { flEmpty.style.display = 'none'; flBig.style.backgroundImage = 'url(' + FL.imgs[FL.rep] + ')'; }
+        if (FL.zoom <= 100) { FL.panX = 0; FL.panY = 0; }
+        flBig.style.transform = 'translate(' + FL.panX + 'px,' + FL.panY + 'px) scale(' + (FL.zoom / 100) + ')';
+        flZLvl.textContent = FL.zoom + '%';
+        flZOut.disabled = (FL.zoom <= 100) || !FL.imgs.length;
+        flZIn.disabled = (FL.zoom >= 400) || !FL.imgs.length;
+      }
+      function renderFlashSlots() {
+        var html = '';
+        for (var i = 0; i < 5; i++) {
+          if (i < FL.imgs.length) {
+            html += '<div class="flash-slot filled' + (i === FL.rep ? ' rep' : '') + '" data-i="' + i + '" style="background-image:url(' + FL.imgs[i] + ')" title="' + (i === FL.rep ? '대표 이미지 — 클릭 시 파일 업로드로 교체' : '클릭 시 대표로 지정') + '">' +
+              (i === FL.rep ? '<span class="flash-repbadge">대표</span>' : '') +
+              '<button class="flash-del" data-del="' + i + '" aria-label="삭제">&times;</button></div>';
+          } else {
+            html += '<div class="flash-slot" data-add="1"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M8.5 6l1-2h5l1 2" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12.5" r="3" stroke="currentColor" stroke-width="1.7"/></svg></div>';
+          }
         }
-        return GAL[idx];
+        flSlots.innerHTML = html;
       }
-      function renderBig() { var g = gal(curIdx); big.src = g.imgs[g.sel].src; if (g.zoom <= 100) { g.panX = 0; g.panY = 0; } big.style.transform = 'translate(' + (g.panX || 0) + 'px,' + (g.panY || 0) + 'px) scale(' + (g.zoom / 100) + ')'; zEl.textContent = g.zoom + '%'; var oB = document.getElementById('imgCapOut'), iB = document.getElementById('imgCapIn'); if (oB) oB.disabled = (g.zoom <= 100); if (iB) iB.disabled = (g.zoom >= 400); }
-      function renderFilm() {
-        var g = gal(curIdx);
-        film.innerHTML = g.imgs.map(function (im, i) {
-          return '<button class="ic-film' + (i === g.sel ? ' sel' : '') + '" data-i="' + i + '" style="background-image:url(' + im.src + ')">' +
-            (i === g.rep ? '<span class="ic-repbadge">★ 대표</span>' : '') + (im.cap ? '<span class="ic-captag">캡처</span>' : '') + '</button>';
-        }).join('');
+      function renderFlash() {
+        renderFlashBig(); renderFlashSlots();
+        flName.value = FL.name; document.getElementById('flashNameCount').textContent = FL.name.length + '/50';
+        flPrice.value = FL.price ? fmtN(FL.price) : ''; flQty.value = FL.qty ? fmtN(FL.qty) : ''; flNotice.value = FL.notice;
+        document.getElementById('flashNoticeCount').textContent = FL.notice.length + '/80';
+        Array.prototype.forEach.call(document.querySelectorAll('#flashOpt button'), function (b) { b.classList.toggle('on', b.getAttribute('data-opt') === FL.optUse); });
+        document.getElementById('flashStartNow').classList.toggle('on', !!FL.startNow);
       }
-      function openCap(idx) {
-        curIdx = idx; var g = gal(idx); g.sel = g.rep; g.zoom = 100;
-        var row = order[idx]; nameEl.textContent = (row && (row.querySelector('.pr-name-input') || {}).value) || '상품';
-        renderBig(); renderFilm(); modal.classList.add('open');
+      function openFlash(editRow) {
+        FL = blankFL();
+        if (editRow && editRow.__flash) { var s = editRow.__flash; FL.imgs = s.imgs.slice(); FL.rep = s.rep; FL.name = s.name; FL.price = s.price; FL.qty = s.qty; FL.optUse = s.optUse; FL.notice = s.notice || ''; FL.editRow = editRow; }
+        document.getElementById('flashTitle').textContent = editRow ? '플래시 상품 수정' : '플래시 상품 등록';
+        setImgMode('capture'); renderFlash(); flashModal.classList.add('open');
       }
-      function closeCap() { modal.classList.remove('open'); }
-      window.__gripImgOpen = openCap;
-      window.__gripImgReset = function () { GAL = {}; ORIG_IMG.forEach(function (img, i) { if (META[i]) META[i].img = img; var r = order[i]; if (r) { var th = r.querySelector('.pr-thumb'); if (th && img) th.style.backgroundImage = 'url(' + img + ')'; } }); closeCap(); };
-      listEl.addEventListener('click', function (e) { var th = e.target.closest && e.target.closest('.pr-thumb'); if (!th) return; var row = th.closest('.product-row'); var idx = idxOf(row); if (idx < 0) return; openCap(idx); });
-      document.getElementById('imgCapIn').addEventListener('click', function () { var g = gal(curIdx); g.zoom = Math.min(400, g.zoom + 50); renderBig(); });
-      document.getElementById('imgCapOut').addEventListener('click', function () { var g = gal(curIdx); g.zoom = Math.max(100, g.zoom - 50); renderBig(); });
-      document.getElementById('imgCapShot').addEventListener('click', function () { if (curIdx < 0) return; var g = gal(curIdx); var capN = g.imgs.filter(function (im) { return im.cap; }).length; g.imgs.push({ src: POOL[capN % POOL.length], cap: true }); g.sel = g.imgs.length - 1; g.zoom = 100; renderFilm(); renderBig(); toast('방송 화면을 캡처했습니다.', true); });
-      film.addEventListener('click', function (e) { var b = e.target.closest('.ic-film'); if (!b) return; gal(curIdx).sel = parseInt(b.getAttribute('data-i'), 10); renderBig(); renderFilm(); });
-      (function () {
-        var vp = document.getElementById('imgCapVp'); if (!vp) return;
-        var dragging = false, sx = 0, sy = 0, ox = 0, oy = 0;
-        vp.addEventListener('pointerdown', function (e) { if (curIdx < 0) return; var g = gal(curIdx); if (g.zoom <= 100) return; dragging = true; sx = e.clientX; sy = e.clientY; ox = g.panX || 0; oy = g.panY || 0; if (vp.setPointerCapture) vp.setPointerCapture(e.pointerId); e.preventDefault(); });
-        vp.addEventListener('pointermove', function (e) { if (!dragging || curIdx < 0) return; var g = gal(curIdx), scale = g.zoom / 100, limX = vp.clientWidth * (scale - 1) / 2, limY = vp.clientHeight * (scale - 1) / 2; g.panX = Math.max(-limX, Math.min(limX, ox + (e.clientX - sx))); g.panY = Math.max(-limY, Math.min(limY, oy + (e.clientY - sy))); big.style.transform = 'translate(' + g.panX + 'px,' + g.panY + 'px) scale(' + scale + ')'; });
-        function end() { dragging = false; }
-        vp.addEventListener('pointerup', end); vp.addEventListener('pointerleave', end);
-      })();
-      document.getElementById('imgCapSetRep').addEventListener('click', function () {
-        var g = gal(curIdx); g.rep = g.sel; var src = g.imgs[g.sel].src;
-        if (META[curIdx]) META[curIdx].img = src;
-        var row = order[curIdx];
-        if (row) { var th = row.querySelector('.pr-thumb'); if (th) th.style.backgroundImage = 'url(' + src + ')'; updateCard(row); }
-        renderFilm(); toast('대표 이미지로 지정했습니다. (리스트·프리뷰 반영)', true);
+      function closeFlash() { flashModal.classList.remove('open'); }
+      window.__gripFlashOpen = openFlash;
+
+      document.getElementById('flashCapture').addEventListener('click', function () {
+        setImgMode('capture');
+        if (FL.imgs.length >= 5) { toast('이미지는 최대 5개까지 담을 수 있습니다.', false); return; }
+        FL.imgs.push(makeBroadcastFrame()); FL.rep = FL.imgs.length - 1; FL.zoom = 100; renderFlash();
+        toast('현재 방송 화면을 캡처했습니다.', true);
       });
-      document.getElementById('imgCapClose').addEventListener('click', closeCap);
-      modal.addEventListener('click', function (e) { if (e.target === modal) closeCap(); });
+      document.getElementById('flashUpload').addEventListener('click', function () { setImgMode('upload'); flUploadTarget = -1; flFile.value = ''; flFile.click(); });
+      flFile.addEventListener('change', function () {
+        var f = flFile.files && flFile.files[0]; if (!f) return;
+        var rd = new FileReader();
+        rd.onload = function () {
+          if (flUploadTarget >= 0 && flUploadTarget < FL.imgs.length) { FL.imgs[flUploadTarget] = rd.result; FL.rep = flUploadTarget; }
+          else { if (FL.imgs.length >= 5) { toast('이미지는 최대 5개까지 담을 수 있습니다.', false); return; } FL.imgs.push(rd.result); FL.rep = FL.imgs.length - 1; }
+          FL.zoom = 100; renderFlash(); toast('이미지를 업로드했습니다.', true);
+        };
+        rd.readAsDataURL(f);
+      });
+      // 슬롯: 대표 클릭→파일업로드 교체(3434) / 비대표→대표 지정 / 빈 슬롯→업로드 추가 / 삭제
+      flSlots.addEventListener('click', function (e) {
+        var del = e.target.closest('.flash-del');
+        if (del) { var di = parseInt(del.getAttribute('data-del'), 10); FL.imgs.splice(di, 1); if (FL.rep >= FL.imgs.length) FL.rep = Math.max(0, FL.imgs.length - 1); FL.zoom = 100; renderFlash(); e.stopPropagation(); return; }
+        var slot = e.target.closest('.flash-slot'); if (!slot) return;
+        if (slot.getAttribute('data-add')) { setImgMode('upload'); flUploadTarget = -1; flFile.value = ''; flFile.click(); return; }
+        var i = parseInt(slot.getAttribute('data-i'), 10);
+        if (i === FL.rep) { setImgMode('upload'); flUploadTarget = i; flFile.value = ''; flFile.click(); }
+        else { FL.rep = i; FL.zoom = 100; renderFlash(); }
+      });
+      // 확대/축소(3433) + 팬
+      flZIn.addEventListener('click', function () { if (!FL.imgs.length) return; FL.zoom = Math.min(400, FL.zoom + 25); renderFlashBig(); });
+      flZOut.addEventListener('click', function () { if (!FL.imgs.length) return; FL.zoom = Math.max(100, FL.zoom - 25); renderFlashBig(); });
+      (function () {
+        var dragging = false, sx = 0, sy = 0, ox = 0, oy = 0;
+        flStage.addEventListener('pointerdown', function (e) { if (!FL || FL.zoom <= 100 || !FL.imgs.length) return; dragging = true; sx = e.clientX; sy = e.clientY; ox = FL.panX; oy = FL.panY; if (flStage.setPointerCapture) flStage.setPointerCapture(e.pointerId); e.preventDefault(); });
+        flStage.addEventListener('pointermove', function (e) { if (!dragging) return; var scale = FL.zoom / 100, lim = flStage.clientWidth * (scale - 1) / 2; FL.panX = Math.max(-lim, Math.min(lim, ox + (e.clientX - sx))); FL.panY = Math.max(-lim, Math.min(lim, oy + (e.clientY - sy))); flBig.style.transform = 'translate(' + FL.panX + 'px,' + FL.panY + 'px) scale(' + scale + ')'; });
+        function end() { dragging = false; } flStage.addEventListener('pointerup', end); flStage.addEventListener('pointerleave', end);
+      })();
+      // 폼
+      flName.addEventListener('input', function () { FL.name = flName.value; document.getElementById('flashNameCount').textContent = FL.name.length + '/50'; });
+      flPrice.addEventListener('input', function () { var v = flPrice.value.replace(/[^\d]/g, ''); FL.price = v; flPrice.value = v ? num(v).toLocaleString('en-US') : ''; });
+      flQty.addEventListener('input', function () { var v = flQty.value.replace(/[^\d]/g, ''); FL.qty = v; flQty.value = v ? num(v).toLocaleString('en-US') : ''; });
+      flNotice.addEventListener('input', function () { FL.notice = flNotice.value; document.getElementById('flashNoticeCount').textContent = FL.notice.length + '/80'; });
+      document.getElementById('flashOpt').addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; FL.optUse = b.getAttribute('data-opt'); renderFlash(); });
+      document.getElementById('flashStartNow').addEventListener('click', function () { FL.startNow = !FL.startNow; document.getElementById('flashStartNow').classList.toggle('on', FL.startNow); });
+      document.getElementById('flashApply').addEventListener('click', function () {
+        if (!FL.imgs.length) { toast('상품 이미지를 추가해 주세요.', false); return; }
+        if (!FL.name.trim()) { toast('상품명을 입력해 주세요.', false); return; }
+        if (!FL.price) { toast('가격을 입력해 주세요.', false); return; }
+        if (!FL.qty) { toast('수량을 입력해 주세요.', false); return; }
+        var data = { img: FL.imgs[FL.rep], imgs: FL.imgs.slice(), rep: FL.rep, name: FL.name.trim(), price: FL.price, qty: FL.qty, optUse: FL.optUse, notice: FL.notice };
+        if (FL.editRow) {
+          FL.editRow.__flash = data;
+          var th = FL.editRow.querySelector('.pr-thumb'); if (th) th.style.backgroundImage = 'url(' + data.img + ')';
+          var ni = FL.editRow.querySelector('.pr-name-input'); if (ni) ni.value = data.name;
+          var pi = FL.editRow.querySelector('.pi-live-input'); if (pi) pi.value = fmtN(data.price);
+          var ix = idxOf(FL.editRow); if (ix >= 0 && META[ix]) META[ix].img = data.img;
+          updateCard(FL.editRow); toast('플래시 상품을 수정했습니다.', true);
+        } else {
+          var row = addRow({ img: data.img, name: data.name, price: data.price, qty: data.qty, flash: true, code: 'flash-' + (++flSeq) });
+          row.__flash = data; toast('플래시 상품을 등록했습니다.', true);
+        }
+        closeFlash();
+      });
+      document.getElementById('flashClose').addEventListener('click', closeFlash);
+      document.getElementById('flashCancel').addEventListener('click', closeFlash);
+      flashModal.addEventListener('click', function (e) { if (e.target === flashModal) closeFlash(); });
+      var btnFlash = document.getElementById('btnFlash'); if (btnFlash) btnFlash.addEventListener('click', function () { openFlash(null); });
+      // 리스트 썸네일 '수정'(플래시 상품만) → 수정 모드 재진입
+      listEl.addEventListener('click', function (e) { var ed = e.target.closest && e.target.closest('.pt-edit'); if (!ed) return; var row = ed.closest('.product-row'); if (row && row.__flash) openFlash(row); });
+
+      // ================= 등록된 상품 가져오기 =================
+      var IMPORT_POOL = [
+        { name: '미니 대표 선크림', code: 'npyp6441', price: 1000, img: 'p1.png' },
+        { name: '수분 진정 토너 200ml', code: 'tn200aa', price: 18900, img: 'p2.png' },
+        { name: '데일리 클렌징 폼', code: 'cf-dy09', price: 9900, img: 'p3.png' },
+        { name: '비타민C 브라이트 세럼', code: 'vc-br24', price: 24000, img: 'p4.png' },
+        { name: '수분 진정 크림 50ml', code: 'mc-50z', price: 21000, img: 'p5.png' },
+        { name: '모이스처 립밤 2종 세트', code: 'lb-2set', price: 12000, img: 'p6.png' }
+      ];
+      var impSel = {}, impListEl = document.getElementById('impList');
+      function selCount() { return Object.keys(impSel).filter(function (k) { return impSel[k]; }).length; }
+      function updateImpApply() { var n = selCount(); var b = document.getElementById('impApply'); b.disabled = n === 0; b.textContent = n ? ('적용 (' + n + ')') : '적용'; document.getElementById('impAll').classList.toggle('on', n > 0 && n === IMPORT_POOL.length); }
+      function renderImp(q) {
+        var html = '';
+        IMPORT_POOL.forEach(function (p, gi) {
+          if (q && p.name.indexOf(q) < 0) return;
+          html += '<div class="imp-item" data-i="' + gi + '"><span class="cbox-sq' + (impSel[gi] ? ' on' : '') + '"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m5 12 5 5 9-10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>' +
+            '<span class="imp-thumb" style="background-image:url(' + p.img + ')"></span>' +
+            '<span class="imp-info"><div class="imp-name">' + p.name + '</div><div class="imp-code">상품코드: ' + p.code + '</div><div class="imp-price">' + p.price.toLocaleString('en-US') + '원</div></span></div>';
+        });
+        impListEl.innerHTML = html || '<div style="padding:40px 0;text-align:center;color:#9aa0ab;font-size:14px;">검색 결과가 없습니다.</div>';
+        updateImpApply();
+      }
+      function openImp() { impSel = {}; document.getElementById('impSearch').value = ''; renderImp(''); impModal.classList.add('open'); }
+      function closeImp() { impModal.classList.remove('open'); }
+      impListEl.addEventListener('click', function (e) { var it = e.target.closest('.imp-item'); if (!it) return; var gi = parseInt(it.getAttribute('data-i'), 10); impSel[gi] = !impSel[gi]; renderImp(document.getElementById('impSearch').value.trim()); });
+      document.getElementById('impAll').addEventListener('click', function (e) { e.stopPropagation(); var all = selCount() === IMPORT_POOL.length; IMPORT_POOL.forEach(function (p, i) { impSel[i] = !all; }); renderImp(document.getElementById('impSearch').value.trim()); });
+      document.getElementById('impGo').addEventListener('click', function () { renderImp(document.getElementById('impSearch').value.trim()); });
+      document.getElementById('impSearch').addEventListener('keydown', function (e) { if (e.key === 'Enter') renderImp(this.value.trim()); });
+      document.getElementById('impApply').addEventListener('click', function () {
+        var picked = IMPORT_POOL.filter(function (p, i) { return impSel[i]; });
+        if (!picked.length) return;
+        picked.forEach(function (p) { addRow({ img: p.img, name: p.name, price: p.price, qty: 999, flash: false, code: p.code }); });
+        toast(picked.length + '개 상품을 가져왔습니다.', true); closeImp();
+      });
+      document.getElementById('impClose').addEventListener('click', closeImp);
+      document.getElementById('impCancel').addEventListener('click', closeImp);
+      impModal.addEventListener('click', function (e) { if (e.target === impModal) closeImp(); });
+      var btnImport = document.getElementById('btnImport'); if (btnImport) btnImport.addEventListener('click', openImp);
+
+      // 데모/리셋에서 호출 (resetUI가 참조)
+      window.__gripImgReset = function () { closeFlash(); closeImp(); FL = blankFL(); };
+      window.__gripImpOpen = openImp;
     })();
 
     function resetUpState() {
@@ -3312,81 +3584,81 @@
       ]
     });
 
-    // ===== 기능 7: 이미지 캡처 확대 (GRIPPGM-3433) =====
+    // ===== 기능 7: 이미지 캡처 확대 (GRIPPGM-3433) — 플래시 상품 등록/수정 모달 안에서 =====
     FEATURES.push({
       id: 'capzoom', demoMode: 'limited', jira: 'GRIPPGM-3433', name: '[스튜디오] 이미지 캡처 확대 기능 개발',
       overviewHTML:
         '<div class="ov-title">🎯 과제 개요</div>' +
         '<span class="prd-k2">과제의 목적</span>' +
-        '<p>스튜디오에서 <b>등록된 상품의 이미지를 크게 확대(캡처 확대)</b>해 방송 중 디테일(라벨·소재·문구)을 바로 확인할 수 있게 한다. (Jira <b>GRIPPGM-3433</b>)</p>' +
-        '<span class="prd-k2">배경 · 실제 문제</span>' +
-        '<p>리스트의 상품 <b>썸네일이 작아</b> 방송 중 이미지를 자세히 보려면 앱/비즈센터로 이동해야 했다.</p>' +
+        '<p><b>플래시 상품 등록/수정</b> 모달에서 방송 화면을 캡처한 상품 이미지를 <b>확대/축소</b>하고 위치를 잡아, 원하는 프레이밍으로 <b>지정·저장</b>할 수 있게 한다. (Jira <b>GRIPPGM-3433</b>)</p>' +
+        '<span class="prd-k2">배경 · 실제 환경</span>' +
+        '<p>상품은 두 경로로 방송 리스트에 올린다. ① <b>등록된 상품 가져오기</b> = 비즈센터 등록 상품을 불러옴(이미지 <b>수정 불가</b>). ② <b>플래시 상품 등록</b> = <b>[현재 화면 캡처]</b>로 방송의 1:1 영역을 즉석 이미지로 만든다. 캡처 이미지는 프레이밍이 어긋나기 쉬워 <b>확대·이동으로 다듬을 수단</b>이 필요했다.</p>' +
         '<span class="prd-k2">해결</span>' +
-        '<p>상품 <b>썸네일 클릭 → 확대 뷰어</b> 팝업. <b>확대/축소(100~400%)</b>로 디테일 확인, <b>[📸 방송 화면 캡처]</b>로 현재 방송 프레임을 이미지 후보로 담을 수 있다. (담은 이미지는 대표 지정으로 이어짐 &mdash; GRIPPGM-3434)</p>',
+        '<p>플래시 모달 <b>좌측 미리보기</b>에서 <b>+ / −(100~400%)</b>로 확대/축소하고 <b>드래그로 위치</b>를 조정 → 그대로 대표 이미지로 지정·저장. 저장된 플래시 상품은 리스트 썸네일 <b>[수정]</b>으로 다시 열어 조정한다.</p>',
       flowHTML:
-        '<span class="prd-k2">검증 플로우 · 이미지 확대</span>' +
+        '<span class="prd-k2">검증 플로우 · 캡처 → 확대 → 지정</span>' +
         '<div class="fpath">' +
-          '<div class="fpath-h"><span class="fpath-tag a">경로</span> 상품 썸네일</div>' +
-          '<div class="frow"><span class="fnode">썸네일 클릭</span><span class="farr">→</span><span class="fnode">확대 뷰어 팝업</span><span class="farr">→</span><span class="fnode">+ / − 로 100~400% 확대</span></div>' +
-          '<div class="frow"><span class="fnode">[📸 방송 화면 캡처]</span><span class="farr">→</span><span class="fnode">현재 프레임을 이미지 후보로 추가</span></div>' +
+          '<div class="fpath-h"><span class="fpath-tag a">경로</span> 플래시 상품 등록</div>' +
+          '<div class="frow"><span class="fnode">[플래시 상품 등록]</span><span class="farr">→</span><span class="fnode">[현재 화면 캡처] 1:1 방송 프레임</span><span class="farr">→</span><span class="fnode">+ / − 100~400% + 드래그 위치</span></div>' +
+          '<div class="frow"><span class="fnode">상품명·가격·수량 입력</span><span class="farr">→</span><span class="fnode">적용 → 리스트에 플래시 상품 추가</span></div>' +
         '</div>' +
-        '<div class="fnode final">확대로 디테일 확인 · 캡처한 이미지는 대표 이미지 지정(GRIPPGM-3434)으로 연결</div>',
+        '<div class="fnode final">등록된 상품 가져오기 이미지는 수정 불가 · 캡처·확대·대표수정은 플래시 상품 전용 · 리스트 [수정]으로 재진입</div>',
       prd: [
-        { n: 1, target: '.pr-thumb', title: '썸네일 → 확대 뷰어 진입', tag: '진입',
-          def: '상품 리스트의 썸네일을 클릭하면 이미지 확대 뷰어가 열린다.',
-          asis: ['썸네일이 작아 이미지 디테일 확인이 어렵고, 크게 보려면 다른 화면으로 이동해야 함.'],
-          tobe: ['썸네일 클릭 → 확대 뷰어 팝업에서 크게 확인.'],
-          features: ['모든 상품 행 썸네일 클릭으로 진입.', '뷰어에 현재 대표 이미지 + 후보 이미지들이 필름스트립으로 노출.'] },
-        { n: 2, target: '#imgCapModal .imgcap-stage', title: '확대/축소 · 방송 화면 캡처', tag: '확대 · 캡처',
-          def: '뷰어에서 이미지를 100~400%로 확대/축소하고, 방송 화면을 캡처해 이미지 후보로 담는다.',
-          features: ['<b>+ / −</b> 버튼으로 100% ~ 400% 단계 확대/축소.', '<b>[📸 방송 화면 캡처]</b>로 현재 방송 프레임을 후보 이미지로 추가(캡처 태그).', '필름스트립에서 이미지 선택 시 확대 뷰가 전환.'] }
+        { n: 1, target: '#flashCapture', title: '플래시 상품 · 현재 화면 캡처', tag: '캡처',
+          def: '플래시 상품 등록/수정 모달에서 현재 방송 화면(1:1 영역)을 캡처해 상품 이미지로 담는다.',
+          asis: ['캡처 이미지의 프레이밍(구도)을 방송 중 다듬을 수단이 부족했음.'],
+          tobe: ['[현재 화면 캡처]로 방송 프레임을 담고, 확대/축소·이동으로 프레이밍을 조정.'],
+          features: ['<b>[현재 화면 캡처]</b> = 방송 1:1 영역을 이미지로 캡처(최대 5장).', '<b>[파일 업로드]</b>로도 이미지 추가.', '<b>등록된 상품 가져오기</b> 이미지는 수정 불가 — 캡처·확대는 플래시 상품 전용.'] },
+        { n: 2, target: '#flashStage', title: '이미지 확대/축소 · 위치 조정', tag: '확대',
+          def: '모달 좌측 미리보기에서 이미지를 100~400%로 확대/축소하고 드래그로 위치를 잡아 지정·저장한다.',
+          features: ['<b>+ / −</b> 100~400% 단계 확대/축소.', '확대 상태에서 <b>드래그로 위치(프레이밍) 조정</b>.', '조정한 이미지를 그대로 대표로 지정·저장 → 리스트 반영.'] }
       ],
       steps: [
-        { tag: '시작', t: '스튜디오에서 <b>상품 이미지를 확대(캡처 확대)</b>해 보는 흐름을 시연합니다. (Jira GRIPPGM-3433)', target: function () { return q('.product-list'); }, act: function () { resetUI(); } },
-        { tag: '썸네일 → 확대', t: '상품 <b>썸네일을 클릭</b>합니다. (다음 화면에서 이미지 확대 뷰어가 열립니다.)', target: function () { var r = rowN(0); return r ? r.querySelector('.pr-thumb') : null; }, act: function () { var m = q('#imgCapModal'); if (m) m.classList.remove('open'); var r = rowN(0); if (r) { var th = r.querySelector('.pr-thumb'); if (th) th.scrollIntoView({ block: 'center' }); } } },
-        { tag: '확대(100~400%)', t: '<b>+ / −</b> 버튼으로 <b>100~400%</b>까지 확대·축소하며 디테일을 확인합니다.', target: function () { return q('#imgCapModal .imgcap-stage'); }, act: function () { if (!q('#imgCapModal').classList.contains('open') && window.__gripImgOpen) window.__gripImgOpen(0); var b = document.getElementById('imgCapIn'); if (b) { b.click(); b.click(); } } },
-        { tag: '방송 화면 캡처', t: '<b>[📸 방송 화면 캡처]</b>로 현재 방송 프레임을 이미지 후보로 담습니다. (담은 이미지는 대표 지정으로 연결 — GRIPPGM-3434)', target: function () { return q('#imgCapShot'); }, act: function () { var b = document.getElementById('imgCapShot'); if (b) b.click(); } }
+        { tag: '시작', t: '스튜디오에서 <b>방송 화면을 캡처해 상품 이미지를 만들고 확대</b>하는 흐름을 시연합니다. (Jira GRIPPGM-3433)', target: function () { return q('.product-list'); }, act: function () { resetUI(); } },
+        { tag: '플래시 상품 등록', t: '<b>[플래시 상품 등록]</b>을 열면 방송 화면을 캡처해 상품 이미지를 만드는 모달이 뜹니다.', target: function () { return q('#flashModal .flash-modal'); }, act: function () { if (!q('#flashModal').classList.contains('open') && window.__gripFlashOpen) window.__gripFlashOpen(null); } },
+        { tag: '현재 화면 캡처', t: '<b>[현재 화면 캡처]</b> → 지금 방송 중인 <b>1:1 영역</b>이 그대로 상품 이미지로 담깁니다.', target: function () { return q('#flashCapture'); }, act: function () { if (!q('#flashModal').classList.contains('open') && window.__gripFlashOpen) window.__gripFlashOpen(null); if (!q('#flashSlots .flash-slot.filled')) { var b = document.getElementById('flashCapture'); if (b) b.click(); } } },
+        { tag: '확대/축소(100~400%)', t: '좌측 미리보기에서 <b>+ / −</b>로 <b>100~400%</b> 확대·축소하고, 확대 상태에서 <b>드래그로 위치</b>를 잡아 원하는 프레이밍으로 지정·저장합니다.', target: function () { return q('#flashStage'); }, act: function () { if (!q('#flashSlots .flash-slot.filled')) { var c = document.getElementById('flashCapture'); if (c) c.click(); } var i = document.getElementById('flashZIn'); if (i) { i.click(); i.click(); } } }
       ]
     });
 
-    // ===== 기능 8: 이미지 캡처 후 대표사진 빠른 수정 (GRIPPGM-3434) =====
+    // ===== 기능 8: 캡처 후 대표사진 빠른 수정 (GRIPPGM-3434) — 대표 이미지 클릭 = 파일 업로드 =====
     FEATURES.push({
       id: 'repimg', demoMode: 'limited', jira: 'GRIPPGM-3434', name: '[스튜디오] 이미지 캡처 후, 대표사진 빠른 수정 기능 개발',
       overviewHTML:
         '<div class="ov-title">🎯 과제 개요</div>' +
         '<span class="prd-k2">과제의 목적</span>' +
-        '<p>이미지 캡처 확대 뷰어에서 원하는 이미지를 <b>대표 이미지로 1클릭 지정</b>해, 방송 중 대표 사진을 빠르게 바꿀 수 있게 한다. (Jira <b>GRIPPGM-3434</b>)</p>' +
+        '<p>플래시 상품 모달에서 <b>대표 이미지를 클릭하면 곧바로 [파일 업로드]가 열려</b> 대표 사진을 즉시 교체할 수 있게 한다. (Jira <b>GRIPPGM-3434</b>)</p>' +
         '<span class="prd-k2">배경 · 실제 문제</span>' +
-        '<p><b>대표 이미지</b> = 리스트·방송 프리뷰에 노출되는 상품 대표 사진. 지금은 대표 이미지를 바꾸려면 <b>상품 수정 진입 → 이미지 관리에서 선택·저장</b>의 <b>2뎁스</b>가 필요해 방송 중 즉시 바꾸기 어렵다.</p>' +
+        '<p><b>대표 이미지</b> = 리스트·방송 프리뷰에 노출되는 상품 대표 사진. 현재는 이미지 슬롯에서 <b>‘대표’로 라벨된 이미지를 눌러도 바로 수정되지 않아</b>, 대표 교체 동선이 번거로웠다.</p>' +
         '<span class="prd-k2">해결</span>' +
-        '<p>캡처 확대 뷰어(GRIPPGM-3433) 안에서 이미지 선택 후 <b>[대표 이미지로 지정] 1클릭(1뎁스)</b> → <b>리스트 썸네일·방송 프리뷰에 즉시 반영</b>. 현재 대표는 <b>★ 대표</b> 배지로 표시.</p>',
+        '<p><b>대표 이미지를 클릭 = [파일 업로드] 즉시 실행</b>(1뎁스). 고른 이미지가 바로 대표로 반영되고 <b>리스트 썸네일·방송 프리뷰</b>에 갱신된다. 저장된 플래시 상품은 리스트 썸네일 <b>[수정]</b>으로 이 모달을 다시 열어 교체한다.</p>',
       flowHTML:
-        '<span class="prd-k2">대표 이미지 수정 · 2뎁스 → 1뎁스</span>' +
+        '<span class="prd-k2">대표 이미지 교체 · 클릭 즉시(1뎁스)</span>' +
         '<div class="fpath">' +
-          '<div class="fpath-h"><span class="fpath-tag a">AS-IS</span> 2뎁스</div>' +
-          '<div class="frow"><span class="fnode">상품 수정 진입</span><span class="farr">→</span><span class="fnode">이미지 관리에서 선택·저장</span></div>' +
+          '<div class="fpath-h"><span class="fpath-tag a">AS-IS</span></div>' +
+          '<div class="frow"><span class="fnode">‘대표’ 이미지 클릭</span><span class="farr">→</span><span class="fnode">바로 수정 안 됨 (별도 동선)</span></div>' +
         '</div>' +
         '<div class="fmerge">↓ 개선</div>' +
         '<div class="fpath">' +
           '<div class="fpath-h"><span class="fpath-tag a">TO-BE</span> 1뎁스</div>' +
-          '<div class="frow"><span class="fnode">캡처 확대 뷰어에서 이미지 선택</span><span class="farr">→</span><span class="fnode">[대표 이미지로 지정] 1클릭</span><span class="farr">→</span><span class="fnode">리스트·프리뷰 즉시 반영</span></div>' +
+          '<div class="frow"><span class="fnode">대표 이미지 클릭</span><span class="farr">→</span><span class="fnode">[파일 업로드] 즉시 열림</span><span class="farr">→</span><span class="fnode">대표 반영 · 리스트/프리뷰 갱신</span></div>' +
         '</div>' +
-        '<div class="fnode final">현재 대표는 ★ 대표 배지 · 방송 중 대표 사진을 즉시 교체</div>',
+        '<div class="fnode final">비대표 클릭 = 대표 지정 · 대표 클릭 = 파일 업로드 교체 · 리스트 [수정]으로 재진입</div>',
       prd: [
-        { n: 1, target: '#imgCapFilm', title: '대표 이미지 개념 · 2뎁스 → 1뎁스', tag: '핵심',
-          def: '대표 이미지(리스트·프리뷰 노출 사진)를 바꾸는 동선을 2뎁스에서 1뎁스로 줄인다.',
-          asis: ['대표 이미지 변경 = 상품 수정 진입 → 이미지 관리에서 선택·저장(2뎁스). 방송 중 빠르게 못 바꿈.'],
-          tobe: ['캡처 확대 뷰어에서 이미지 선택 → [대표 이미지로 지정] 1클릭(1뎁스)으로 즉시 반영.'],
-          features: ['뷰어 필름스트립에 대표 + 후보(캡처 포함) 이미지 노출, 현재 대표는 <b>★ 대표</b> 배지.', '이미지 클릭으로 선택 → 확대 뷰 전환.'] },
-        { n: 2, target: '#imgCapSetRep', title: '[대표 이미지로 지정] 1클릭 반영', tag: '1클릭',
-          def: '선택한 이미지를 대표로 1클릭 지정하면 리스트 썸네일과 방송 프리뷰에 즉시 반영된다.',
-          features: ['<b>[대표 이미지로 지정]</b> 1클릭 → META 대표 교체.', '리스트 상품 <b>썸네일</b>과 좌측 <b>방송 프리뷰 카드</b>가 즉시 갱신.', '방송 중 캡처한 최신 프레임을 바로 대표로 올릴 수 있음.'] }
+        { n: 1, target: '#flashSlots', title: '대표 이미지 개념 · 클릭 즉시 교체', tag: '핵심',
+          def: '대표 이미지(리스트·프리뷰 노출 사진)를 플래시 상품 모달에서 클릭 한 번으로 교체한다.',
+          asis: ['‘대표’로 라벨된 이미지를 눌러도 바로 수정되지 않아 대표 교체가 번거로웠음.'],
+          tobe: ['<b>대표 이미지를 클릭하면 곧바로 [파일 업로드]</b>가 열려 이미지를 교체(1뎁스).'],
+          features: ['이미지 슬롯의 <b>대표</b> 배지 = 리스트·프리뷰 노출 이미지.', '비대표 이미지 클릭 = 대표로 지정, <b>대표 클릭 = 파일 업로드로 교체</b>.', '저장된 플래시 상품은 리스트 썸네일 <b>[수정]</b>으로 이 모달을 다시 열어 교체.'] },
+        { n: 2, target: '.flash-slot.rep', title: '대표 클릭 → 파일 업로드(1뎁스)', tag: '1클릭',
+          def: '대표 이미지를 클릭하면 파일 선택창이 바로 열리고, 고른 이미지가 즉시 대표로 반영된다.',
+          features: ['대표 슬롯 클릭 = <b>파일 업로드 즉시 실행</b>.', '선택 이미지가 대표로 반영 → 리스트 썸네일·프리뷰 갱신.', '캡처(현재 화면) 이미지도 동일하게 대표로 사용 가능.'] }
       ],
       steps: [
-        { tag: '시작', t: '캡처한 이미지를 <b>대표 사진으로 빠르게(1뎁스) 지정</b>하는 흐름을 시연합니다. (Jira GRIPPGM-3434)', target: function () { return q('.product-list'); }, act: function () { resetUI(); } },
-        { tag: '확대 뷰어 열기', t: '상품 썸네일 클릭 → 확대 뷰어. 필름스트립에 <b>대표(★) + 후보 이미지</b>가 보입니다.', target: function () { return q('#imgCapModal .imgcap-film'); }, act: function () { if (window.__gripImgOpen) window.__gripImgOpen(0); } },
-        { tag: '다른 이미지 선택', t: '대표로 쓰고 싶은 <b>다른 이미지를 선택</b>합니다. (AS-IS는 상품 수정→이미지 관리 2뎁스)', target: function () { return q('#imgCapFilm'); }, act: function () { if (!q('#imgCapModal').classList.contains('open') && window.__gripImgOpen) window.__gripImgOpen(0); var b = q('#imgCapFilm .ic-film[data-i="1"]'); if (b) b.click(); } },
-        { tag: '대표로 지정 (1클릭)', t: '<b>[대표 이미지로 지정]</b> 1클릭 → 리스트 썸네일·방송 프리뷰에 <b>즉시 반영</b>됩니다.', target: function () { return q('#imgCapSetRep'); }, act: function () { var b = document.getElementById('imgCapSetRep'); if (b) b.click(); } }
+        { tag: '시작', t: '플래시 상품의 <b>대표 사진을 클릭 한 번(1뎁스)으로 교체</b>하는 흐름을 시연합니다. (Jira GRIPPGM-3434)', target: function () { return q('.product-list'); }, act: function () { resetUI(); } },
+        { tag: '플래시 모달 · 캡처', t: '<b>[플래시 상품 등록]</b> → <b>[현재 화면 캡처]</b>로 이미지를 담으면, 첫 이미지에 <b>대표</b> 배지가 붙습니다.', target: function () { return q('#flashSlots'); }, act: function () { if (!q('#flashModal').classList.contains('open') && window.__gripFlashOpen) window.__gripFlashOpen(null); if (!q('#flashSlots .flash-slot.filled')) { var b = document.getElementById('flashCapture'); if (b) b.click(); } } },
+        { tag: '대표 클릭 → 파일 업로드', t: '<b>대표 이미지를 클릭</b>하면 곧바로 <b>[파일 업로드]</b>가 열려 대표 사진을 즉시 교체합니다(1뎁스). 비대표 이미지를 누르면 그 이미지가 대표로 지정돼요.', target: function () { return q('.flash-slot.rep'); }, act: function () { if (!q('#flashModal').classList.contains('open') && window.__gripFlashOpen) window.__gripFlashOpen(null); if (!q('#flashSlots .flash-slot.filled')) { var b = document.getElementById('flashCapture'); if (b) b.click(); } } },
+        { tag: '리스트 [수정]으로 재진입', t: '저장된 <b>플래시 상품</b>은 리스트 썸네일의 <b>[수정]</b>으로 이 모달을 다시 열어 대표 이미지를 교체할 수 있습니다.', target: function () { return q('#flashSlots'); }, act: function () { if (!q('#flashModal').classList.contains('open') && window.__gripFlashOpen) window.__gripFlashOpen(null); } }
       ]
     });
 
@@ -3487,7 +3759,7 @@
     function snapshot() { var r = rowN(0); if (r) snap = { reg: r.querySelector('.pi-regular-input').value, dis: r.querySelector('.pi-discount-input').value, live: r.querySelector('.pi-live-input').value }; }
     function resetUI() {
       if (window.__gripSetMode) window.__gripSetMode(feat().demoMode || 'limited');
-      ['#priceModal', '#failModal', '#deleteModal', '#upListModal', '#upMaxModal', '#optionModal', '#optNameModal', '#optDelAllModal', '#optBulkModal', '#imgCapModal'].forEach(function (sel) { var m = q(sel); if (m) m.classList.remove('open'); });
+      ['#priceModal', '#failModal', '#deleteModal', '#upListModal', '#upMaxModal', '#optionModal', '#optNameModal', '#optDelAllModal', '#optBulkModal', '#flashModal', '#impModal'].forEach(function (sel) { var m = q(sel); if (m) m.classList.remove('open'); });
       if (window.__gripChatReset) window.__gripChatReset();
       if (window.__gripImgReset) window.__gripImgReset();
       var tw = document.getElementById('toastWrap'); if (tw) tw.innerHTML = '';
