@@ -316,6 +316,7 @@
   .imgcap-viewport { position:relative; height:300px; background:#101218; border-radius:12px; overflow:hidden; display:flex; align-items:center; justify-content:center; }
   .imgcap-viewport img { max-width:100%; max-height:100%; transition:transform .2s ease; transform-origin:center; }
   .imgcap-zoombar { display:flex; align-items:center; gap:8px; margin-top:10px; }
+  .ic-zbtn:disabled { opacity:.4; cursor:default; }
   .ic-zbtn { width:34px; height:34px; border-radius:9px; border:1px solid #e3e4e8; background:#fff; font-size:18px; font-weight:800; color:#41444d; cursor:pointer; }
   .ic-zbtn:hover { border-color:var(--grip); color:var(--grip); }
   .ic-zlvl { font-size:13px; font-weight:800; color:#41444d; min-width:52px; text-align:center; }
@@ -1621,10 +1622,10 @@
     <div class="opt-head"><span class="opt-h-title">상품 옵션 관리</span><button class="opt-x" id="optClose" aria-label="닫기">&times;</button></div>
     <div class="opt-body">
       <div class="opt-prod"><span class="opt-thumb" id="optThumb"></span><div><div class="opt-prod-lbl">상품명</div><div class="opt-prod-name" id="optProdName">상품</div></div></div>
-      <div class="opt-summary-line"><span><b id="optCount">판매 중 옵션 3</b><span id="optStockSummary"> · 판매 가능 <b>53</b> · <span class="opt-occ-hl">점유 8</span></span></span><span class="opt-filters"><span class="opt-drop">판매 여부 전체 &#9662;</span><span class="opt-drop">기본순 &#9662;</span></span></div>
+      <div class="opt-summary-line"><span><b id="optCount">판매 중 옵션 3</b><span id="optStockSummary"></span></span><span class="opt-filters"><span class="opt-drop">판매 여부 전체 &#9662;</span><span class="opt-drop">기본순 &#9662;</span></span></div>
       <div class="opt-summary">
         <div class="opt-price-row"><span>상품가 <s id="optPriceRegular">-</s></span><span>상시 할인가 <b id="optPriceDiscount">-</b></span><span class="opt-live">라이브가 <b id="optPriceLive">-</b></span><label class="opt-sell-all"><span>전체 판매</span><span class="opt-sw on" id="optSellAll"></span></label></div>
-        <div class="opt-compose">옵션 구성 <b id="optCompose">응 되긴하네(3) = 총 3개 조합</b></div>
+        <div class="opt-compose">옵션 구성 <b id="optCompose">옵션 구성</b></div>
       </div>
       <div class="opt-info-head"><span class="opt-info-lbl">옵션 정보</span><span class="opt-info-btns"><button class="opt-bulk-btn" id="optBulkBtn" disabled>일괄 수정</button><button class="opt-editname-btn" id="optEditNameBtn">옵션 정보 수정</button></span></div>
       <div class="opt-group" id="optGroup"></div>
@@ -1994,14 +1995,15 @@
       var live = num((r.querySelector('.pi-live-input') || {}).value);
       var pct = jeong > 0 ? Math.max(0, Math.round((jeong - live) / jeong * 100)) : 0;
       var stockEl = r.querySelector('.val-box');
-      var stats = r.querySelectorAll('.pr-stats .stat-cell .val');
+      function statByLabel(re) { var out = ''; Array.prototype.forEach.call(r.querySelectorAll('.pr-stats .stat-cell'), function (c) { var lbl = (c.querySelector('.lbl') || {}).textContent || '', v = c.querySelector('.val'); if (v && re.test(lbl)) out = v.textContent.trim(); }); return out; }
       var m = meta(r);
       return {
         name: (r.querySelector('.pr-name-input') || {}).value || '',
         pct: pct, live: live,
-        stock: stockEl ? stockEl.value : '0',
-        occupy: stats[0] ? stats[0].textContent.trim() : '0',
-        ordered: stats[1] ? stats[1].textContent.trim() : '0',
+        sellable: stockEl ? stockEl.value : '0',
+        stock: statByLabel(/재고/) || '0',
+        occupy: statByLabel(/점유/) || '0',
+        ordered: statByLabel(/실주문/) || '0',
         img: m.img, code: m.code
       };
     }
@@ -2019,7 +2021,7 @@
         return '<div class="product-overlay" data-idx="' + idxOf(r) + '">' +
           '<span class="po-thumb" style="background-image:url(' + d.img + ')"><span class="po-badge">한정상품</span></span>' +
           '<span class="po-info"><div class="po-name">' + d.name + '</div><div class="po-price"><span class="pct">' + d.pct + '%</span><span class="won">' + d.live.toLocaleString('en-US') + '원</span></div></span>' +
-          '<span class="po-stock"><div><span class="k">판매가능</span> <span class="sell">' + d.stock + '</span></div><div><span class="k">재고</span> <span class="v">999+</span></div></span>' +
+          '<span class="po-stock"><div><span class="k">판매가능</span> <span class="sell">' + d.sellable + '</span></div><div><span class="k">재고</span> <span class="v">' + d.stock + '</span></div></span>' +
           '</div>';
       }).join('');
     }
@@ -2032,7 +2034,9 @@
       if ((el = card.querySelector('.po-name'))) el.textContent = d.name;
       if ((el = card.querySelector('.pct'))) el.textContent = d.pct + '%';
       if ((el = card.querySelector('.won'))) el.textContent = d.live.toLocaleString('en-US') + '원';
-      if ((el = card.querySelector('.po-stock .sell'))) el.textContent = d.stock;
+      if ((el = card.querySelector('.po-stock .sell'))) el.textContent = d.sellable;
+      if ((el = card.querySelector('.po-stock .v'))) el.textContent = d.stock;
+      if ((el = card.querySelector('.po-thumb'))) el.style.backgroundImage = 'url(' + d.img + ')';
     }
 
     // ---- UP 토글 ----
@@ -2073,7 +2077,9 @@
       var film = document.getElementById('imgCapFilm'), zEl = document.getElementById('imgCapZ');
       var POOL = ['p1.png', 'p2.png', 'p3.png', 'p4.png', 'p5.png', 'p6.png'];
       var GAL = {}, curIdx = -1;
+      var ORIG_IMG = (META || []).map(function (m) { return m ? m.img : undefined; });
       function gal(idx) {
+        if (idx < 0) return { imgs: [{ src: 'product.png', cap: false }], rep: 0, sel: 0, zoom: 100 };
         if (!GAL[idx]) {
           var base = (META[idx] || {}).img || 'product.png';
           var extras = POOL.filter(function (p) { return p !== base; }).slice(0, 2);
@@ -2081,7 +2087,7 @@
         }
         return GAL[idx];
       }
-      function renderBig() { var g = gal(curIdx); big.src = g.imgs[g.sel].src; big.style.transform = 'scale(' + (g.zoom / 100) + ')'; zEl.textContent = g.zoom + '%'; }
+      function renderBig() { var g = gal(curIdx); big.src = g.imgs[g.sel].src; if (g.zoom <= 100) { g.panX = 0; g.panY = 0; } big.style.transform = 'translate(' + (g.panX || 0) + 'px,' + (g.panY || 0) + 'px) scale(' + (g.zoom / 100) + ')'; zEl.textContent = g.zoom + '%'; var oB = document.getElementById('imgCapOut'), iB = document.getElementById('imgCapIn'); if (oB) oB.disabled = (g.zoom <= 100); if (iB) iB.disabled = (g.zoom >= 400); }
       function renderFilm() {
         var g = gal(curIdx);
         film.innerHTML = g.imgs.map(function (im, i) {
@@ -2096,12 +2102,20 @@
       }
       function closeCap() { modal.classList.remove('open'); }
       window.__gripImgOpen = openCap;
-      window.__gripImgReset = function () { GAL = {}; closeCap(); };
+      window.__gripImgReset = function () { GAL = {}; ORIG_IMG.forEach(function (img, i) { if (META[i]) META[i].img = img; var r = order[i]; if (r) { var th = r.querySelector('.pr-thumb'); if (th && img) th.style.backgroundImage = 'url(' + img + ')'; } }); closeCap(); };
       listEl.addEventListener('click', function (e) { var th = e.target.closest && e.target.closest('.pr-thumb'); if (!th) return; var row = th.closest('.product-row'); var idx = idxOf(row); if (idx < 0) return; openCap(idx); });
       document.getElementById('imgCapIn').addEventListener('click', function () { var g = gal(curIdx); g.zoom = Math.min(400, g.zoom + 50); renderBig(); });
       document.getElementById('imgCapOut').addEventListener('click', function () { var g = gal(curIdx); g.zoom = Math.max(100, g.zoom - 50); renderBig(); });
-      document.getElementById('imgCapShot').addEventListener('click', function () { var g = gal(curIdx); g.imgs.push({ src: 'product.png', cap: true }); g.sel = g.imgs.length - 1; g.zoom = 100; renderFilm(); renderBig(); toast('방송 화면을 캡처했습니다.', true); });
+      document.getElementById('imgCapShot').addEventListener('click', function () { if (curIdx < 0) return; var g = gal(curIdx); var capN = g.imgs.filter(function (im) { return im.cap; }).length; g.imgs.push({ src: POOL[capN % POOL.length], cap: true }); g.sel = g.imgs.length - 1; g.zoom = 100; renderFilm(); renderBig(); toast('방송 화면을 캡처했습니다.', true); });
       film.addEventListener('click', function (e) { var b = e.target.closest('.ic-film'); if (!b) return; gal(curIdx).sel = parseInt(b.getAttribute('data-i'), 10); renderBig(); renderFilm(); });
+      (function () {
+        var vp = document.getElementById('imgCapVp'); if (!vp) return;
+        var dragging = false, sx = 0, sy = 0, ox = 0, oy = 0;
+        vp.addEventListener('pointerdown', function (e) { if (curIdx < 0) return; var g = gal(curIdx); if (g.zoom <= 100) return; dragging = true; sx = e.clientX; sy = e.clientY; ox = g.panX || 0; oy = g.panY || 0; if (vp.setPointerCapture) vp.setPointerCapture(e.pointerId); e.preventDefault(); });
+        vp.addEventListener('pointermove', function (e) { if (!dragging || curIdx < 0) return; var g = gal(curIdx), scale = g.zoom / 100, limX = vp.clientWidth * (scale - 1) / 2, limY = vp.clientHeight * (scale - 1) / 2; g.panX = Math.max(-limX, Math.min(limX, ox + (e.clientX - sx))); g.panY = Math.max(-limY, Math.min(limY, oy + (e.clientY - sy))); big.style.transform = 'translate(' + g.panX + 'px,' + g.panY + 'px) scale(' + scale + ')'; });
+        function end() { dragging = false; }
+        vp.addEventListener('pointerup', end); vp.addEventListener('pointerleave', end);
+      })();
       document.getElementById('imgCapSetRep').addEventListener('click', function () {
         var g = gal(curIdx); g.rep = g.sel; var src = g.imgs[g.sel].src;
         if (META[curIdx]) META[curIdx].img = src;
@@ -2285,7 +2299,7 @@
     var state = null, draft = null, currentRow = null, bulkOpen = false, nameEditOpen = false;
     Array.prototype.forEach.call(document.querySelectorAll('.product-row'), function (r, i) {
       if (i === 0) { r.setAttribute('data-optaxes', '0'); }
-      else { var ax = ((i - 1) % 3) + 1; r.setAttribute('data-optaxes', String(ax)); var pr0 = readBaseFromRow(r); r.__optState = cloneState(buildState(ax, pr0.base || 1000, pr0.reg || 1000, pr0.dis || 1000)); }
+      else { var ax = ((i - 1) % 3) + 1; r.setAttribute('data-optaxes', String(ax)); var pr0 = readBaseFromRow(r); var s0 = buildState(ax, pr0.base || 1000, pr0.reg || 1000, pr0.dis || 1000); seedCombosFromHome(s0, r); r.__optState = cloneState(s0); }
       updateRowPrice(r);
     });
 
@@ -2313,7 +2327,7 @@
           oc.push(oldVi);
         }
         var src = ok ? map[oc.join(',')] : null;
-        out.push(src ? { addPrice: src.addPrice, stock: src.stock, sale: src.sale, code: src.code } : emptyCombo());
+        out.push(src ? { addPrice: src.addPrice, stock: src.stock, sale: src.sale, code: src.code, occ: src.occ } : emptyCombo());
       }
       return out;
     }
@@ -2321,17 +2335,48 @@
     function valIdxOf(axes, ci) { var sizes = axes.map(function (a) { return Math.max(a.values.length, 1); }), rem = ci, out = []; for (var j = axes.length - 1; j >= 0; j--) { out[j] = rem % sizes[j]; rem = Math.floor(rem / sizes[j]); } return out; }
     function occOf(ci) { return ((ci % 9) + 1) * 3; }
     function ordOf(ci) { return ((ci % 9) + 1) * 5; }
+    // GRIPPGM-3319 정합: 홈 행 재고·점유를 읽어 옵션 조합에 역산 분배 → Σ가 홈 값과 실제로 일치
+    function readHomeStats(row) {
+      var jae = 0, occ = 0;
+      if (row) Array.prototype.forEach.call(row.querySelectorAll('.pr-stats .stat-cell'), function (c) {
+        var lbl = (c.querySelector('.lbl') || {}).textContent || '', v = c.querySelector('.val');
+        if (!v) return;
+        if (/점유/.test(lbl)) occ = numOf(v.textContent);
+        else if (/재고/.test(lbl)) jae = numOf(v.textContent);
+      });
+      return { jae: jae, occ: occ };
+    }
+    function distributeInts(total, n) { var out = [], base = Math.floor(total / n), rem = total - base * n, i; for (i = 0; i < n; i++) out.push(base + (i < rem ? 1 : 0)); return out; }
+    function seedCombosFromHome(st, row) {
+      if (!st || !st.combos || !st.combos.length) return;
+      var h = readHomeStats(row), n = st.combos.length, stk = distributeInts(h.jae, n), occ = distributeInts(h.occ, n);
+      st.combos.forEach(function (c, i) { var o = Math.min(occ[i], stk[i]); c.stock = fmt(stk[i]); c.occ = o; });
+    }
+    function comboOcc(c, ci) { return (c && c.occ != null) ? numOf(c.occ) : occOf(ci); }
+    // 옵션 조합 편집 후 홈 행 재고·점유·판매가능을 조합 합계로 역동기화(단일 소스 유지)
+    function syncHomeFromCombos(row, st) {
+      if (!row || !st || !st.axes || !st.axes.length) return;
+      var jae = 0, occ = 0, avail = 0;
+      st.combos.forEach(function (c, ci) { var o = comboOcc(c, ci), s = numOf(c.stock); occ += o; jae += s; avail += Math.max(0, s - o); });
+      Array.prototype.forEach.call(row.querySelectorAll('.pr-stats .stat-cell'), function (c) {
+        var lbl = (c.querySelector('.lbl') || {}).textContent || '', v = c.querySelector('.val');
+        if (!v) return;
+        if (/점유/.test(lbl)) v.textContent = fmt(occ);
+        else if (/재고/.test(lbl)) v.textContent = fmt(jae);
+      });
+      var vb = row.querySelector('.val-box'); if (vb) vb.value = fmt(avail);
+    }
     // GRIPPGM-3319: 옵션 모달 헤더 '총 재고' → '판매 가능 · 점유'(조합 합계). 판매가능=Σmax(0,재고−점유), 점유=Σ점유.
     function updateStockSummary() {
       var ss = document.getElementById('optStockSummary');
       if (!ss || !state) return;
       if (!state.axes || !state.axes.length) { ss.innerHTML = ''; return; }
       var availSum = 0, occSum = 0;
-      state.combos.forEach(function (c, ci) { var occ = occOf(ci); occSum += occ; availSum += Math.max(0, numOf(c.stock) - occ); });
+      state.combos.forEach(function (c, ci) { var occ = comboOcc(c, ci); occSum += occ; availSum += Math.max(0, numOf(c.stock) - occ); });
       ss.innerHTML = ' · 판매 가능 <b>' + fmt(availSum) + '</b> · <span class="opt-occ-hl">점유 ' + fmt(occSum) + '</span>';
     }
     function cloneAxes(axes) { return axes.map(function (a) { return { type: a.type, values: a.values.map(function (v) { return { name: v.name }; }) }; }); }
-    function cloneCombos(cs) { return (cs || []).map(function (c) { return { addPrice: c.addPrice, stock: c.stock, sale: c.sale, code: c.code }; }); }
+    function cloneCombos(cs) { return (cs || []).map(function (c) { return { addPrice: c.addPrice, stock: c.stock, sale: c.sale, code: c.code, occ: c.occ }; }); }
     function cloneState(s) { return { base: s.base, priceReg: s.priceReg, priceDis: s.priceDis, axes: cloneAxes(s.axes), combos: cloneCombos(s.combos) }; }
     function persist() { if (currentRow) currentRow.__optState = cloneState(state); }
     // 옵션 상품(조합>0) → 가격 범위(판매가+최소추가~판매가+최대추가) 표시, 비옵션 → 기존 3단(정가/상시/라이브가)
@@ -2466,7 +2511,7 @@
         '<th>재고</th><th>판매 가능</th><th>주문</th><th>점유</th><th>가격</th><th>판매 여부</th><th>자체 옵션 코드</th></tr>';
       var body = state.combos.map(function (c, ci) {
         var vcells = valIdxOf(axes, ci).map(function (vi, p) { return '<td class="opt-td-vname"><input class="opt-vname" data-ax="' + p + '" data-vi="' + vi + '" value="' + esc((axes[p].values[vi] || {}).name || '') + '" placeholder="옵션값" aria-label="옵션값" /></td>'; }).join('');
-        var occ = occOf(ci), ord = ordOf(ci), avail = Math.max(0, numOf(c.stock) - occ);
+        var occ = comboOcc(c, ci), ord = ordOf(ci), avail = Math.max(0, numOf(c.stock) - occ);
         return '<tr' + (c._sel ? ' class="is-sel"' : '') + '><td class="opt-td-chk"><span class="cbox3 opt-rowsel' + (c._sel ? ' on' : '') + '" data-ci="' + ci + '"></span></td>' + vcells +
           '<td><span class="opt-cell-box is-input"><input class="opt-cell-num opt-stock-inp" data-ci="' + ci + '" value="' + fmt(numOf(c.stock)) + '" inputmode="numeric" aria-label="재고" /><span class="opt-unit">개</span></span></td>' +
           '<td class="opt-ro"><b class="opt-avail" data-ci="' + ci + '">' + fmt(avail) + '</b> <span class="opt-unit">개</span></td>' +
@@ -2490,6 +2535,7 @@
       if (row && row.__optState) { state = cloneState(row.__optState); state.base = pr.base || state.base; state.priceReg = pr.reg || state.priceReg; state.priceDis = pr.dis || state.priceDis; }
       else { var n = parseInt((row && row.getAttribute('data-optaxes')) || '1', 10); state = buildState(n, pr.base || 1000, pr.reg || 1000, pr.dis || 1000); if (row) row.__optState = cloneState(state); }
       if (prodName) { var ni = row && row.querySelector('.pr-name-input'); prodName.textContent = (ni && ni.value) ? ni.value : '상품'; }
+      var optThumbEl = document.getElementById('optThumb'); if (optThumbEl) { var prThumb = row && row.querySelector('.pr-thumb'); optThumbEl.style.backgroundImage = (prThumb && prThumb.style.backgroundImage) ? prThumb.style.backgroundImage : ''; }
       nameEditOpen = false;
       renderGroup();
       modal.classList.add('open');
@@ -2518,7 +2564,7 @@
       var pe = t.closest && t.closest('.opt-price-inp');
       if (pe) { var pcv = pe.value.replace(/[^\d,]/g, ''); if (pcv !== pe.value) pe.value = pcv; var pci = parseInt(pe.getAttribute('data-ci'), 10); if (state.combos[pci]) { state.combos[pci].addPrice = fmt(numOf(pe.value) - (state.base || 0)); persist(); updateRowPrice(currentRow); } return; }
       var se = t.closest && t.closest('.opt-stock-inp');
-      if (se) { var scv = se.value.replace(/[^\d,]/g, ''); if (scv !== se.value) se.value = scv; var sci = parseInt(se.getAttribute('data-ci'), 10); if (state.combos[sci]) { state.combos[sci].stock = fmt(numOf(se.value)); persist(); var av = group.querySelector('.opt-avail[data-ci="' + sci + '"]'); if (av) av.textContent = fmt(Math.max(0, numOf(se.value) - occOf(sci))); updateStockSummary(); } return; }
+      if (se) { var scv = se.value.replace(/[^\d,]/g, ''); if (scv !== se.value) se.value = scv; var sci = parseInt(se.getAttribute('data-ci'), 10); if (state.combos[sci]) { state.combos[sci].stock = fmt(numOf(se.value)); persist(); var av = group.querySelector('.opt-avail[data-ci="' + sci + '"]'); if (av) av.textContent = fmt(Math.max(0, numOf(se.value) - comboOcc(state.combos[sci], sci))); updateStockSummary(); syncHomeFromCombos(currentRow, state); } return; }
       var ce = t.closest && t.closest('.opt-code-inp');
       if (ce) { var cci = parseInt(ce.getAttribute('data-ci'), 10); if (state.combos[cci]) { state.combos[cci].code = ce.value; persist(); } return; }
       var hn = t.closest && t.closest('.opt-hname');
@@ -2625,7 +2671,7 @@
       if (!sel.length) { closeBulk(); return; }
       if (pv === '' && sv === '') { toast('가격 또는 재고를 입력해 주세요.', false); return; }
       sel.forEach(function (c) { if (pv !== '') c.addPrice = fmt(numOf(pv) - (state.base || 0)); if (sv !== '') c.stock = fmt(numOf(sv)); c._sel = false; });
-      persist(); updateRowPrice(currentRow); renderGroup(); closeBulk();
+      persist(); updateRowPrice(currentRow); renderGroup(); syncHomeFromCombos(currentRow, state); closeBulk();
       toast(sel.length + '개 조합에 일괄 적용했습니다.', true);
     });
     var nameClose = document.getElementById('optNameClose'), nameReset = document.getElementById('optNameReset'), nameSave = document.getElementById('optNameSave');
@@ -2662,7 +2708,7 @@
       if (!cleanAxes.length) { if (delAllModal) delAllModal.classList.add('open'); return; }
       // 조합 데이터를 좌표(대응 축 + 살아남은 값의 원래 인덱스) 기준으로 보존 — 빈 값/빈 축 필터로 인덱스가 밀려도 데이터 유지
       var combos = remapCombos(draft.axes, cleanAxes, draft.combos, cleanAxisMap, cleanValMaps);
-      state.axes = cleanAxes; state.combos = combos; persist(); renderGroup(); updateRowPrice(currentRow);
+      state.axes = cleanAxes; state.combos = combos; persist(); renderGroup(); updateRowPrice(currentRow); syncHomeFromCombos(currentRow, state);
       toast('옵션을 적용했습니다.', true);
       closeName();
     });
@@ -3253,7 +3299,7 @@
           asis: ['홈에 상품 재고·점유 값이 미노출 → 게임 점유 발생 시 셀러가 에러로 오인, 이슈 반복 인입.'],
           tobe: ['각 상품 행에 <b>재고 · 점유</b>를 함께 노출. 판매가능 0이어도 재고·점유로 &ldquo;전량 점유&rdquo;임을 바로 인지.'],
           features: ['통계행 = 장바구니 · 실주문 · <b>재고 · 점유</b> · 판매가능 · 라이브 매출.', '점유는 &lsquo;게임·결제 진행 중 점유(정상 동작)&rsquo; 안내(툴팁)와 앰버 색으로 강조.'] },
-        { n: 2, target: '.opt-summary', title: '[옵션 모달] 총 재고 → 판매 가능 · 점유', tag: '모달 · 헤더',
+        { n: 2, target: '#optStockSummary', title: '[옵션 모달] 총 재고 → 판매 가능 · 점유', tag: '모달 · 헤더',
           def: '옵션 관리 모달 헤더의 총 재고를 판매 가능·점유로 분리해, 상품 목록의 판매가능 수량과 기준을 맞춘다.',
           asis: ['헤더가 <b>&lsquo;총 재고&rsquo;(점유 포함)</b>만 보여 상품 목록 &lsquo;판매가능 수량&rsquo;과 불일치 → 매니저 혼동.'],
           tobe: ['헤더 <b>&lsquo;판매 가능 Σ · 점유 Σ&rsquo;</b>로 분리(조합 합계 동적 계산). 세 군데 숫자가 한 기준으로 일치.'],
@@ -3262,7 +3308,7 @@
       steps: [
         { tag: '시작', t: '스튜디오 홈과 옵션 모달의 <b>재고 표기</b>를 명확히 하는 개선을 시연합니다. (Jira GRIPPGM-3319)', target: function () { return q('.product-list'); }, act: function () { resetUI(); } },
         { tag: '[홈] 재고·점유 노출', t: '각 상품 행에 <b>재고 · 점유</b>가 함께 보입니다. 이 상품은 <b>재고 30 · 점유 30 · 판매가능 0</b> — &ldquo;에러&rdquo;가 아니라 게임/결제로 <b>전량 점유</b>된 정상 상태임을 바로 알 수 있어요.', target: function () { var r = rowN(2); return r ? r.querySelector('.pr-stats') : null; }, act: function () { ['#optionModal', '#optNameModal', '#optBulkModal', '#optDelAllModal'].forEach(function (s) { var m = q(s); if (m) m.classList.remove('open'); }); var r = rowN(2); if (r) r.scrollIntoView({ block: 'center' }); } },
-        { tag: '[옵션 모달] 판매가능·점유', t: '옵션 상품의 <b>[옵션]</b> → 상품 옵션 관리. 헤더가 <b>&lsquo;총 재고&rsquo;가 아니라 &lsquo;판매 가능 · 점유&rsquo;</b>로 분리되어 상품 목록·조합 합계와 일치합니다.', target: function () { return q('#optStockSummary'); }, act: function () { var r = rowN(1); if (r) { var b = r.querySelector('.btn-option'); if (b) b.click(); } } }
+        { tag: '[옵션 모달] 판매가능·점유', t: '<b>방금 본 상품</b>의 <b>[옵션]</b> → 상품 옵션 관리. 헤더가 <b>&lsquo;총 재고&rsquo;가 아니라 &lsquo;판매 가능 · 점유&rsquo;</b>로 분리되어 <b>상품 목록·조합 합계와 정확히 일치</b>합니다(판매 가능 0 · 점유 30 = 전량 점유).', target: function () { return q('#optStockSummary'); }, act: function () { var r = rowN(2); if (r) { var b = r.querySelector('.btn-option'); if (b) b.click(); } } }
       ]
     });
 
@@ -3297,7 +3343,7 @@
       ],
       steps: [
         { tag: '시작', t: '스튜디오에서 <b>상품 이미지를 확대(캡처 확대)</b>해 보는 흐름을 시연합니다. (Jira GRIPPGM-3433)', target: function () { return q('.product-list'); }, act: function () { resetUI(); } },
-        { tag: '썸네일 → 확대', t: '상품 <b>썸네일을 클릭</b>하면 이미지 확대 뷰어가 열립니다.', target: function () { var r = rowN(0); return r ? r.querySelector('.pr-thumb') : null; }, act: function () { var m = q('#imgCapModal'); if (m) m.classList.remove('open'); var r = rowN(0); if (r) { var th = r.querySelector('.pr-thumb'); if (th) th.scrollIntoView({ block: 'center' }); } } },
+        { tag: '썸네일 → 확대', t: '상품 <b>썸네일을 클릭</b>합니다. (다음 화면에서 이미지 확대 뷰어가 열립니다.)', target: function () { var r = rowN(0); return r ? r.querySelector('.pr-thumb') : null; }, act: function () { var m = q('#imgCapModal'); if (m) m.classList.remove('open'); var r = rowN(0); if (r) { var th = r.querySelector('.pr-thumb'); if (th) th.scrollIntoView({ block: 'center' }); } } },
         { tag: '확대(100~400%)', t: '<b>+ / −</b> 버튼으로 <b>100~400%</b>까지 확대·축소하며 디테일을 확인합니다.', target: function () { return q('#imgCapModal .imgcap-stage'); }, act: function () { if (!q('#imgCapModal').classList.contains('open') && window.__gripImgOpen) window.__gripImgOpen(0); var b = document.getElementById('imgCapIn'); if (b) { b.click(); b.click(); } } },
         { tag: '방송 화면 캡처', t: '<b>[📸 방송 화면 캡처]</b>로 현재 방송 프레임을 이미지 후보로 담습니다. (담은 이미지는 대표 지정으로 연결 — GRIPPGM-3434)', target: function () { return q('#imgCapShot'); }, act: function () { var b = document.getElementById('imgCapShot'); if (b) b.click(); } }
       ]
