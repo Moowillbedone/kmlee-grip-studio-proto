@@ -321,6 +321,16 @@
   .imp-subbar { display:flex; align-items:center; justify-content:space-between; padding:10px 24px; }
   .imp-check { display:flex; align-items:center; gap:9px; font-size:14px; color:#41444d; cursor:pointer; }
   .imp-per { border:1px solid #e3e4e8; border-radius:10px; padding:8px 12px; font-size:13px; color:#41444d; }
+  /* 3459: 판매상태 필터 칩 + 상태 배지 */
+  .imp-status { display:flex; gap:7px; padding:4px 24px 2px; flex-wrap:wrap; }
+  .imp-chip { border:1px solid #e3e4e8; background:#fff; border-radius:999px; padding:7px 14px; font-size:13px; font-weight:600; color:#6b7078; cursor:pointer; }
+  .imp-chip:hover { border-color:#c7cbd2; }
+  .imp-chip.on { background:var(--grip); border-color:var(--grip); color:#fff; }
+  .imp-sbadge { display:inline-block; margin-left:7px; font-size:11px; font-weight:700; padding:1.5px 7px; border-radius:6px; vertical-align:middle; background:#eef0f2; color:#8a8f98; }
+  .imp-sbadge.on { background:#e7f7ee; color:#1c8f4e; }
+  .imp-sbadge.wait { background:#eef1ff; color:#4a63c0; }
+  .imp-sbadge.stop { background:#f4f5f7; color:#8a8f98; }
+  .imp-sbadge.sold { background:#fdeaef; color:#c0264a; }
   .imp-list { min-height:360px; max-height:52vh; overflow-y:auto; padding:0 24px; }
   .imp-item { display:flex; align-items:center; gap:14px; padding:14px 4px; border-top:1px solid #f0f1f3; }
   .imp-item:first-child { border-top:0; }
@@ -389,6 +399,55 @@
   .pr-thumb .pt-cap:hover { background:var(--grip); }
   .pr-thumb .pt-edit { position:absolute; left:0; right:0; bottom:0; background:rgba(29,31,37,.72); color:#fff; font-size:10px; font-weight:700; text-align:center; padding:3px 0; cursor:pointer; }
   .pr-thumb .pt-edit:hover { background:rgba(29,31,37,.9); }
+  /* ===== 2941: 방송 앱 미리보기(쇼츠 노출) 목업 ===== */
+  .bc-cast-btn { width:100%; margin-top:10px; border:1px solid #e3e4e8; background:#fff; border-radius:11px; padding:11px 0; font-size:13px; font-weight:700; color:#41444d; cursor:pointer; }
+  .bc-cast-btn:hover { border-color:var(--grip); color:var(--grip); }
+  .modal.cast-modal { max-width:800px; width:800px; }
+  .cast-head { display:flex; align-items:center; justify-content:space-between; padding:22px 26px 6px; }
+  .cast-title { font-size:19px; font-weight:800; color:#1d1f25; }
+  .cast-title b { color:var(--grip); }
+  .cast-x { background:none; border:0; font-size:26px; color:#9aa0ab; cursor:pointer; line-height:1; }
+  .cast-body { display:flex; gap:28px; padding:10px 26px 8px; }
+  /* 폰 목업 */
+  .cast-phone { flex:0 0 288px; width:288px; height:576px; border-radius:30px; background:#0d0f14; border:7px solid #16181e; position:relative; overflow:hidden; box-shadow:0 16px 40px rgba(16,18,24,.28); }
+  .cast-cam { position:absolute; top:9px; left:50%; transform:translateX(-50%); width:64px; height:6px; border-radius:6px; background:#000; z-index:5; }
+  .cast-scene { position:absolute; inset:0; background:#15171d center/cover no-repeat; }
+  .cast-scene::after { content:''; position:absolute; inset:0; background:linear-gradient(180deg,rgba(10,12,16,.28),rgba(10,12,16,.05) 30%,rgba(10,12,16,.5)); }
+  .cast-live { position:absolute; top:20px; left:16px; z-index:4; display:flex; align-items:center; gap:7px; font-size:11px; color:#fff; }
+  .cast-live .dot { background:var(--grip); color:#fff; font-weight:800; font-size:9.5px; padding:2px 6px; border-radius:5px; }
+  /* 쇼츠 오버레이 — 전체 70% 정중앙, 방송화면 위(TOBE) */
+  .cast-shorts { position:absolute; top:50%; left:50%; width:70%; transform:translate(-50%,-52%); aspect-ratio:3/4; border-radius:12px; overflow:hidden; z-index:6; box-shadow:0 8px 26px rgba(0,0,0,.45); background:#222 center/cover no-repeat; display:none; cursor:pointer; border:2px solid rgba(255,255,255,.9); }
+  .cast-shorts.on { display:block; }
+  .cast-shorts .s-tag { position:absolute; top:8px; left:8px; background:rgba(29,31,37,.8); color:#fff; font-size:10px; font-weight:800; padding:3px 8px; border-radius:7px; }
+  .cast-shorts .s-play { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:46px; height:46px; border-radius:50%; background:rgba(20,22,30,.55); display:flex; align-items:center; justify-content:center; }
+  .cast-shorts .s-x { position:absolute; top:6px; right:6px; width:22px; height:22px; border-radius:50%; background:rgba(20,22,30,.7); color:#fff; border:0; font-size:13px; line-height:1; cursor:pointer; z-index:2; }
+  .cast-shorts .s-hint { position:absolute; left:0; right:0; bottom:0; background:rgba(20,22,30,.62); color:#fff; font-size:10px; text-align:center; padding:4px 0; }
+  /* 자리비움 스티커 */
+  .cast-away { position:absolute; left:20px; top:150px; z-index:6; display:none; align-items:center; gap:6px; }
+  .cast-away.on { display:flex; }
+  .cast-away .a-pill { background:var(--grip); color:#fff; font-size:12px; font-weight:800; padding:6px 12px 6px 30px; border-radius:16px; position:relative; }
+  .cast-away .a-mascot { position:absolute; left:-14px; top:-12px; width:34px; height:34px; border-radius:50%; background:#7cc0ff; border:2px solid #fff; }
+  /* 채팅/툴바 */
+  .cast-chat { position:absolute; left:12px; right:60px; bottom:70px; z-index:4; font-size:10.5px; color:#fff; line-height:1.7; text-shadow:0 1px 2px rgba(0,0,0,.5); }
+  .cast-toolbar { position:absolute; left:0; right:0; bottom:12px; z-index:4; display:flex; justify-content:space-around; padding:0 10px; }
+  .cast-toolbar .t { display:flex; flex-direction:column; align-items:center; gap:3px; font-size:9px; color:rgba(255,255,255,.85); }
+  .cast-toolbar .t .ic { width:26px; height:26px; border-radius:8px; background:rgba(255,255,255,.14); display:flex; align-items:center; justify-content:center; font-size:12px; }
+  .cast-toolbar .t.on .ic { background:var(--grip); }
+  /* 우측 컨트롤·설명 */
+  .cast-side { flex:1; min-width:0; }
+  .cast-ctrls { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+  .cast-ctrls button { border:1px solid #e3e4e8; background:#fff; border-radius:10px; padding:10px 15px; font-size:13px; font-weight:700; color:#41444d; cursor:pointer; }
+  .cast-ctrls button:hover { border-color:var(--grip); color:var(--grip); }
+  .cast-ctrls button.reset { color:#9aa0ab; }
+  .cast-note { font-size:13px; color:#41444d; line-height:1.75; }
+  .cast-note b { color:#1d1f25; }
+  .cast-layer { display:flex; gap:10px; margin:12px 0; }
+  .cast-layer .lz { flex:1; border:1px solid #eceef1; border-radius:12px; padding:12px; background:#fafbfc; }
+  .cast-layer .lz .h { font-size:12px; font-weight:800; margin-bottom:6px; }
+  .cast-layer .lz.asis .h { color:#9aa0ab; } .cast-layer .lz.tobe .h { color:var(--grip); }
+  .cast-layer .lz p { font-size:12px; color:#5c606b; line-height:1.6; margin:0; }
+  .cast-foot { display:flex; padding:8px 26px 20px; }
+  .cast-foot .btn-go { flex:1; background:var(--grip); color:#fff; border:0; border-radius:12px; padding:14px 0; font-size:15px; font-weight:800; cursor:pointer; }
   .pr-thumb {
     width: 92px; height: 92px; border-radius: 10px; flex: 0 0 auto;
     background: var(--product-img) center/cover no-repeat, #f1f2f4;
@@ -978,6 +1037,11 @@
   .po-empty { flex:1; text-align:center; color:#fff; font-size:12px; line-height:1.6; background:rgba(0,0,0,.4); border-radius:12px; padding:16px 12px; }
   /* UP한 상품 목록 모달(리치) */
   .up2-head { display:flex; align-items:center; justify-content:space-between; padding:2px 2px 12px; border-bottom:1px solid #ececef; margin-bottom:6px; }
+  /* 3460: UP한 상품 목록 검색창 */
+  .up2-search { position:relative; display:flex; align-items:center; margin:0 0 8px; }
+  .up2-search svg { position:absolute; left:12px; }
+  .up2-search input { width:100%; height:42px; border:1px solid #e3e4e8; border-radius:11px; padding:0 14px 0 38px; font-size:14px; color:#20222a; }
+  .up2-search input:focus { outline:none; border-color:var(--grip); }
   .up2-all { display:flex; align-items:center; gap:9px; font-size:14px; font-weight:600; color:#2b2d34; cursor:pointer; user-select:none; }
   .up2-count { font-size:13px; color:#8d919c; font-weight:600; }
   .cbox2 { width:20px; height:20px; border-radius:6px; border:1.6px solid #cfd3da; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; flex:0 0 auto; }
@@ -1242,6 +1306,7 @@
           <button class="action"><span class="ico ico-init">초성</span>초성</button>
           <button class="action"><span class="ico ico-dice">🎲</span>주사위</button>
         </div>
+        <button class="bc-cast-btn" id="btnCast">📱 방송 앱 미리보기 — 쇼츠(영상·사진) 노출</button>
       </div>
       <div class="mode-toggle" role="tablist" aria-label="판매 모드">
         <button class="mode-seg on" data-mode="limited" type="button">한정판매</button>
@@ -1653,6 +1718,7 @@
         <label class="up2-all" id="upAll"><span class="cbox2" id="upAllBox"></span> 전체 선택</label>
         <span class="up2-count" id="upCountLabel">UP한 상품 0</span>
       </div>
+      <div class="up2-search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#9aa0ab" stroke-width="2"/><path d="m20 20-3.2-3.2" stroke="#9aa0ab" stroke-width="2" stroke-linecap="round"/></svg><input id="upSearch" placeholder="상품명·상품코드로 검색" /></div>
       <ul class="up-list2" id="upListBody"></ul>
     </div>
     <div class="modal-foot">
@@ -1736,6 +1802,13 @@
       <span class="imp-search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#9aa0ab" stroke-width="2"/><path d="m20 20-3.2-3.2" stroke="#9aa0ab" stroke-width="2" stroke-linecap="round"/></svg><input id="impSearch" placeholder="검색어를 입력하세요" /></span>
       <button class="imp-go" id="impGo">검색</button>
     </div>
+    <div class="imp-status" id="impStatus">
+      <button class="imp-chip on" data-s="전체">전체</button>
+      <button class="imp-chip" data-s="판매 중">판매 중</button>
+      <button class="imp-chip" data-s="판매 대기">판매 대기</button>
+      <button class="imp-chip" data-s="판매 중지">판매 중지</button>
+      <button class="imp-chip" data-s="품절">품절</button>
+    </div>
     <div class="imp-subbar">
       <label class="imp-check"><span class="cbox-sq" id="impAll"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m5 12 5 5 9-10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span> 전체 선택</label>
       <span class="imp-per">10개씩 &#9662;</span>
@@ -1798,6 +1871,50 @@
     <label class="flash-startnow"><span class="cbox-sq" id="flashStartNow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m5 12 5 5 9-10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span> 한정판매 즉시 시작</label>
     <div class="flash-foot"><button class="btn-cancel" id="flashCancel">취소</button><button class="btn-go" id="flashApply">적용</button></div>
     <input type="file" id="flashFile" accept="image/*" style="display:none" />
+  </div>
+</div>
+
+<!-- 방송 앱 미리보기 · 방송 중 쇼츠(영상/사진) 노출 (GRIPPGM-2941) -->
+<div class="modal-overlay" id="castModal">
+  <div class="modal cast-modal" role="dialog" aria-modal="true" aria-label="방송 앱 쇼츠 노출 미리보기">
+    <div class="cast-head"><span class="cast-title">방송 중 <b>쇼츠(영상·사진)</b> 노출 · 방송 앱 미리보기</span><button class="cast-x" id="castClose" aria-label="닫기">&times;</button></div>
+    <div class="cast-body">
+      <div class="cast-phone">
+        <div class="cast-cam"></div>
+        <div class="cast-scene" id="castScene" style="background-image:url(flash5.png)"></div>
+        <div class="cast-live"><span class="dot">LIVE</span><span>23 · 999:99:99</span></div>
+        <div class="cast-away" id="castAway"><span class="a-pill"><span class="a-mascot"></span>자리비움</span></div>
+        <div class="cast-shorts" id="castShorts">
+          <span class="s-tag" id="castShortsTag">영상 첨부</span>
+          <button class="s-x" id="castShortsX" aria-label="첨부 해제">&times;</button>
+          <span class="s-play" id="castShortsPlay"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></span>
+          <span class="s-hint">탭하면 갤러리에서 다시 선택</span>
+        </div>
+        <div class="cast-chat">그립조아님 외 32명이 들어왔습니다.<br/>새콤달콤 나 오늘 너무 선착 안된다<br/>그립조아 언니들 저 왔어여</div>
+        <div class="cast-toolbar">
+          <span class="t"><span class="ic">⚡</span>플래시</span>
+          <span class="t" id="castTPhoto"><span class="ic">🖼️</span>사진첨부</span>
+          <span class="t" id="castTVideo"><span class="ic">🎬</span>영상첨부</span>
+          <span class="t"><span class="ic">🔄</span>전환</span>
+          <span class="t"><span class="ic">✨</span>효과</span>
+        </div>
+      </div>
+      <div class="cast-side">
+        <div class="cast-ctrls">
+          <button id="castPhoto">🖼️ 사진 첨부</button>
+          <button id="castVideo">🎬 영상 첨부</button>
+          <button id="castAwayBtn">🙋 자리비움</button>
+          <button class="reset" id="castReset">초기화</button>
+        </div>
+        <p class="cast-note"><b>동작</b> — [사진 첨부]·[영상 첨부]를 누르면 디바이스에서 업로드한 미디어가 <b>방송 화면 위 정중앙 70%</b>(영상 비율 유지)로 노출됩니다. 미디어를 <b>탭하면 갤러리</b>에서 다시 고를 수 있어요. ‘쉬는 시간’ 등에 활용합니다.</p>
+        <div class="cast-layer">
+          <div class="lz asis"><div class="h">AS-IS</div><p>하단 레이어 = 첨부한 영상 / 상단 레이어 = 방송 화면 → 첨부 미디어가 방송에 가려짐</p></div>
+          <div class="lz tobe"><div class="h">TO-BE</div><p>하단 레이어 = 방송 화면 / 상단 레이어 = 첨부한 영상 → 첨부 미디어가 방송 위에 노출</p></div>
+        </div>
+        <p class="cast-note"><b>자리비움</b> — 기존 ‘스티커’를 <b>자리비움</b>으로 변경. 셀러가 잠시 자리를 비울 때 방송에 자리비움 표시를 띄웁니다.</p>
+      </div>
+    </div>
+    <div class="cast-foot"><button class="btn-go" id="castApply">확인</button></div>
   </div>
 </div>
 
@@ -2390,33 +2507,49 @@
 
       // ================= 등록된 상품 가져오기 =================
       var IMPORT_POOL = [
-        { name: '미니 대표 선크림', code: 'npyp6441', price: 1000, img: 'p1.png' },
-        { name: '수분 진정 토너 200ml', code: 'tn200aa', price: 18900, img: 'p2.png' },
-        { name: '데일리 클렌징 폼', code: 'cf-dy09', price: 9900, img: 'p3.png' },
-        { name: '비타민C 브라이트 세럼', code: 'vc-br24', price: 24000, img: 'p4.png' },
-        { name: '수분 진정 크림 50ml', code: 'mc-50z', price: 21000, img: 'p5.png' },
-        { name: '모이스처 립밤 2종 세트', code: 'lb-2set', price: 12000, img: 'p6.png' }
+        { name: '미니 대표 선크림', code: 'npyp6441', price: 1000, img: 'p1.png', sale: '판매 중' },
+        { name: '수분 진정 토너 200ml', code: 'tn200aa', price: 18900, img: 'p2.png', sale: '판매 중' },
+        { name: '데일리 클렌징 폼', code: 'cf-dy09', price: 9900, img: 'p3.png', sale: '판매 대기' },
+        { name: '비타민C 브라이트 세럼', code: 'vc-br24', price: 24000, img: 'p4.png', sale: '품절' },
+        { name: '수분 진정 크림 50ml', code: 'mc-50z', price: 21000, img: 'p5.png', sale: '판매 중지' },
+        { name: '모이스처 립밤 2종 세트', code: 'lb-2set', price: 12000, img: 'p6.png', sale: '판매 대기' }
       ];
-      var impSel = {}, impListEl = document.getElementById('impList');
+      var impSel = {}, impListEl = document.getElementById('impList'), impStatusVal = '전체';
+      function curQ() { var s = document.getElementById('impSearch'); return s ? s.value.trim() : ''; }
+      // 3459: 판매상태 + 검색어로 걸러낸 '보이는' 상품만
+      function visibleList(q) {
+        return IMPORT_POOL.map(function (p, gi) { return { p: p, gi: gi }; }).filter(function (o) {
+          if (impStatusVal !== '전체' && o.p.sale !== impStatusVal) return false;
+          if (q && o.p.name.indexOf(q) < 0 && o.p.code.indexOf(q) < 0) return false;
+          return true;
+        });
+      }
       function selCount() { return Object.keys(impSel).filter(function (k) { return impSel[k]; }).length; }
-      function updateImpApply() { var n = selCount(); var b = document.getElementById('impApply'); b.disabled = n === 0; b.textContent = n ? ('적용 (' + n + ')') : '적용'; document.getElementById('impAll').classList.toggle('on', n > 0 && n === IMPORT_POOL.length); }
+      function sBadge(s) { var cls = { '판매 중': 'on', '판매 대기': 'wait', '판매 중지': 'stop', '품절': 'sold' }[s] || ''; return '<span class="imp-sbadge ' + cls + '">' + s + '</span>'; }
+      function updateImpApply() {
+        var n = selCount(); var b = document.getElementById('impApply'); b.disabled = n === 0; b.textContent = n ? ('적용 (' + n + ')') : '적용';
+        var vis = visibleList(curQ()); var allVis = vis.length > 0 && vis.every(function (o) { return impSel[o.gi]; });
+        document.getElementById('impAll').classList.toggle('on', allVis);
+      }
       function renderImp(q) {
         var html = '';
-        IMPORT_POOL.forEach(function (p, gi) {
-          if (q && p.name.indexOf(q) < 0) return;
+        visibleList(q).forEach(function (o) {
+          var p = o.p, gi = o.gi;
           html += '<div class="imp-item" data-i="' + gi + '"><span class="cbox-sq' + (impSel[gi] ? ' on' : '') + '"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m5 12 5 5 9-10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>' +
             '<span class="imp-thumb" style="background-image:url(' + p.img + ')"></span>' +
-            '<span class="imp-info"><div class="imp-name">' + p.name + '</div><div class="imp-code">상품코드: ' + p.code + '</div><div class="imp-price">' + p.price.toLocaleString('en-US') + '원</div></span></div>';
+            '<span class="imp-info"><div class="imp-name">' + p.name + sBadge(p.sale) + '</div><div class="imp-code">상품코드: ' + p.code + '</div><div class="imp-price">' + p.price.toLocaleString('en-US') + '원</div></span></div>';
         });
-        impListEl.innerHTML = html || '<div style="padding:40px 0;text-align:center;color:#9aa0ab;font-size:14px;">검색 결과가 없습니다.</div>';
+        impListEl.innerHTML = html || '<div style="padding:40px 0;text-align:center;color:#9aa0ab;font-size:14px;">해당 조건의 상품이 없습니다.</div>';
         updateImpApply();
       }
-      function openImp() { impSel = {}; document.getElementById('impSearch').value = ''; renderImp(''); impModal.classList.add('open'); }
+      function setStatusChip() { Array.prototype.forEach.call(document.querySelectorAll('#impStatus .imp-chip'), function (x) { x.classList.toggle('on', x.getAttribute('data-s') === impStatusVal); }); }
+      function openImp() { impSel = {}; impStatusVal = '전체'; setStatusChip(); var s = document.getElementById('impSearch'); if (s) s.value = ''; renderImp(''); impModal.classList.add('open'); }
       function closeImp() { impModal.classList.remove('open'); }
-      impListEl.addEventListener('click', function (e) { var it = e.target.closest('.imp-item'); if (!it) return; var gi = parseInt(it.getAttribute('data-i'), 10); impSel[gi] = !impSel[gi]; renderImp(document.getElementById('impSearch').value.trim()); });
-      document.getElementById('impAll').addEventListener('click', function (e) { e.stopPropagation(); var all = selCount() === IMPORT_POOL.length; IMPORT_POOL.forEach(function (p, i) { impSel[i] = !all; }); renderImp(document.getElementById('impSearch').value.trim()); });
-      document.getElementById('impGo').addEventListener('click', function () { renderImp(document.getElementById('impSearch').value.trim()); });
-      document.getElementById('impSearch').addEventListener('keydown', function (e) { if (e.key === 'Enter') renderImp(this.value.trim()); });
+      impListEl.addEventListener('click', function (e) { var it = e.target.closest('.imp-item'); if (!it) return; var gi = parseInt(it.getAttribute('data-i'), 10); impSel[gi] = !impSel[gi]; renderImp(curQ()); });
+      document.getElementById('impStatus').addEventListener('click', function (e) { var b = e.target.closest('.imp-chip'); if (!b) return; impStatusVal = b.getAttribute('data-s'); setStatusChip(); renderImp(curQ()); });
+      document.getElementById('impAll').addEventListener('click', function (e) { e.stopPropagation(); var vis = visibleList(curQ()); var allVis = vis.length > 0 && vis.every(function (o) { return impSel[o.gi]; }); vis.forEach(function (o) { impSel[o.gi] = !allVis; }); renderImp(curQ()); });
+      document.getElementById('impGo').addEventListener('click', function () { renderImp(curQ()); });
+      document.getElementById('impSearch').addEventListener('keydown', function (e) { if (e.key === 'Enter') renderImp(curQ()); });
       document.getElementById('impApply').addEventListener('click', function () {
         var picked = IMPORT_POOL.filter(function (p, i) { return impSel[i]; });
         if (!picked.length) return;
@@ -2446,12 +2579,15 @@
     var upBody = document.getElementById('upListBody');
     var upCountLabel = document.getElementById('upCountLabel');
     var upAll = document.getElementById('upAll'), upAllBox = document.getElementById('upAllBox');
-    function updateAllBox() { var list = upList(); if (upAllBox) upAllBox.classList.toggle('on', list.length > 0 && list.every(function (r) { return checked[idxOf(r)]; })); }
+    var upQuery = '';
     function upList() { return everUp.filter(function (r) { return r.parentNode === listEl; }); }
+    // 3460: 상품명·상품코드 검색으로 걸러낸 '보이는' UP 상품
+    function upVisible() { var q = upQuery.trim(); return upList().filter(function (r) { if (!q) return true; var d = readRow(r); return (d.name && d.name.indexOf(q) >= 0) || (d.code && String(d.code).indexOf(q) >= 0); }); }
+    function updateAllBox() { var list = upVisible(); if (upAllBox) upAllBox.classList.toggle('on', list.length > 0 && list.every(function (r) { return checked[idxOf(r)]; })); }
     function renderUpModal() {
       if (!upBody) return;
-      var list = upList();
-      if (upCountLabel) upCountLabel.textContent = 'UP한 상품 ' + list.length;
+      var full = upList(), list = upVisible();
+      if (upCountLabel) upCountLabel.textContent = 'UP한 상품 ' + full.length;
       upBody.innerHTML = list.length ? list.map(function (r) {
         var d = readRow(r), i = idxOf(r);
         return '<li class="ul2" data-idx="' + i + '">' +
@@ -2461,7 +2597,7 @@
           '<div class="ul2-stat">점유수량 <b>' + d.occupy + '</b> · 주문수량 <b>' + d.ordered + '</b> · 재고 <b>' + d.stock + '</b></div></span>' +
           '<span class="ul2-store' + (storeOn[i] ? ' on' : '') + '">' + (storeOn[i] ? '스토어 ON' : '스토어 OFF') + '</span>' +
           '</li>';
-      }).join('') : '<li class="ul-empty">UP한 상품이 없습니다.</li>';
+      }).join('') : (full.length ? '<li class="ul-empty">검색 결과가 없습니다.</li>' : '<li class="ul-empty">UP한 상품이 없습니다.</li>');
       updateAllBox();
       Array.prototype.slice.call(upBody.querySelectorAll('.cbox2')).forEach(function (cb) {
         cb.addEventListener('click', function () { var i = parseInt(cb.getAttribute('data-check'), 10); checked[i] = !checked[i]; renderUpModal(); });
@@ -2469,9 +2605,9 @@
     }
     if (upAll) upAll.addEventListener('click', function (e) {
       e.preventDefault();
-      var list = upList();
+      var list = upVisible();
       var all = list.length > 0 && list.every(function (r) { return checked[idxOf(r)]; });
-      if (all) checked = {}; else list.forEach(function (r) { checked[idxOf(r)] = true; });
+      if (all) list.forEach(function (r) { delete checked[idxOf(r)]; }); else list.forEach(function (r) { checked[idxOf(r)] = true; });
       renderUpModal();
     });
     function applyStore(on) {
@@ -2484,10 +2620,12 @@
     var upStoreOn = document.getElementById('upStoreOn'), upStoreOff = document.getElementById('upStoreOff');
     if (upStoreOn) upStoreOn.addEventListener('click', function () { applyStore(true); });
     if (upStoreOff) upStoreOff.addEventListener('click', function () { applyStore(false); });
-    function openUp() { renderUpModal(); if (upModal) upModal.classList.add('open'); }
+    function openUp() { upQuery = ''; var us = document.getElementById('upSearch'); if (us) us.value = ''; renderUpModal(); if (upModal) upModal.classList.add('open'); }
     function closeUp() { if (upModal) upModal.classList.remove('open'); }
     var btnUp = document.getElementById('btnUpList');
     if (btnUp) btnUp.addEventListener('click', openUp);
+    var upSearchEl = document.getElementById('upSearch');
+    if (upSearchEl) upSearchEl.addEventListener('input', function () { upQuery = this.value; renderUpModal(); });
     var upClose = document.getElementById('upListClose');
     if (upClose) upClose.addEventListener('click', closeUp);
     if (upModal) upModal.addEventListener('click', function (e) { if (e.target === upModal) closeUp(); });
@@ -3690,6 +3828,120 @@
       ]
     });
 
+    // ===== 기능 9: 등록된 상품 가져오기 판매상태 필터 (GRIPPGM-3459) =====
+    FEATURES.push({
+      id: 'impfilter', demoMode: 'limited', jira: 'GRIPPGM-3459', name: '[스튜디오] 등록된 상품 가져오기 판매상태 필터 기능 개발',
+      overviewHTML:
+        '<div class="ov-title">🎯 과제 개요</div>' +
+        '<span class="prd-k2">과제의 목적</span>' +
+        '<p><b>등록된 상품 가져오기</b> 팝업에서 <b>판매 상태로 상품을 걸러</b>, 방송과 관계없는 상품이 섞여 들어오지 않게 한다. (Jira <b>GRIPPGM-3459</b>)</p>' +
+        '<span class="prd-k2">배경 · VOC</span>' +
+        '<p>지금은 팝업에서 판매 상태별 선택이 어려워 <b>전체 선택 시 방송과 무관한 상품까지 등록</b>될 수 있다. “판매 대기·판매 중·판매 중지·품절” 등 상태 필터 요청.</p>' +
+        '<span class="prd-k2">해결</span>' +
+        '<p>팝업 상단에 <b>판매상태 필터 칩</b>(전체/판매 중/판매 대기/판매 중지/품절) 추가. 각 상품에 상태 배지 노출, <b>전체 선택은 현재 필터된 상품만</b> 선택된다.</p>',
+      flowHTML:
+        '<span class="prd-k2">검증 플로우</span>' +
+        '<div class="fpath">' +
+          '<div class="fpath-h"><span class="fpath-tag a">경로</span> 등록된 상품 가져오기</div>' +
+          '<div class="frow"><span class="fnode">[등록된 상품 가져오기]</span><span class="farr">→</span><span class="fnode">판매상태 칩 선택</span><span class="farr">→</span><span class="fnode">해당 상태 상품만 노출</span></div>' +
+          '<div class="frow"><span class="fnode">전체 선택</span><span class="farr">→</span><span class="fnode">필터된 상품만 선택</span><span class="farr">→</span><span class="fnode">적용 → 리스트 추가</span></div>' +
+        '</div>' +
+        '<div class="fnode final">전체 선택이 “보이는(필터된)” 상품에만 적용되어 방송 무관 상품 등록을 방지</div>',
+      prd: [
+        { n: 1, target: '#impStatus', title: '판매상태 필터 칩', tag: '필터',
+          def: '가져오기 팝업 상단에서 판매 상태로 상품 목록을 거른다.',
+          asis: ['판매 상태별 선택이 어려워 전체 선택 시 방송 무관 상품까지 등록될 수 있음.'],
+          tobe: ['<b>전체/판매 중/판매 대기/판매 중지/품절</b> 칩으로 상태 필터, 각 상품에 상태 배지 노출.'],
+          features: ['상태 칩 선택 시 해당 상태 상품만 노출(검색어와 함께 적용).', '각 상품명 옆 <b>상태 배지</b> 표시.'] },
+        { n: 2, target: '#impAll', title: '전체 선택 = 필터된 상품만', tag: '핵심',
+          def: '전체 선택은 지금 보이는(필터·검색된) 상품만 선택한다.',
+          features: ['필터 상태에서 <b>전체 선택 → 보이는 상품만</b> 선택.', '방송과 무관한(다른 상태) 상품이 실수로 등록되지 않음.'] }
+      ],
+      steps: [
+        { tag: '시작', t: '<b>등록된 상품 가져오기</b>에 <b>판매상태 필터</b>를 더해, 방송 무관 상품이 섞이지 않게 하는 흐름을 시연합니다. (Jira GRIPPGM-3459)', target: function () { return q('.product-list'); }, act: function () { resetUI(); } },
+        { tag: '가져오기 열기', t: '<b>[등록된 상품 가져오기]</b>를 열면 비즈센터 등록 상품이 <b>상태 배지</b>와 함께 보입니다.', target: function () { return q('#impModal .imp-modal'); }, act: function () { if (!q('#impModal').classList.contains('open') && window.__gripImpOpen) window.__gripImpOpen(); } },
+        { tag: '판매상태 필터', t: '상단 <b>판매상태 칩</b>(예: “판매 중”)을 누르면 해당 상태 상품만 걸러집니다.', target: function () { return q('#impStatus'); }, act: function () { if (!q('#impModal').classList.contains('open') && window.__gripImpOpen) window.__gripImpOpen(); var c = q('#impStatus .imp-chip[data-s="판매 중"]'); if (c) c.click(); } },
+        { tag: '전체 선택 = 필터만', t: '<b>전체 선택</b>은 지금 <b>보이는(필터된) 상품만</b> 선택합니다 — 방송과 무관한 상품이 섞여 등록되지 않아요.', target: function () { return q('#impList'); }, act: function () { if (!q('#impModal').classList.contains('open') && window.__gripImpOpen) window.__gripImpOpen(); var c = q('#impStatus .imp-chip[data-s="판매 중"]'); if (c) c.click(); var a = q('#impAll'); if (a) a.click(); } }
+      ]
+    });
+
+    // ===== 기능 10: UP한 상품 목록 검색 (GRIPPGM-3460) =====
+    FEATURES.push({
+      id: 'upsearch', demoMode: 'store', jira: 'GRIPPGM-3460', name: '[스튜디오] UP한 상품 목록 검색 기능 개발',
+      overviewHTML:
+        '<div class="ov-title">🎯 과제 개요</div>' +
+        '<span class="prd-k2">과제의 목적</span>' +
+        '<p><b>UP한 상품 목록</b> 모달에서 <b>상품명·상품코드로 검색</b>해, 많은 UP 상품 중 특정 상품을 빠르게 찾아 스토어 ON 처리할 수 있게 한다. (Jira <b>GRIPPGM-3460</b>)</p>' +
+        '<span class="prd-k2">배경 · VOC</span>' +
+        '<p>UP한 상품이 많아지면 특정 상품을 찾아 스토어 ON 하는 데 시간이 오래 걸린다. UP 목록만의 차별화를 위해 <b>목록 내 검색창</b> 요청.</p>' +
+        '<span class="prd-k2">해결</span>' +
+        '<p>UP한 상품 목록 상단에 <b>검색창(상품명·상품코드)</b> 추가. 검색 결과만 노출되고, <b>전체 선택은 검색된 상품만</b> 대상이 된다.</p>',
+      flowHTML:
+        '<span class="prd-k2">검증 플로우</span>' +
+        '<div class="fpath">' +
+          '<div class="fpath-h"><span class="fpath-tag a">경로</span> UP한 상품 목록</div>' +
+          '<div class="frow"><span class="fnode">[UP한 상품 목록]</span><span class="farr">→</span><span class="fnode">검색창에 상품명/코드 입력</span><span class="farr">→</span><span class="fnode">일치 상품만 노출</span></div>' +
+          '<div class="frow"><span class="fnode">선택</span><span class="farr">→</span><span class="fnode">스토어 ON/OFF</span></div>' +
+        '</div>' +
+        '<div class="fnode final">검색으로 특정 상품을 빠르게 찾아 스토어 처리 · 상단 카운트는 전체 UP 수 유지</div>',
+      prd: [
+        { n: 1, target: '#upSearch', title: 'UP 목록 검색창', tag: '검색',
+          def: 'UP한 상품 목록에서 상품명·상품코드로 특정 상품을 검색한다.',
+          asis: ['UP 상품이 많으면 특정 상품을 찾아 스토어 ON 하는 데 시간이 오래 걸림.'],
+          tobe: ['목록 상단 <b>검색창(상품명·상품코드)</b>으로 즉시 필터.'],
+          features: ['상품명 또는 상품코드 부분 일치로 필터.', '상단 카운트는 <b>전체 UP 수</b> 유지, 목록만 검색 결과로 갱신.'] },
+        { n: 2, target: '#upAll', title: '전체 선택 = 검색된 상품만', tag: '핵심',
+          def: '검색 상태에서 전체 선택은 지금 보이는(검색된) 상품만 대상으로 한다.',
+          features: ['검색 결과만 대상으로 <b>전체 선택 / 스토어 ON</b>.'] }
+      ],
+      steps: [
+        { tag: '시작', t: '<b>UP한 상품 목록</b>에 <b>검색창</b>을 더해 특정 상품을 빠르게 찾는 흐름을 시연합니다. (Jira GRIPPGM-3460)', target: function () { return q('.product-list'); }, act: function () { resetUI(); } },
+        { tag: 'UP 목록 열기', t: '<b>[UP한 상품 목록]</b>을 엽니다. UP한 상품이 많을수록 특정 상품을 찾기 번거로웠어요.', target: function () { return q('#upListModal .modal'); }, act: function () { if (!q('#upListModal').classList.contains('open')) { var b = q('#btnUpList'); if (b) b.click(); } } },
+        { tag: '검색창으로 찾기', t: '상단 <b>검색창</b>에 <b>상품명·상품코드</b>를 입력하면 일치하는 상품만 남아, 바로 찾아 스토어 ON 할 수 있습니다.', target: function () { return q('#upSearch'); }, act: function () { if (!q('#upListModal').classList.contains('open')) { var b = q('#btnUpList'); if (b) b.click(); } } }
+      ]
+    });
+
+    // ===== 기능 11: 방송화면 내 쇼츠 노출 (GRIPPGM-2941, 앱 방송) =====
+    FEATURES.push({
+      id: 'shorts', demoMode: 'limited', jira: 'GRIPPGM-2941', name: '[앱 방송] 방송화면 내 쇼츠 노출 기능 추가',
+      overviewHTML:
+        '<div class="ov-title">🎯 과제 개요</div>' +
+        '<span class="prd-k2">과제의 목적</span>' +
+        '<p>방송 중 셀러가 <b>영상·사진을 첨부</b>하면 <b>방송 화면 위 정중앙 70%</b>(영상 비율 유지)로 노출해, ‘쉬는 시간’ 등에 쇼츠를 보여줄 수 있게 한다. (Jira <b>GRIPPGM-2941</b> · 앱 방송)</p>' +
+        '<span class="prd-k2">배경 · 레이어 순서</span>' +
+        '<p>기존에는 첨부한 영상이 하단 레이어, 방송 화면이 상단이라 첨부 미디어가 가려졌다. <b>레이어 순서를 뒤집어</b> 첨부 미디어가 방송 위에 보이게 한다. 기존 ‘스티커’는 <b>자리비움</b>으로 변경.</p>' +
+        '<span class="prd-k2">해결</span>' +
+        '<p><b>[사진 첨부]·[영상 첨부]</b> → 디바이스 업로드 미디어를 방송 화면 위 70% 노출, <b>탭하면 갤러리</b>에서 다시 선택. <b>[자리비움]</b> 표시 지원. <span style="color:#9aa0ab">(모바일 방송 앱 화면 — 스튜디오 콘솔엔 미리보기 목업으로 제공)</span></p>',
+      flowHTML:
+        '<span class="prd-k2">레이어 순서 · AS-IS → TO-BE</span>' +
+        '<div class="fpath">' +
+          '<div class="fpath-h"><span class="fpath-tag a">AS-IS</span></div>' +
+          '<div class="frow"><span class="fnode">하단 = 첨부한 영상</span><span class="farr">/</span><span class="fnode">상단 = 방송 화면</span><span class="farr">→</span><span class="fnode">첨부 미디어가 가려짐</span></div>' +
+        '</div>' +
+        '<div class="fmerge">↓ 변경</div>' +
+        '<div class="fpath">' +
+          '<div class="fpath-h"><span class="fpath-tag a">TO-BE</span></div>' +
+          '<div class="frow"><span class="fnode">하단 = 방송 화면</span><span class="farr">/</span><span class="fnode">상단 = 첨부한 영상(70% 중앙)</span><span class="farr">→</span><span class="fnode">탭하면 갤러리</span></div>' +
+        '</div>' +
+        '<div class="fnode final">스티커 → 자리비움으로 변경 · 스튜디오에서는 [방송 앱 미리보기]로 목업 확인</div>',
+      prd: [
+        { n: 1, target: '#castShorts', title: '방송 화면 위 쇼츠 노출', tag: '쇼츠',
+          def: '첨부한 영상·사진을 방송 화면 위 정중앙 70%로 노출한다(영상 비율 유지).',
+          asis: ['첨부한 영상이 방송 화면 아래 레이어라 가려져 보이지 않음.'],
+          tobe: ['레이어 순서를 뒤집어 <b>첨부 미디어가 방송 위</b>에 노출, <b>탭하면 갤러리</b>에서 재선택.'],
+          features: ['<b>[사진 첨부]·[영상 첨부]</b> = 디바이스 업로드 미디어를 방송 위 70% 중앙 노출.', '미디어 탭 → 갤러리에서 다시 선택.'] },
+        { n: 2, target: '#castAway', title: '스티커 → 자리비움', tag: '자리비움',
+          def: '기존 ‘스티커’를 ‘자리비움’으로 변경해, 셀러가 잠시 자리를 비울 때 방송에 표시한다.',
+          features: ['<b>[자리비움]</b> 토글로 방송에 자리비움 표시.'] }
+      ],
+      steps: [
+        { tag: '시작', t: '방송 중 <b>영상·사진을 방송 화면 위에 노출</b>(쇼츠)하는 흐름을 <b>방송 앱 미리보기</b>로 시연합니다. (Jira GRIPPGM-2941 · 앱 방송)', target: function () { return q('.bc-cast-btn'); }, act: function () { resetUI(); } },
+        { tag: '방송 앱 미리보기', t: '<b>[방송 앱 미리보기]</b>를 열면 모바일 방송 화면 목업이 뜹니다.', target: function () { return q('#castModal .cast-modal'); }, act: function () { if (!q('#castModal').classList.contains('open') && window.__gripCastOpen) window.__gripCastOpen(); } },
+        { tag: '영상 첨부 = 쇼츠 노출', t: '<b>[영상 첨부]</b>를 누르면 첨부 미디어가 <b>방송 화면 위 정중앙 70%</b>로 노출됩니다. <b>탭하면 갤러리</b>에서 다시 고를 수 있어요.', target: function () { return q('#castShorts'); }, act: function () { if (!q('#castModal').classList.contains('open') && window.__gripCastOpen) window.__gripCastOpen(); var v = q('#castVideo'); if (v) v.click(); } },
+        { tag: '자리비움', t: '기존 ‘스티커’가 <b>자리비움</b>으로 바뀌었습니다. 셀러가 잠시 자리를 비울 때 방송에 표시합니다.', target: function () { return q('#castAway'); }, act: function () { if (!q('#castModal').classList.contains('open') && window.__gripCastOpen) window.__gripCastOpen(); var v = q('#castVideo'); if (v) v.click(); var a = q('#castAwayBtn'); if (a) a.click(); } }
+      ]
+    });
+
     var cur = 0;
     function feat() { return FEATURES[cur]; }
 
@@ -3787,7 +4039,7 @@
     function snapshot() { var r = rowN(0); if (r) snap = { reg: r.querySelector('.pi-regular-input').value, dis: r.querySelector('.pi-discount-input').value, live: r.querySelector('.pi-live-input').value }; }
     function resetUI() {
       if (window.__gripSetMode) window.__gripSetMode(feat().demoMode || 'limited');
-      ['#priceModal', '#failModal', '#deleteModal', '#upListModal', '#upMaxModal', '#optionModal', '#optNameModal', '#optDelAllModal', '#optBulkModal', '#flashModal', '#impModal'].forEach(function (sel) { var m = q(sel); if (m) m.classList.remove('open'); });
+      ['#priceModal', '#failModal', '#deleteModal', '#upListModal', '#upMaxModal', '#optionModal', '#optNameModal', '#optDelAllModal', '#optBulkModal', '#flashModal', '#impModal', '#castModal'].forEach(function (sel) { var m = q(sel); if (m) m.classList.remove('open'); });
       if (window.__gripChatReset) window.__gripChatReset();
       if (window.__gripImgReset) window.__gripImgReset();
       var tw = document.getElementById('toastWrap'); if (tw) tw.innerHTML = '';
@@ -3851,6 +4103,38 @@
     // ---------- 초기화 ----------
     buildMenu();
     renderFeature();
+  })();
+
+  // ===== 2941: 방송 앱 미리보기(쇼츠 노출) 목업 =====
+  (function () {
+    var modal = document.getElementById('castModal'); if (!modal) return;
+    var shorts = document.getElementById('castShorts'), away = document.getElementById('castAway');
+    var tag = document.getElementById('castShortsTag'), play = document.getElementById('castShortsPlay');
+    var tPhoto = document.getElementById('castTPhoto'), tVideo = document.getElementById('castTVideo');
+    var MEDIA = 'flash4.png';
+    function toast(m, ok) { if (window.__gripToast) window.__gripToast(m, ok); }
+    function reset() { shorts.classList.remove('on'); away.classList.remove('on'); tPhoto.classList.remove('on'); tVideo.classList.remove('on'); }
+    function attach(kind) {
+      shorts.style.backgroundImage = 'url(' + MEDIA + ')';
+      tag.textContent = kind === 'video' ? '영상 첨부' : '사진 첨부';
+      play.style.display = kind === 'video' ? 'flex' : 'none';
+      shorts.classList.add('on');
+      tPhoto.classList.toggle('on', kind === 'photo'); tVideo.classList.toggle('on', kind === 'video');
+      toast((kind === 'video' ? '영상' : '사진') + '을 방송 화면 위에 노출했습니다.', true);
+    }
+    function open() { reset(); modal.classList.add('open'); }
+    function close() { modal.classList.remove('open'); }
+    window.__gripCastOpen = open;
+    var btn = document.getElementById('btnCast'); if (btn) btn.addEventListener('click', open);
+    document.getElementById('castPhoto').addEventListener('click', function () { attach('photo'); });
+    document.getElementById('castVideo').addEventListener('click', function () { attach('video'); });
+    document.getElementById('castAwayBtn').addEventListener('click', function () { away.classList.toggle('on'); toast(away.classList.contains('on') ? '자리비움을 표시했습니다.' : '자리비움을 해제했습니다.', true); });
+    document.getElementById('castReset').addEventListener('click', reset);
+    shorts.addEventListener('click', function (e) { if (e.target.closest('#castShortsX')) return; toast('갤러리에서 다른 영상·사진을 선택합니다.', true); });
+    document.getElementById('castShortsX').addEventListener('click', function (e) { e.stopPropagation(); shorts.classList.remove('on'); tPhoto.classList.remove('on'); tVideo.classList.remove('on'); });
+    document.getElementById('castClose').addEventListener('click', close);
+    document.getElementById('castApply').addEventListener('click', close);
+    modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
   })();
 
 </script>
