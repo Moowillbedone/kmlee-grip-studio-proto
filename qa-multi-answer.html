@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Q&A 개선안 — 한 질문에 답변 여러 개</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" />
+<style>
+  @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
+  :root {
+    --grip: #f5375b;
+    --grip-strong: #ec2a4f;
+    --grip-soft: #ffeaef;
+    --grip-soft-2: #fff2f4;
+    --ink: #1d1f25;
+    --line: #e8e9ee;
+    --bg: #f1f2f5;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Pretendard", "Pretendard Variable", -apple-system, BlinkMacSystemFont, "Malgun Gothic", sans-serif;
+    background: var(--bg); color: var(--ink); letter-spacing: -.01em;
+    -webkit-font-smoothing: antialiased; padding: 22px 18px 60px;
+  }
+  button { font-family: inherit; cursor: pointer; }
+  input { font-family: inherit; }
+
+  /* ===== header ===== */
+  .hd { max-width: 1320px; margin: 0 auto 16px; }
+  .hd-badge { display:inline-flex; align-items:center; gap:7px; background:var(--grip-soft); color:var(--grip); font-weight:800; font-size:12px; padding:5px 11px; border-radius:20px; }
+  .hd-badge .dot { width:7px; height:7px; border-radius:50%; background:var(--grip); }
+  .hd h1 { font-size:22px; font-weight:800; margin:11px 0 5px; }
+  .hd h1 .jira { font-size:13px; font-weight:700; color:#8d919c; margin-left:8px; }
+  .hd p { font-size:13.5px; color:#5c606b; line-height:1.6; }
+  .hd p b { color:var(--grip); }
+
+  /* ===== board ===== */
+  .board { max-width:1320px; margin:0 auto; display:grid; grid-template-columns: 1fr 1fr 380px; gap:16px; align-items:start; }
+  @media (max-width: 1180px){ .board { grid-template-columns:1fr; } }
+  .col { background:#fff; border:1px solid var(--line); border-radius:16px; box-shadow:0 8px 26px rgba(24,26,34,.05); overflow:hidden; }
+  .col-hd { padding:15px 16px 13px; border-bottom:1px solid var(--line); }
+  .col-hd .n { display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:6px; background:var(--ink); color:#fff; font-size:12px; font-weight:800; margin-right:7px; }
+  .col-hd .t { font-size:15px; font-weight:800; }
+  .col-hd .s { display:block; margin-top:6px; font-size:12px; color:#8d919c; line-height:1.5; }
+  .col-bd { padding:14px 16px 18px; }
+
+  /* ===== responder switch ===== */
+  .who-lbl { font-size:11.5px; font-weight:700; color:#8d919c; margin-bottom:7px; }
+  .seg { display:flex; gap:6px; background:#f4f5f7; padding:4px; border-radius:11px; }
+  .seg button { flex:1; border:0; background:transparent; border-radius:8px; padding:8px 4px; font-size:12.5px; font-weight:700; color:#71757f; display:flex; flex-direction:column; align-items:center; gap:3px; transition:.12s; }
+  .seg button .role { font-size:9.5px; font-weight:800; padding:1px 6px; border-radius:6px; }
+  .seg button.on { background:#fff; box-shadow:0 2px 8px rgba(24,26,34,.12); color:var(--ink); }
+
+  .hint { font-size:11.5px; color:#8d919c; background:#f7f8fa; border-radius:9px; padding:8px 10px; line-height:1.5; margin-top:12px; }
+  .hint b { color:#5c606b; }
+
+  /* ===== chat feed ===== */
+  .sub-h { font-size:11.5px; font-weight:800; color:#a3a7b0; margin:16px 2px 8px; letter-spacing:.02em; }
+  .chat { display:flex; flex-direction:column; gap:7px; }
+  .cm { display:flex; align-items:center; gap:9px; background:#f7f8fa; border-radius:10px; padding:9px 11px; font-size:13.5px; }
+  .cm-line { flex:1; min-width:0; line-height:1.45; }
+  .cm-nick { font-weight:800; margin-right:6px; }
+  .cm-text { color:#2b2d34; }
+  .cm-btn { flex:0 0 auto; border:1px solid var(--line); background:#fff; color:#5c606b; font-size:11.5px; font-weight:700; padding:5px 10px; border-radius:8px; }
+  .cm-btn:hover { border-color:var(--grip); color:var(--grip); }
+  .cm-btn.answered { color:#16a34a; border-color:#bbe6c9; background:#f0fbf3; }
+
+  /* ===== reply composer ===== */
+  .composer { display:none; margin-top:11px; border:1px solid #f6c6d0; background:var(--grip-soft-2); border-radius:12px; padding:11px 12px; }
+  .composer.on { display:block; }
+  .cp-q { display:flex; align-items:center; gap:7px; font-size:12px; margin-bottom:9px; }
+  .cp-q .qic { background:#5b6ef5; color:#fff; font-size:10px; font-weight:800; padding:1px 6px; border-radius:8px; }
+  .cp-q .qt { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#2b2d34; }
+  .cp-as { font-size:11px; color:#8d919c; margin-bottom:8px; }
+  .cp-as b { color:var(--grip); }
+  .cp-row { display:flex; gap:7px; }
+  .cp-input { flex:1; min-width:0; border:1px solid #e3e4e8; border-radius:9px; padding:10px 11px; font-size:13.5px; outline:none; background:#fff; }
+  .cp-input:focus { border-color:var(--grip); }
+  .cp-ok { flex:0 0 auto; border:0; background:var(--grip); color:#fff; border-radius:9px; padding:0 16px; font-size:13.5px; font-weight:800; }
+  .cp-ok:hover { background:var(--grip-strong); }
+  .toggle { display:flex; align-items:center; gap:9px; margin-top:10px; font-size:12.5px; font-weight:600; color:#2b2d34; user-select:none; }
+  .sw { width:38px; height:22px; border-radius:11px; background:#cfd3da; position:relative; flex:0 0 auto; transition:.15s; }
+  .sw::after { content:""; position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%; background:#fff; transition:.15s; box-shadow:0 1px 2px rgba(0,0,0,.2); }
+  .sw.on { background:var(--grip); }
+  .sw.on::after { left:18px; }
+  .sw-hint { color:#8d919c; font-weight:500; font-size:11px; }
+
+  /* ===== studio Q&A cards ===== */
+  .qa-list { display:flex; flex-direction:column; gap:12px; }
+  .qa-card { border:1px solid var(--line); border-radius:13px; padding:12px 13px; }
+  .qa-q { display:flex; align-items:flex-start; gap:8px; font-size:13.5px; line-height:1.45; }
+  .qa-ic { width:20px; height:20px; border-radius:6px; flex:0 0 auto; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:#fff; margin-top:1px; }
+  .qa-ic.q { background:#5b6ef5; }
+  .qa-q .asker { font-weight:800; }
+  .qa-cnt { margin:11px 0 4px; font-size:11px; font-weight:800; color:#a3a7b0; }
+  .ans { display:flex; align-items:flex-start; gap:8px; padding:9px 0; border-top:1px dashed #edeef2; }
+  .ans:first-of-type { border-top:0; }
+  .ans-ava { width:22px; height:22px; border-radius:7px; flex:0 0 auto; display:inline-flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff; margin-top:1px; }
+  .ans-body { flex:1; min-width:0; }
+  .ans-top { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:3px; }
+  .ans-who { font-size:12px; font-weight:800; }
+  .ans-role { font-size:9px; font-weight:800; padding:1px 5px; border-radius:5px; }
+  .role-seller { background:var(--grip-soft); color:var(--grip); }
+  .role-mgr { background:#eef0fe; color:#5b6ef5; }
+  .vis { font-size:10px; font-weight:800; padding:2px 7px; border-radius:11px; white-space:nowrap; }
+  .vis.pub { background:#eef1f4; color:#71757f; }
+  .vis.priv { background:var(--grip-soft); color:var(--grip); }
+  .ans-txt { font-size:13px; color:#2b2d34; line-height:1.45; }
+  .ans-t { font-size:10.5px; color:#b6bac2; margin-top:2px; }
+  .ans-acts { display:flex; gap:5px; flex:0 0 auto; }
+  .mini { border:1px solid var(--line); background:#fff; color:#8d919c; font-size:10.5px; font-weight:700; padding:3px 8px; border-radius:7px; }
+  .mini:hover { border-color:#c9ccd3; color:#5c606b; }
+  .mini.del:hover { border-color:var(--grip); color:var(--grip); }
+  .qa-add { margin-top:10px; }
+  .qa-add-btn { width:100%; border:1px dashed #cfd3da; background:#fbfbfc; color:#71757f; font-size:12px; font-weight:700; padding:9px 0; border-radius:9px; }
+  .qa-add-btn:hover { border-color:var(--grip); color:var(--grip); background:var(--grip-soft-2); }
+  .pending { font-size:12px; color:#a0a4ad; padding:7px 0 2px; }
+
+  /* ===== mobile preview ===== */
+  .view-lbl { font-size:11.5px; font-weight:700; color:#8d919c; margin-bottom:7px; }
+  .view-sel { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px; }
+  .view-sel button { border:1px solid var(--line); background:#fff; color:#71757f; font-size:12px; font-weight:700; padding:7px 11px; border-radius:20px; }
+  .view-sel button.on { border-color:var(--grip); background:var(--grip-soft-2); color:var(--grip); }
+  .phone { background:#0e0f13; border-radius:26px; padding:11px; box-shadow:0 16px 40px rgba(16,18,26,.28); }
+  .phone-scr { background:linear-gradient(180deg,#20222b,#15161c); border-radius:18px; overflow:hidden; min-height:430px; display:flex; flex-direction:column; }
+  .ph-top { padding:12px 14px 10px; color:#fff; }
+  .ph-top .who { font-size:12.5px; font-weight:800; display:flex; align-items:center; gap:6px; }
+  .ph-top .who .liv { background:var(--grip); font-size:9px; font-weight:800; padding:2px 6px; border-radius:5px; }
+  .ph-top .cap { font-size:10.5px; color:#b8bcc6; margin-top:4px; line-height:1.45; }
+  .ph-qa { flex:1; padding:6px 12px 14px; display:flex; flex-direction:column; gap:9px; overflow-y:auto; }
+  .ph-qa-h { font-size:10.5px; font-weight:800; color:#8b8f99; letter-spacing:.03em; margin:2px 2px 0; }
+  .mq { background:rgba(255,255,255,.07); border-radius:12px; padding:10px 11px; }
+  .mq-q { font-size:12.5px; color:#eef0f4; line-height:1.4; }
+  .mq-q .a { font-weight:800; color:#ff9db0; margin-right:5px; }
+  .mq-a { display:flex; gap:7px; margin-top:8px; }
+  .mq-a-ava { width:18px; height:18px; border-radius:5px; flex:0 0 auto; display:inline-flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff; margin-top:1px; }
+  .mq-a-body { flex:1; min-width:0; }
+  .mq-a-who { font-size:10.5px; font-weight:800; color:#cfd3db; }
+  .mq-a-who .mine { background:var(--grip); color:#fff; font-size:8.5px; font-weight:800; padding:1px 5px; border-radius:5px; margin-left:5px; }
+  .mq-a-txt { font-size:12px; color:#e9ebf0; line-height:1.4; margin-top:2px; }
+  .ph-empty { margin:auto; text-align:center; color:#7c808b; font-size:12px; line-height:1.7; padding:30px 10px; }
+  .ph-hidden { font-size:10.5px; color:#8b8f99; text-align:center; padding:8px 4px 2px; border-top:1px solid rgba(255,255,255,.06); margin-top:4px; }
+
+  /* ===== policy legend ===== */
+  .legend { max-width:1320px; margin:20px auto 0; background:#fff; border:1px solid var(--line); border-radius:16px; padding:18px 20px; }
+  .legend h3 { font-size:14px; font-weight:800; margin-bottom:4px; }
+  .legend .lg-sub { font-size:12px; color:#8d919c; margin-bottom:14px; }
+  .lg-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+  @media (max-width:760px){ .lg-grid { grid-template-columns:1fr; } }
+  .lg-item { background:#f7f8fa; border-radius:11px; padding:12px 14px; }
+  .lg-item .k { font-size:12px; font-weight:800; color:var(--grip); margin-bottom:4px; }
+  .lg-item .v { font-size:12.5px; color:#4b4f58; line-height:1.55; }
+
+  /* toast */
+  .toast { position:fixed; left:50%; bottom:34px; transform:translateX(-50%) translateY(16px); background:#1d1f25; color:#fff; font-size:13px; font-weight:600; padding:11px 18px; border-radius:11px; box-shadow:0 10px 30px rgba(0,0,0,.28); opacity:0; pointer-events:none; transition:.22s; z-index:200; }
+  .toast.on { opacity:1; transform:translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+  <header class="hd">
+    <span class="hd-badge"><span class="dot"></span>Q&amp;A 개선 방향 프로토타입</span>
+    <h1>한 질문에 <b>답변 여러 개</b><span class="jira">GRIPPGM Q&amp;A · 답변 리스트 모델</span></h1>
+    <p>방송자(셀러)와 매니저 <b>여러 명</b>이 같은 질문에 <b>각자</b> 답할 수 있고, 답변마다 <b>공개범위(🌐 전체 / 🔒 본인만)</b>를 따로 가집니다. 같은 사람이 다시 답하면 <b>추가가 아니라 수정</b>됩니다. 오른쪽 <b>모바일 미리보기</b>에서 <b>보는 사람(질문자 본인 / 다른 시청자)</b>에 따라 답변이 어떻게 필터링되는지 직접 확인하세요.</p>
+  </header>
+
+  <div class="board">
+
+    <!-- ① 스튜디오 콘솔 : 채팅 → 답변 -->
+    <section class="col">
+      <div class="col-hd">
+        <div><span class="n">1</span><span class="t">스튜디오 (매니저 콘솔) · 채팅</span></div>
+        <span class="s">지금 답변하는 사람을 고르고, 유저 문의에 <b>답변하기</b>를 눌러 답을 답니다. 매니저마다 각자 답변이 쌓입니다.</span>
+      </div>
+      <div class="col-bd">
+        <div class="who-lbl">지금 답변하는 사람 (관리자 계정)</div>
+        <div class="seg" id="whoSeg"></div>
+
+        <div class="sub-h">실시간 채팅 — 유저 문의</div>
+        <div class="chat" id="chat"></div>
+
+        <div class="composer" id="composer">
+          <div class="cp-q"><span class="qic">Q</span><span class="qt" id="cpQ"></span></div>
+          <div class="cp-as" id="cpAs"></div>
+          <div class="cp-row">
+            <input class="cp-input" id="cpInput" placeholder="답변을 입력하세요" />
+            <button class="cp-ok" id="cpOk">등록</button>
+          </div>
+          <label class="toggle" id="cpToggle">
+            <span class="sw" id="cpSw"></span>
+            <span>🔒 본인만 보기</span>
+            <span class="sw-hint">켜면 문의한 유저에게만 노출</span>
+          </label>
+        </div>
+
+        <div class="hint">채팅 답변은 오른쪽 <b>②</b>의 Q&amp;A 카드로 모입니다. 같은 문의를 다른 매니저 계정으로 바꿔 답해보면 <b>답변이 여러 개</b> 쌓이는 걸 볼 수 있어요.</div>
+      </div>
+    </section>
+
+    <!-- ② 스튜디오 Q&A 관리 -->
+    <section class="col">
+      <div class="col-hd">
+        <div><span class="n">2</span><span class="t">스튜디오 · Q&amp;A 관리</span></div>
+        <span class="s">한 문의 아래 <b>모든 답변</b>이 답변자·공개범위와 함께 보입니다. <b>매니저 콘솔에서는 공개범위와 무관하게 전부 노출</b>(관리 목적). 내 답변만 수정·삭제할 수 있습니다.</span>
+      </div>
+      <div class="col-bd">
+        <div class="qa-list" id="studioQA"></div>
+      </div>
+    </section>
+
+    <!-- ③ 모바일 미리보기 -->
+    <section class="col">
+      <div class="col-hd">
+        <div><span class="n">3</span><span class="t">모바일 미리보기 · 조회자 관점</span></div>
+        <span class="s">보는 사람에 따라 필터가 달라집니다. <b>질문자 본인</b> = 자기 문의의 답변 전부(🔒 포함), <b>다른 시청자</b> = 🌐 전체 답변만.</span>
+      </div>
+      <div class="col-bd">
+        <div class="view-lbl">이 화면을 보는 사람</div>
+        <div class="view-sel" id="viewSel"></div>
+        <div class="phone">
+          <div class="phone-scr">
+            <div class="ph-top">
+              <div class="who"><span class="liv">LIVE</span> <span id="phWho"></span></div>
+              <div class="cap" id="phCap"></div>
+            </div>
+            <div class="ph-qa" id="phQA"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- 정책 요약 -->
+  <div class="legend">
+    <h3>답변 리스트 노출 정책 (이 프로토타입이 구현한 규칙)</h3>
+    <div class="lg-sub">개발팀 검토 의견 반영 — 한 질문에 여러 답변이 섞이는 경우를 정책으로 확정</div>
+    <div class="lg-grid">
+      <div class="lg-item"><div class="k">① 답변 단위 필터</div><div class="v">공개범위는 질문이 아니라 <b>답변 하나하나</b>가 가집니다. 질문자 본인은 자기 문의의 모든 답변(🌐+🔒)을, 다른 시청자는 🌐 전체 답변만 봅니다.</div></div>
+      <div class="lg-item"><div class="k">② 1인 1답변 (수정)</div><div class="v">같은 사람이 다시 답하면 새 답변이 <b>추가되지 않고</b> 본인 답변이 <b>수정</b>됩니다. 사람이 다르면 답변이 추가됩니다.</div></div>
+      <div class="lg-item"><div class="k">③ 전부 🔒본인만인 문의</div><div class="v">🌐 전체 답변이 하나도 없으면, 다른 시청자의 Q&amp;A 목록에서 <b>그 문의는 통째로 숨김</b>(질문자 본인에게만 노출). 숨긴 건수는 하단에 안내.</div></div>
+      <div class="lg-item"><div class="k">④ 스튜디오는 전부 노출</div><div class="v">매니저 콘솔에서는 공개범위와 무관하게 <b>모든 답변을 관리용으로 노출</b>. 필터는 <b>모바일 시청자</b>에게만 적용됩니다.</div></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  var $ = function(s, r){ return (r||document).querySelector(s); };
+
+  // ---- 참여자 ----
+  var RESPONDERS = {
+    host: { n:'방송자(셀러)', role:'셀러', roleCls:'role-seller', c:'#f5375b', ini:'셀' },
+    mgrA: { n:'매니저 김지은', role:'매니저', roleCls:'role-mgr', c:'#5b6ef5', ini:'김' },
+    mgrB: { n:'매니저 박서준', role:'매니저', roleCls:'role-mgr', c:'#16a34a', ini:'박' }
+  };
+  var R_ORDER = ['host','mgrA','mgrB'];
+
+  var USERS = {
+    u1: { n:'딸기러버', c:'#e11d48' },
+    u2: { n:'초코초코', c:'#7c3aed' },
+    u3: { n:'몽자', c:'#0891b2' },
+    u4: { n:'빵순이', c:'#ca8a04' }
+  };
+
+  // ---- 시드 데이터 : 답변은 배열(answerList) ----
+  // answers[].rid = 답변자, priv = 본인만 여부
+  var questions = [
+    { id:'q1', uid:'u1', q:'이 상품 재고 더 없나요? 방금 품절 떴어요 ㅠㅠ', t:'3분 전',
+      answers:[ { rid:'host', text:'곧 재입고돼요! 조금만 기다려 주세요 🙏', priv:false, t:'2분 전' } ] },
+    { id:'q2', uid:'u2', q:'배송 언제쯤 오나요? 급해서요!', t:'2분 전',
+      answers:[
+        { rid:'mgrA', text:'내일 오전 일괄 발송 예정입니다 :)', priv:false, t:'1분 전' },
+        { rid:'mgrB', text:'주문번호 남겨주시면 개별로 배송 확인 도와드릴게요.', priv:true, t:'1분 전' }
+      ] },
+    { id:'q3', uid:'u3', q:'환불 문의는 어디로 하나요?', t:'1분 전',
+      answers:[ { rid:'mgrA', text:'고객센터로 개별 안내드릴게요. DM 확인 부탁드려요!', priv:true, t:'방금' } ] },
+    { id:'q4', uid:'u4', q:'다른 색상도 있어요? 블랙 원해요', t:'방금',
+      answers:[] }
+  ];
+
+  // ---- 상태 ----
+  var currentResponder = 'host';
+  var viewer = { type:'other' };      // {type:'other'} | {type:'asker', uid}
+  var answering = null;               // qid or null
+  var composerPriv = false;
+
+  // ---- 유틸 ----
+  var toastT;
+  function toast(msg){
+    var el = $('#toast'); el.textContent = msg; el.classList.add('on');
+    clearTimeout(toastT); toastT = setTimeout(function(){ el.classList.remove('on'); }, 2200);
+  }
+  function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function findQ(id){ for(var i=0;i<questions.length;i++){ if(questions[i].id===id) return questions[i]; } return null; }
+  function myAnswer(q){ for(var i=0;i<q.answers.length;i++){ if(q.answers[i].rid===currentResponder) return q.answers[i]; } return null; }
+
+  // ================= ① 답변자 세그먼트 =================
+  function renderWho(){
+    $('#whoSeg').innerHTML = R_ORDER.map(function(rid){
+      var r = RESPONDERS[rid];
+      return '<button data-rid="'+rid+'" class="'+(rid===currentResponder?'on':'')+'">'
+        + '<span class="role '+r.roleCls+'">'+r.role+'</span>'
+        + '<span>'+r.n.replace('방송자','').replace('매니저 ','')+'</span></button>';
+    }).join('');
+  }
+  $('#whoSeg').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    currentResponder = b.getAttribute('data-rid');
+    // 답변 대상이 있으면 그 사람 기준으로 컴포저 갱신
+    if(answering){ openComposer(answering); }
+    renderWho(); renderChat(); renderStudio();
+  });
+
+  // ================= ① 채팅 피드 =================
+  function renderChat(){
+    $('#chat').innerHTML = questions.map(function(q){
+      var u = USERS[q.uid];
+      var mine = myAnswer(q);
+      var label = mine ? '내 답변 수정' : '답변하기';
+      return '<div class="cm">'
+        + '<div class="cm-line"><span class="cm-nick" style="color:'+u.c+'">'+u.n+'</span>'
+        + '<span class="cm-text">'+esc(q.q)+'</span></div>'
+        + '<button class="cm-btn'+(mine?' answered':'')+'" data-qid="'+q.id+'">'+label+'</button>'
+        + '</div>';
+    }).join('');
+  }
+  $('#chat').addEventListener('click', function(e){
+    var b = e.target.closest('.cm-btn'); if(!b) return;
+    openComposer(b.getAttribute('data-qid'));
+  });
+
+  // ================= ① 답변 컴포저 =================
+  function openComposer(qid){
+    answering = qid;
+    var q = findQ(qid), u = USERS[q.uid], r = RESPONDERS[currentResponder];
+    var mine = myAnswer(q);
+    $('#cpQ').textContent = u.n + ' · ' + q.q;
+    $('#cpAs').innerHTML = '답변자: <b>'+r.n+'</b>' + (mine ? ' · 기존 답변을 수정합니다' : ' · 새 답변을 추가합니다');
+    $('#cpInput').value = mine ? mine.text : '';
+    composerPriv = mine ? !!mine.priv : false;
+    $('#cpSw').classList.toggle('on', composerPriv);
+    $('#composer').classList.add('on');
+    $('#cpInput').focus();
+  }
+  function closeComposer(){ answering = null; $('#composer').classList.remove('on'); }
+
+  $('#cpToggle').addEventListener('click', function(e){
+    e.preventDefault();
+    composerPriv = !composerPriv;
+    $('#cpSw').classList.toggle('on', composerPriv);
+  });
+  $('#cpOk').addEventListener('click', submitAnswer);
+  $('#cpInput').addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); submitAnswer(); } });
+
+  function submitAnswer(){
+    if(!answering) return;
+    var val = ($('#cpInput').value||'').trim();
+    if(!val){ toast('답변을 입력해 주세요'); $('#cpInput').focus(); return; }
+    var q = findQ(answering);
+    var mine = myAnswer(q);
+    if(mine){
+      mine.text = val; mine.priv = composerPriv; mine.t = '방금';
+      toast('내 답변을 수정했습니다 · '+(composerPriv?'🔒 본인만':'🌐 전체 공개'));
+    } else {
+      q.answers.push({ rid:currentResponder, text:val, priv:composerPriv, t:'방금' });
+      toast(RESPONDERS[currentResponder].n+' 답변을 추가했습니다 · '+(composerPriv?'🔒 본인만':'🌐 전체 공개'));
+    }
+    closeComposer();
+    renderChat(); renderStudio(); renderMobile();
+  }
+
+  // ================= ② 스튜디오 Q&A 관리 =================
+  function ansRow(q, a){
+    var r = RESPONDERS[a.rid];
+    var isMine = a.rid === currentResponder;
+    var acts = isMine
+      ? '<div class="ans-acts"><button class="mini" data-act="edit" data-qid="'+q.id+'">수정</button>'
+        + '<button class="mini del" data-act="del" data-qid="'+q.id+'" data-rid="'+a.rid+'">삭제</button></div>'
+      : '';
+    return '<div class="ans">'
+      + '<span class="ans-ava" style="background:'+r.c+'">'+r.ini+'</span>'
+      + '<div class="ans-body"><div class="ans-top">'
+      +   '<span class="ans-who">'+r.n+'</span>'
+      +   '<span class="ans-role '+r.roleCls+'">'+r.role+'</span>'
+      +   '<span class="vis '+(a.priv?'priv':'pub')+'">'+(a.priv?'🔒 본인만':'🌐 전체 공개')+'</span>'
+      +   (isMine?'<span class="vis pub" style="background:#eefaf1;color:#16a34a">내 답변</span>':'')
+      + '</div>'
+      + '<div class="ans-txt">'+esc(a.text)+'</div>'
+      + '<div class="ans-t">'+a.t+'</div></div>'
+      + acts + '</div>';
+  }
+
+  function renderStudio(){
+    $('#studioQA').innerHTML = questions.map(function(q){
+      var u = USERS[q.uid];
+      var body;
+      if(q.answers.length){
+        body = '<div class="qa-cnt">답변 '+q.answers.length+'개</div>'
+          + q.answers.map(function(a){ return ansRow(q,a); }).join('');
+      } else {
+        body = '<div class="pending">답변 대기 중</div>';
+      }
+      var canAdd = !myAnswer(q);
+      var add = canAdd
+        ? '<div class="qa-add"><button class="qa-add-btn" data-act="add" data-qid="'+q.id+'">+ '+RESPONDERS[currentResponder].n+' 답변 달기</button></div>'
+        : '';
+      return '<div class="qa-card">'
+        + '<div class="qa-q"><span class="qa-ic q">Q</span><span><span class="asker" style="color:'+u.c+'">'+u.n+'</span> '+esc(q.q)+'</span></div>'
+        + body + add + '</div>';
+    }).join('');
+  }
+
+  $('#studioQA').addEventListener('click', function(e){
+    var b = e.target.closest('[data-act]'); if(!b) return;
+    var act = b.getAttribute('data-act'), qid = b.getAttribute('data-qid');
+    if(act==='edit' || act==='add'){ openComposer(qid); $('#composer').scrollIntoView({behavior:'smooth', block:'center'}); }
+    else if(act==='del'){
+      var q = findQ(qid), rid = b.getAttribute('data-rid');
+      q.answers = q.answers.filter(function(a){ return a.rid !== rid; });
+      toast('답변을 삭제했습니다');
+      if(answering===qid) closeComposer();
+      renderChat(); renderStudio(); renderMobile();
+    }
+  });
+
+  // ================= ③ 모바일 미리보기 =================
+  function renderViewSel(){
+    var btns = ['<button data-type="other" class="'+(viewer.type==='other'?'on':'')+'">👥 다른 시청자</button>'];
+    Object.keys(USERS).forEach(function(uid){
+      var on = viewer.type==='asker' && viewer.uid===uid;
+      btns.push('<button data-type="asker" data-uid="'+uid+'" class="'+(on?'on':'')+'">🙋 '+USERS[uid].n+'</button>');
+    });
+    $('#viewSel').innerHTML = btns.join('');
+  }
+  $('#viewSel').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    var type = b.getAttribute('data-type');
+    viewer = type==='asker' ? { type:'asker', uid:b.getAttribute('data-uid') } : { type:'other' };
+    renderViewSel(); renderMobile();
+  });
+
+  // 답변 단위 필터 : 공개 답변은 모두 / 비공개는 그 문의의 질문자 본인에게만
+  function visibleAnswers(q){
+    return q.answers.filter(function(a){
+      if(!a.priv) return true;
+      return viewer.type==='asker' && viewer.uid===q.uid;
+    });
+  }
+
+  function renderMobile(){
+    // 상단 관점 안내
+    if(viewer.type==='asker'){
+      $('#phWho').textContent = USERS[viewer.uid].n + ' 님 화면';
+      $('#phCap').innerHTML = '내가 남긴 문의는 <b style="color:#ff9db0">🔒 본인만</b> 답변까지 모두 보여요.';
+    } else {
+      $('#phWho').textContent = '일반 시청자 화면';
+      $('#phCap').innerHTML = '🌐 전체 공개 답변만 보여요. 🔒 본인만 답변·문의는 숨겨집니다.';
+    }
+
+    var cards = [], hiddenPrivate = 0;
+    questions.forEach(function(q){
+      if(!q.answers.length) return;              // 미답변 문의는 Q&A 목록에 노출 안 함
+      var vis = visibleAnswers(q);
+      if(!vis.length){ hiddenPrivate++; return; } // 전부 본인만 → 다른 시청자에겐 통째로 숨김
+      var u = USERS[q.uid];
+      var ansHTML = vis.map(function(a){
+        var r = RESPONDERS[a.rid];
+        var mineTag = (viewer.type==='asker' && a.priv) ? '<span class="mine">나에게만</span>' : '';
+        return '<div class="mq-a">'
+          + '<span class="mq-a-ava" style="background:'+r.c+'">'+r.ini+'</span>'
+          + '<div class="mq-a-body"><div class="mq-a-who">'+r.n+mineTag+'</div>'
+          + '<div class="mq-a-txt">'+esc(a.text)+'</div></div></div>';
+      }).join('');
+      cards.push('<div class="mq"><div class="mq-q"><span class="a">Q.</span>'+esc(q.q)
+        + ' <span style="color:#9aa0ac">— '+u.n+'</span></div>'+ansHTML+'</div>');
+    });
+
+    var html = '<div class="ph-qa-h">Q&amp;A</div>';
+    if(cards.length){ html += cards.join(''); }
+    else { html += '<div class="ph-empty">지금 보이는 Q&amp;A가 없어요.<br/>전체 공개 답변이 달리면 여기에 표시됩니다.</div>'; }
+    if(hiddenPrivate>0 && viewer.type!=='asker'){
+      html += '<div class="ph-hidden">🔒 비공개 답변만 있는 문의 '+hiddenPrivate+'건은 숨겨졌어요</div>';
+    } else if(hiddenPrivate>0 && viewer.type==='asker'){
+      html += '<div class="ph-hidden">다른 유저의 🔒 비공개 문의 '+hiddenPrivate+'건은 숨겨졌어요</div>';
+    }
+    $('#phQA').innerHTML = html;
+  }
+
+  // ---- init ----
+  renderWho(); renderChat(); renderViewSel(); renderStudio(); renderMobile();
+})();
+</script>
+</body>
+</html>
