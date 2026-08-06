@@ -1,6 +1,7 @@
 # 그립 스튜디오 2.0 라이브 콘솔 프로토타입 — 인수인계 / 컨텍스트 문서
 
-> **목적:** 대화 컨텍스트가 리셋돼도 이 문서만 읽으면 작업을 그대로 이어갈 수 있도록 정리한 맥락 문서. (작성: 이건무 PM ↔ Claude, 2026-07-03)
+> **목적:** 대화 컨텍스트가 리셋돼도 이 문서만 읽으면 작업을 그대로 이어갈 수 있도록 정리한 맥락 문서. (작성: 이건무 PM ↔ Claude, 2026-07-03 · **최신화 2026-08-07**)
+> **읽는 순서:** ① 이 문서(구조·정책) → ② `CHANGELOG.md`(배포별 최신 변경, 자동 기록) → ③ 옵션 관리는 아래 **"★★ 2026-08 대개편"** 절이 현재 기준(그 위 7월 서술은 이력).
 
 ## 0. 한 줄 요약
 그립 스튜디오 2.0 "라이브 커머스 운영 콘솔"을 **역기획**하는 단일 HTML 인터랙티브 프로토타입. 화면 + 기획(PRD 모드) + 자동 데모를 한 파일에 담아 기획 검증·공유·개발 온보딩에 사용. 실제 지라 과제가 생길 때마다 이 프로토타입에 기능을 추가하고, PRD 모드/자동 데모에 등록하고, 필요 시 컨플루언스 PRD도 만든다.
@@ -11,6 +12,7 @@
 - **개인 레포:** `Moowillbedone/kmlee-grip-studio-proto` (public). 캐논 소스 = `index.html` (+ `product.png`, `p1~p6.png` 상품 이미지).
 - **회사 레포:** `gripcorp/product-kmlee` (kmlee-ai 계정). 배포 파일명 = `grip-studio2-live-dashboard.html` (index.html을 복사).
 - **양쪽 동시 배포(항상):** `bash "/Users/grip_0195/Downloads/무제 폴더/deploy-grip-studio.sh" "커밋 메시지"`
+  - **📝 CHANGELOG 자동 기록(2026-08-07~):** 배포 스크립트가 개인 레포 push 직전 `CHANGELOG.md`에 `날짜 — 커밋메시지`를 자동 append(`printf >> CHANGELOG.md`). **개인 레포 전용**(회사 복사 대상=index.html+png뿐이라 미포함). **GitHub Actions·서버/API 토큰 미사용**(로컬 파일 기록 + 기존 git push만). 즉 배포마다 개인 레포 GitHub에 이력이 남음. HANDOFF.md는 구조가 바뀔 때 수동 갱신(이 문서).
   - 개인 push(자동 Vercel) + 회사 kmlee-ai 전환 push + Moowillbedone 복구까지 자동.
   - ⚠️ **회사 단계가 kmlee-ai keyring 인증 불안정으로 실패할 때가 있음.** 그러면 수동:
     `gh auth switch --user kmlee-ai` → `rm -rf /tmp/product-kmlee-deploy && gh repo clone gripcorp/product-kmlee /tmp/product-kmlee-deploy` → 거기로 `index.html→grip-studio2-live-dashboard.html`, `product.png`, `p*.png` 복사 → `git add -A && git -c user.name=kmlee-ai -c user.email=kmlee@gripcorp.co commit -m "..." && git push` → `gh auth switch --user Moowillbedone`.
@@ -25,7 +27,7 @@
 ### PRD 모드 = 기능 레지스트리 (컨트롤러 IIFE)
 - `var FEATURES = []` 배열. 각 원소:
   `{ id, demoMode:'limited'|'store', jira:'GRIPPGM-xxxx', name, overviewHTML, flowHTML, prd:[{n,target,title,tag,def,asis?,tobe?,features:[]}], steps:[{tag,t,target,act}] }`
-- 현재 **4개**: **price(GRIPPGM-3338)**, **delete(GRIPPGM-3357)**, **chat(GRIPPGM-3224)**, **qavis(GRIPPGM-3402, Q&A 라이브 노출 제어)**.
+- 현재 **11개**: price(3338)·delete(3357)·chat(3224)·qavis(3402)·**option(3336)**·**stock(3319)**·**capzoom(3433)**·**repimg(3434)**·**impfilter(3459)**·**upsearch(3460)**·**shorts(2941)**. (index.html의 `id: 'xxx', demoMode`로 확인)
 - PRD 패널 상단 **기능 스위처**(`#pfsBtn`/`#pfsMenu`)로 전환 → 개요·검증플로우·명세·화면마커(`.prd-marker`)·자동데모(steps)가 통째로 교체(`renderFeature()`).
 - **새 과제 추가 = FEATURES 배열에 항목 하나 push** 하면 목록·마커·데모 자동 편입.
 - 자동 데모(`#tourOverlay`): 스포트라이트(box-shadow) + 콜아웃. **rebuild(idx): 매 렌더 0단계부터 재구성**(좌/우 화살표·자동진행 어디서 오든 깨끗). 스텝 target은 **항상 보이는 요소**여야 함(숨겨지는 요소면 콜아웃이 0,0으로 날아감 — 실제 겪은 버그). placeSpot은 240/460/700ms 다중 배치(모달 트랜지션 대비).
@@ -70,6 +72,22 @@
 - **PRD/데모/컨플루언스 최신화 완료(2026-07-14, 사용자 "지금까지 개발된 버전으로 업데이트"):** 인앱 PRD·자동 데모·컨플루언스 2337406981을 현재 [옵션 정보 수정] 팝업 최종형에 맞춰 동기화. 핵심 반영 = **[옵션 정보 수정] 팝업 = 옵션 종류·값 편집(섹션1) + 옵션 상세(조합별 추가가격·재고·판매여부·자체옵션코드) 편집(섹션2) 풀 에디터** + **데이터 보존 정책**(옵션/값 추가 시 새 조합만 공백·기존 유지, 삭제 시 밀림 없음). 인앱: overview 정책·flowHTML final·명세3(asis/tobe+features)·데모 "옵션 정보 수정 팝업" 스텝 갱신 → 양쪽 배포. 컨플루언스: prd_option.xhtml **ver 0.4**(히스토리·AS-IS/TO-BE 데이터보존 행·기능요구No3·V-6확장/**V-8 신설**·화면UX 정정) + option_flow.png 재생성([옵션 정보 수정] 노드 최신화) → **페이지 v8→v9**, img 렌더 확인. 스크립트: apply_prd_option4.py / draw_option.py / confluence_update_option_v04.py.
 - **🔑 Atlassian API 토큰 위치(재요청 불필요):** Confluence/Jira 공통 토큰은 **`~/.config/grip/atlassian.env`**(권한 600·git 레포 밖)에 저장됨. 스크립트 실행 전 `set -a && . ~/.config/grip/atlassian.env && set +a && python3 <스크립트>`. **토큰 값은 절대 이 레포(public)·HANDOFF·아티팩트에 쓰지 말 것** — 항상 그 로컬 파일에서만 읽어 사용. (메모리 [[reference-atlassian-token]])
 
+### ★★ 2026-08 대개편 — 옵션 관리 "편집 방향 전환" (현재 최종형 · 위 7월 옵션 서술을 대체)
+> 위 7월(2026-07-xx) 옵션 모델·정책은 이후 아래로 바뀜. **지금 코드 기준은 이 절이 정답.**
+
+- **GRIPPGM-3319 재고 정합(선행):** 홈 리스트 재고/점유/판매가능 = 옵션 조합 Σ와 일치. `seedCombosFromHome`(홈값 역산 분배)·`syncHomeFromCombos`(조합→홈 역동기화).
+- **★ 편집 방향 전환(GRIPPGM-3336, 개발 리뷰 반영) — 핵심:**
+  - **판매 가능 = 편집 소스, 재고 = 파생·읽기전용.** 조합 모델 `combo={addPrice, avail, sale, code, occ}`. `comboAvail(c)`=편집한 판매가능, `comboStock(c)`=**avail+occ**(재고), `comboOcc(c)`=점유(읽기전용). 점유가 서버에서 변해도 재고=판매가능+점유로 안전 파생(비즈센터도 동일 방향 전환). 예: 재고110=판매108+점유2 → **판매 0으로 하면 재고=2**.
+  - **표 컬럼 스왑:** 옵션명·옵션값·**판매 가능(편집)·재고(읽기전용)**·주문·점유·가격·판매여부·자체옵션코드. **인라인 편집=판매 가능·가격·옵션명·옵션값만.** **읽기전용=재고·주문·점유·자체 옵션 코드**(비즈센터 연동). 자체 옵션 코드는 시드값 `OPT-001…`(`.opt-code-ro`).
+  - **판매 가능 0 = 품절.** 인라인 셀엔 붉은 "0"만(품절 텍스트 없음, `refreshAvail`가 `.opt-soldout` 색만 토글).
+  - **품절 프로세스(기존 기능):** 홈 리스트 판매가능 0 → 상태 자동 '품절' 이동(`syncSoldout`, `.pr-sale-btns`) + **상품 안 내려가고** 모바일 띠지에 '품절' 배지(`.po-soldout-tag`, `#poStrip` 유지·`window.__gripUpdateCard`). 재입고 시 이전 상태 복원. (메모리 [[project-grip-soldout]])
+  - **모달 요약 = 상품가(정가)·상시할인가·라이브가 3단**(옵션 상품도 3단 노출 — 구 "라이브가만" 취소).
+  - **[일괄 수정]** = 조합 체크박스 선택 → `#optBulkModal`(가격/판매 가능 일괄). 모달 제목 "가격·판매 가능 일괄 수정".
+- **⚠️ [옵션명 수정하기]는 "기존 기능" — 3336 과제 범위에서 제외:** 버튼(`#optEditNameBtn`)·모달(`#optNameModal`, 옵션 종류·값 **이름만** 변경, 구조 변경 불가)·JS는 **프로토타입에 유지·정상 동작**(옵션명 rename은 표 인라인으로도 가능). 단 **PRD 모드·자동 데모·컨플루언스에는 미포함**(신규 기능 아님). ([옵션 정보 수정]↔[옵션명 수정하기] 명칭은 몇 차례 오갔고 최종=[옵션명 수정하기].)
+- **컨플루언스 PRD 2337406981:** 7월 ver0.4/page v9 → **현재 ver0.9 / page v30**. 플로우 이미지 = **flow.png**(att2336292899, 현재 **v6**). 편집방향·품절·자체옵션코드 읽기전용 반영, 히스토리 ver0.5~0.9. **⚠️ 사용자가 Confluence에서 직접 노란 하이라이트 주석(쓰레드 싱크 설명)·`(변경)` span을 달아둠 → 그 영역 보존, 전체 덮어쓰기 금지·타깃 치환으로만.** 첨부 갱신은 `POST .../child/attachment/{attId}/data`(같은 파일명 재업로드=신버전), 본문 `<ac:image>`의 `ri:version-at-save`도 맞춰 올림.
+- **그 외 8월 신규 FEATURES:** stock(3319)·capzoom(3433 캡처확대)·repimg(3434 대표이미지 빠른수정)·impfilter(3459 가져오기 판매상태 필터)·upsearch(3460 UP목록 검색)·shorts(2941 방송 쇼츠 모바일 목업). 각 컨플루언스 PRD + PIL AS-IS/TO-BE 이미지 동반.
+- **별도 산출물:** `qa-multi-answer.html`(Q&A "답변 여러개" 개선안 프로토타입 — 로컬 preview용, 배포 index.html과 별개). Atlassian 토큰 `~/.config/grip/atlassian.env`(레포 밖·재요청 불필요). PIL 폰트 `/System/Library/Fonts/AppleSDGothicNeo.ttc`.
+
 ### 채팅 IIFE (실제 운영 화면 수준)
 - 실시간 스트림(유저10+매니저"모니터를좋아해", 2.4초, 결정적 유사난수). 파란 유저닉/레드 매니저. 메시지 박스형.
 - 좌측 프리뷰 채팅 오버레이 `.ov-chat`(최근 4줄) + **Q&A 띠지 `#ovQa`**. `.ov-bottom` 세로 스택으로 프리뷰 하단 요소 겹침 방지(채팅→Q&A띠지→상품카드).
@@ -95,7 +113,8 @@
 - **Atlassian API 토큰:** 사용자(이건무, kmlee@gripcorp.co)가 발급해 제공. Basic 인증(email:token base64). JIRA·Confluence 공통. **세션마다 사용자에게 다시 받아야 함**(시크릿, 저장 안 함). 스크립트들은 scratchpad에 있고 `ATLASSIAN_API_TOKEN` env로 받음.
 
 ## 5. 지금까지 만든 기능 (시간순)
-가격 3단(정가/상시할인가/라이브가) 인라인+일괄 수정 & 200원 검증(3338) → 상품 삭제 + UP목록 동기화(3357) → UP 노출(최대5·순서·프리뷰 카드) → 판매모드 토글(한정/스토어) → 채팅(스트림·검색·음소거·답변/Q&A) → UP목록=한번이라도 UP된 상품 누적 → 채팅 답변 인라인화·프리뷰 겹침수정·배너삭제 → 컨플루언스 PRD 2건(삭제·채팅) + 플로우차트.
+가격 3단(정가/상시할인가/라이브가) 인라인+일괄 수정 & 200원 검증(3338) → 상품 삭제 + UP목록 동기화(3357) → UP 노출(최대5·순서·프리뷰 카드) → 판매모드 토글(한정/스토어) → 채팅(스트림·검색·음소거·답변/Q&A) → UP목록=한번이라도 UP된 상품 누적 → 채팅 답변 인라인화·프리뷰 겹침수정·배너삭제 → 컨플루언스 PRD 2건(삭제·채팅) + 플로우차트 → **[7월] 상품 옵션 관리(3336): 다축·추가가격 모델·[옵션 정보 수정] 풀에디터·조합 정합성 버그수정·Q&A 노출제어(3402/3424)** → **[8월] 옵션 편집 방향 전환(판매가능 편집·재고=판매가능+점유 파생·판매가능0 품절·자체옵션코드 읽기전용·요약 3단)·품절 프로세스·[옵션명 수정하기] 과제 제외(기능은 유지)·Q&A "답변 여러개" 개선안·capzoom(3433)/repimg(3434)/impfilter(3459)/upsearch(3460)/shorts(2941)** + 컨플루언스 PRD 다수 최신화(옵션 page v30/ver0.9)·PIL AS-IS·TO-BE·플로우 이미지.
+- (2026-08-07 HANDOFF 최신화 시점 기준. 이후 상세는 `CHANGELOG.md`[배포 자동 기록] + 메모리 `project_grip_studio.md` 참조.)
 (상세는 메모리 `project_grip_studio.md` 참조 — ~/.claude/projects/.../memory/)
 
 ## 6. GRIPPGM-3402 — 채팅 답변 시 Q&A 미노출 ✅ (구현·배포 완료 2026-07-03)
