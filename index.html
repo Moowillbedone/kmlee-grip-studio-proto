@@ -1759,14 +1759,24 @@
         <div class="opt-price-row"><span>상품가 <s id="optPriceRegular">-</s></span><span>상시 할인가 <b id="optPriceDiscount">-</b></span><span class="opt-live">라이브가 <b id="optPriceLive">-</b></span><label class="opt-sell-all"><span>전체 판매</span><span class="opt-sw on" id="optSellAll"></span></label></div>
         <div class="opt-compose">옵션 구성 <b id="optCompose">옵션 구성</b></div>
       </div>
-      <div class="opt-info-head"><span class="opt-info-lbl">옵션 정보</span><span class="opt-info-btns"><button class="opt-bulk-btn" id="optBulkBtn" disabled>일괄 수정</button></span></div>
+      <div class="opt-info-head"><span class="opt-info-lbl">옵션 정보</span><span class="opt-info-btns"><button class="opt-bulk-btn" id="optBulkBtn" disabled>일괄 수정</button><button class="opt-editname-btn" id="optEditNameBtn">옵션명 수정하기</button></span></div>
       <div class="opt-group" id="optGroup"></div>
     </div>
     <div class="modal-foot"><button class="btn-close" id="optCancel">닫기</button><button class="btn-apply" id="optApply">적용</button></div>
   </div>
 </div>
 
-<!-- (옵션명 수정하기 팝업 — 기존 기능이라 본 과제 범위에서 제외. 옵션명/옵션값은 상품 옵션 관리 표에서 인라인으로 수정) -->
+<!-- 옵션명 수정하기 (팝업) — 기존 기능(과제 신규 아님). 기능은 유지, PRD/데모에는 미포함 -->
+<div class="modal-overlay" id="optNameModal">
+  <div class="modal opt-bulk-modal" role="dialog" aria-modal="true" aria-label="옵션명 수정하기" style="max-width:900px;">
+    <div class="opt-head"><span class="opt-h-title">옵션명 수정하기</span><button class="opt-x" id="optNameClose" aria-label="닫기">&times;</button></div>
+    <div class="modal-body opt-bulk-body">
+      <div class="opt-note">옵션 <b>종류·값의 이름</b>만 변경합니다. 옵션 <b>구조(종류·값 추가/삭제)</b>는 이미 셋업된 조합의 재고·점유·주문을 깨뜨리므로 여기서는 막고, <b>상품 등록(셋업)</b>에서만 변경합니다(비즈센터도 구조 변경 시 전체 초기화). 조합별 <b>판매 가능·가격·판매 여부·코드</b>는 <b>상품 옵션 관리 표</b>에서 수정하세요.<br/><b>[옵션 적용 하기]</b>를 누르면 변경한 이름이 표에 즉시 반영됩니다.</div>
+      <div id="optNameBody"></div>
+    </div>
+    <div class="modal-foot" style="justify-content:center;gap:12px;"><button class="btn-close" id="optNameReset">초기화</button><button class="btn-apply" id="optNameSave">옵션 적용 하기</button></div>
+  </div>
+</div>
 
 <!-- 옵션 전체 삭제 확인 -->
 <div class="modal-overlay" id="optDelAllModal">
