@@ -218,6 +218,11 @@
   .po-stock .k { color: var(--t3); }
   .po-stock .sell { color: var(--grip); font-weight: 800; }
   .po-stock .v { font-weight: 800; color: #20222a; }
+  /* 품절: 상품은 띠지에 남되 '품절' 배지로 알림 (판매가능 0) */
+  .po-soldout-tag { display: none; position: absolute; top: 0; left: 0; z-index: 2; background: #3b3f47; color: #fff; font-size: 10px; font-weight: 800; padding: 3px 8px; border-bottom-right-radius: 8px; letter-spacing: .02em; }
+  .product-overlay.is-soldout .po-soldout-tag { display: block; }
+  .product-overlay.is-soldout .po-badge { display: none; }
+  .product-overlay.is-soldout .po-thumb::after { content: ""; position: absolute; inset: 0; background: rgba(20,22,30,.5); }
 
   .action-bar {
     display: flex; justify-content: space-between;
@@ -1994,6 +1999,37 @@
     });
   });
 
+  // ===== 품절 자동 처리 — 재고 소진(판매가능 = 재고 − 점유 = 0) 시 자동 '품절' + 모바일 띠지 유지·품절 배지 (기존 로직) =====
+  // 상용 스튜디오처럼: 재고 소진 → 홈 리스트 상태가 자동으로 '품절'로 이동, 모바일 띠지에서는 상품이 내려가지 않고 남되 '품절'을 표시.
+  (function () {
+    var listEl = document.querySelector('.product-list');
+    if (!listEl) return;
+    function num(s) { return parseInt(String(s == null ? '' : s).replace(/[^0-9]/g, ''), 10) || 0; }
+    function availOf(row) { var vb = row.querySelector('.val-box'); return vb ? num(vb.value) : null; }
+    function activeSale(row) { var a = row.querySelector('.pr-sale-btns .btn-sale.active'); return a ? a.textContent.trim() : ''; }
+    function setSale(row, label) { Array.prototype.forEach.call(row.querySelectorAll('.pr-sale-btns .btn-sale'), function (b) { b.classList.toggle('active', b.textContent.trim() === label); }); }
+    function syncSoldout(row) {
+      var av = availOf(row); if (av === null) return;
+      var sold = av <= 0;
+      if (sold) {
+        if (activeSale(row) !== '품절') { row.__prevSale = activeSale(row) || '판매시작'; setSale(row, '품절'); }
+        row.__autoSold = true;
+      } else if (activeSale(row) === '품절' && row.__autoSold) {
+        setSale(row, (row.__prevSale && row.__prevSale !== '품절') ? row.__prevSale : '판매시작');
+        row.__autoSold = false;
+      }
+      row.classList.toggle('is-soldout', sold);
+      if (window.__gripUpdateCard) window.__gripUpdateCard(row);   // 모바일 띠지 배지 갱신(카드가 노출 중이면)
+    }
+    window.__gripSyncSoldout = syncSoldout;
+    // 판매가능 값이 바뀔 때마다 재평가 (직접 편집 + 옵션 모달 역동기화 + 동적 추가 행까지 위임 처리)
+    ['input', 'change'].forEach(function (ev) {
+      listEl.addEventListener(ev, function (e) { var vb = e.target.closest && e.target.closest('.val-box'); if (vb) { var row = vb.closest('.product-row'); if (row) syncSoldout(row); } });
+    });
+    // 초기 1회 — 시작 시점에 이미 판매가능 0인 상품은 품절 상태로 정렬
+    Array.prototype.forEach.call(listEl.querySelectorAll('.product-row'), function (row) { syncSoldout(row); });
+  })();
+
   // 선택 + 가격 일괄 수정
   (function () {
     var rows = Array.prototype.slice.call(document.querySelectorAll('.product-row'));
@@ -2251,8 +2287,9 @@
       if (!upOrder.length) { strip.innerHTML = '<div class="po-empty">UP한 상품이 없습니다.<br/>상품의 ▲ UP 버튼으로 노출하세요.</div>'; return; }
       strip.innerHTML = upOrder.map(function (r) {
         var d = readRow(r);
-        return '<div class="product-overlay" data-idx="' + idxOf(r) + '">' +
-          '<span class="po-thumb" style="background-image:url(' + d.img + ')"><span class="po-badge">한정상품</span></span>' +
+        var sold = num(d.sellable) <= 0;
+        return '<div class="product-overlay' + (sold ? ' is-soldout' : '') + '" data-idx="' + idxOf(r) + '">' +
+          '<span class="po-thumb" style="background-image:url(' + d.img + ')"><span class="po-badge">한정상품</span><span class="po-soldout-tag">품절</span></span>' +
           '<span class="po-info"><div class="po-name">' + d.name + '</div><div class="po-price"><span class="pct">' + d.pct + '%</span><span class="won">' + d.live.toLocaleString('en-US') + '원</span></div></span>' +
           '<span class="po-stock"><div><span class="k">판매가능</span> <span class="sell">' + d.sellable + '</span></div><div><span class="k">재고</span> <span class="v">' + d.stock + '</span></div></span>' +
           '</div>';
@@ -2270,7 +2307,9 @@
       if ((el = card.querySelector('.po-stock .sell'))) el.textContent = d.sellable;
       if ((el = card.querySelector('.po-stock .v'))) el.textContent = d.stock;
       if ((el = card.querySelector('.po-thumb'))) el.style.backgroundImage = 'url(' + d.img + ')';
+      card.classList.toggle('is-soldout', num(d.sellable) <= 0);
     }
+    window.__gripUpdateCard = updateCard;
 
     // ---- UP 토글 ----
     function setUp(r, on) {
@@ -2809,7 +2848,7 @@
         if (/점유/.test(lbl)) v.textContent = fmt(occ);
         else if (/재고/.test(lbl)) v.textContent = fmt(jae);
       });
-      var vb = row.querySelector('.val-box'); if (vb) vb.value = fmt(avail);
+      var vb = row.querySelector('.val-box'); if (vb) { vb.value = fmt(avail); vb.dispatchEvent(new Event('input', { bubbles: true })); }
     }
     // GRIPPGM-3319: 옵션 모달 헤더 '총 재고' → '판매 가능 · 점유'(조합 합계). 판매가능=Σmax(0,재고−점유), 점유=Σ점유.
     function updateStockSummary() {
