@@ -592,6 +592,8 @@
   .opt-cell-box.is-input { display:inline-flex; align-items:center; gap:4px; padding:6px 10px; background:#fff; border:1px solid #e3e4e8; border-radius:8px; }
   .opt-cell-num { border:none; background:transparent; outline:none; width:60px; text-align:right; font-size:14px; font-weight:600; color:#1d1f25; padding:0; font-family:inherit; }
   .opt-avail.opt-soldout { color:var(--grip); font-weight:800; }
+  .opt-cell-num.opt-avail-inp.opt-soldout { color:var(--grip); font-weight:800; }
+  .opt-unit.opt-avail-suffix.opt-soldout { color:var(--grip); font-weight:800; }
   .opt-cell-box.is-input:focus-within { border-color:var(--grip); }
   /* 옵션 종류/값 인라인 편집 */
   .opt-edit { background:#fafbfc; border:1px solid #eceef1; border-radius:12px; padding:12px 14px; margin-bottom:14px; }
@@ -1792,7 +1794,7 @@
     <div class="modal-body">
       <p class="modal-lead">선택한 <b id="optBulkCount">0</b>개 조합에 적용합니다. <span style="color:#9aa0ab;">입력한 항목만 반영됩니다.</span></p>
       <div class="obk-row"><label>가격</label><span class="opt-cell-box is-input"><input class="opt-cell-num" id="optBulkPriceI" placeholder="변경 안 함" inputmode="numeric" /><span class="opt-unit">원</span></span></div>
-      <div class="obk-row"><label>재고</label><span class="opt-cell-box is-input"><input class="opt-cell-num" id="optBulkStockI" placeholder="변경 안 함" inputmode="numeric" /><span class="opt-unit">개</span></span></div>
+      <div class="obk-row"><label>판매 가능</label><span class="opt-cell-box is-input"><input class="opt-cell-num" id="optBulkStockI" placeholder="변경 안 함" inputmode="numeric" /><span class="opt-unit">개</span></span></div>
     </div>
     <div class="modal-foot" style="justify-content:center;gap:12px;"><button class="btn-close" id="optBulkCancel">닫기</button><button class="btn-apply" id="optBulkApply">적용</button></div>
   </div>
@@ -2790,8 +2792,8 @@
     function tplAxis(ai) { var t = AXIS_TPL[ai] || { type: '옵션 ' + (ai + 1) + '번', values: ['옵션값 1번'] }; return { type: t.type, values: t.values.map(function (v) { return { name: v }; }) }; }
     function newAxis(ai) { var t = AXIS_TPL[ai]; return { type: (t && t.type) || ('옵션 ' + (ai + 1) + '번'), values: [{ name: '' }] }; }
     function neededCount(axes) { if (!axes.length) return 0; return axes.reduce(function (n, a) { return n * Math.max(a.values.length, 1); }, 1); }
-    function defaultCombo(ci) { return { addPrice: fmt(((ci % 9) + 1) * 100), stock: fmt(((ci % 9) + 1) * 10), sale: true, code: '' }; }
-    function emptyCombo() { return { addPrice: '', stock: '', sale: true, code: '' }; }
+    function defaultCombo(ci) { return { addPrice: fmt(((ci % 9) + 1) * 100), avail: fmt(((ci % 9) + 1) * 10), sale: true, code: '' }; }
+    function emptyCombo() { return { addPrice: '', avail: '', sale: true, code: '' }; }
     function buildCombos(axes) { var t = neededCount(axes), out = []; for (var i = 0; i < t; i++) out.push(defaultCombo(i)); return out; }
     // 새로 생기는 조합은 빈 값(추가가격/재고 미입력) — 사용자가 직접 입력
     function resizeCombos(axes, combos) { var need = neededCount(axes), out = combos.slice(0, need); for (var i = out.length; i < need; i++) out.push(emptyCombo()); return out; }
@@ -2811,7 +2813,7 @@
           oc.push(oldVi);
         }
         var src = ok ? map[oc.join(',')] : null;
-        out.push(src ? { addPrice: src.addPrice, stock: src.stock, sale: src.sale, code: src.code, occ: src.occ } : emptyCombo());
+        out.push(src ? { addPrice: src.addPrice, avail: src.avail, sale: src.sale, code: src.code, occ: src.occ } : emptyCombo());
       }
       return out;
     }
@@ -2834,14 +2836,17 @@
     function seedCombosFromHome(st, row) {
       if (!st || !st.combos || !st.combos.length) return;
       var h = readHomeStats(row), n = st.combos.length, stk = distributeInts(h.jae, n), occ = distributeInts(h.occ, n);
-      st.combos.forEach(function (c, i) { var o = Math.min(occ[i], stk[i]); c.stock = fmt(stk[i]); c.occ = o; });
+      st.combos.forEach(function (c, i) { var o = Math.min(occ[i], stk[i]); c.occ = o; c.avail = fmt(Math.max(0, stk[i] - o)); });
     }
     function comboOcc(c, ci) { return (c && c.occ != null) ? numOf(c.occ) : occOf(ci); }
+    // 판매 가능(편집 소스) · 재고 = 판매가능 + 점유(파생·읽기전용)
+    function comboAvail(c, ci) { return (c && c.avail != null && c.avail !== '') ? numOf(c.avail) : Math.max(0, numOf(c && c.stock) - comboOcc(c, ci)); }
+    function comboStock(c, ci) { return comboAvail(c, ci) + comboOcc(c, ci); }
     // 옵션 조합 편집 후 홈 행 재고·점유·판매가능을 조합 합계로 역동기화(단일 소스 유지)
     function syncHomeFromCombos(row, st) {
       if (!row || !st || !st.axes || !st.axes.length) return;
       var jae = 0, occ = 0, avail = 0;
-      st.combos.forEach(function (c, ci) { var o = comboOcc(c, ci), s = numOf(c.stock); occ += o; jae += s; avail += Math.max(0, s - o); });
+      st.combos.forEach(function (c, ci) { var o = comboOcc(c, ci), a = comboAvail(c, ci); occ += o; avail += a; jae += (a + o); });
       Array.prototype.forEach.call(row.querySelectorAll('.pr-stats .stat-cell'), function (c) {
         var lbl = (c.querySelector('.lbl') || {}).textContent || '', v = c.querySelector('.val');
         if (!v) return;
@@ -2856,11 +2861,11 @@
       if (!ss || !state) return;
       if (!state.axes || !state.axes.length) { ss.innerHTML = ''; return; }
       var availSum = 0, occSum = 0;
-      state.combos.forEach(function (c, ci) { var occ = comboOcc(c, ci); occSum += occ; availSum += Math.max(0, numOf(c.stock) - occ); });
+      state.combos.forEach(function (c, ci) { occSum += comboOcc(c, ci); availSum += comboAvail(c, ci); });
       ss.innerHTML = ' · 판매 가능 <b>' + fmt(availSum) + '</b> · <span class="opt-occ-hl">점유 ' + fmt(occSum) + '</span>';
     }
     function cloneAxes(axes) { return axes.map(function (a) { return { type: a.type, values: a.values.map(function (v) { return { name: v.name }; }) }; }); }
-    function cloneCombos(cs) { return (cs || []).map(function (c) { return { addPrice: c.addPrice, stock: c.stock, sale: c.sale, code: c.code, occ: c.occ }; }); }
+    function cloneCombos(cs) { return (cs || []).map(function (c) { return { addPrice: c.addPrice, avail: c.avail, sale: c.sale, code: c.code, occ: c.occ }; }); }
     function cloneState(s) { return { base: s.base, priceReg: s.priceReg, priceDis: s.priceDis, axes: cloneAxes(s.axes), combos: cloneCombos(s.combos) }; }
     function persist() { if (currentRow) currentRow.__optState = cloneState(state); }
     // 옵션 상품(조합>0) → 가격 범위(판매가+최소추가~판매가+최대추가) 표시, 비옵션 → 기존 3단(정가/상시/라이브가)
@@ -2965,23 +2970,26 @@
       optBulkBtn.disabled = n === 0;
       optBulkBtn.textContent = n > 0 ? ('일괄 수정 (' + n + ')') : '일괄 수정';
     }
-    // 판매 가능 셀 갱신 — 0이면 '품절'로 표시(단위 '개' 숨김)
-    function paintAvail(ci, avail) {
-      if (!group) return;
-      var av = group.querySelector('.opt-avail[data-ci="' + ci + '"]');
-      if (!av) return;
-      var unit = group.querySelector('.opt-avail-unit[data-ci="' + ci + '"]');
-      if (avail === 0) { av.textContent = '품절'; av.classList.add('opt-soldout'); if (unit) unit.style.display = 'none'; }
-      else { av.textContent = fmt(avail); av.classList.remove('opt-soldout'); if (unit) unit.style.display = ''; }
+    // 판매 가능 편집 반영 — 0이면 '품절' 표시(단위 '개'→'품절'), 재고(=판매가능+점유) 셀 재계산
+    function refreshAvail(ci) {
+      if (!group || !state) return;
+      var c = state.combos[ci]; if (!c) return;
+      var occ = comboOcc(c, ci), avail = comboAvail(c, ci);
+      var suf = group.querySelector('.opt-avail-suffix[data-ci="' + ci + '"]');
+      if (suf) { suf.textContent = (avail === 0 ? '품절' : '개'); suf.classList.toggle('opt-soldout', avail === 0); }
+      var inp = group.querySelector('.opt-avail-inp[data-ci="' + ci + '"]');
+      if (inp) inp.classList.toggle('opt-soldout', avail === 0);
+      var st = group.querySelector('.opt-stock-ro[data-ci="' + ci + '"]');
+      if (st) st.textContent = fmt(avail + occ);
     }
     function renderGroup() {
       if (!group || !state) return;
       if (pReg) pReg.textContent = fmt(state.priceReg) + '원';
       if (pDis) pDis.textContent = fmt(state.priceDis) + '원';
       if (pLive) pLive.textContent = fmt(state.base) + '원';
-      var isOpt = !!(state.axes && state.axes.length);
-      if (pReg && pReg.parentNode) pReg.parentNode.style.display = isOpt ? 'none' : '';
-      if (pDis && pDis.parentNode) pDis.parentNode.style.display = isOpt ? 'none' : '';
+      // 옵션 상품도 상품가(정가)·상시 할인가·라이브가를 모두 노출(요약)
+      if (pReg && pReg.parentNode) pReg.parentNode.style.display = '';
+      if (pDis && pDis.parentNode) pDis.parentNode.style.display = '';
       if (editNameBtn) editNameBtn.classList.toggle('active', nameEditOpen);
       var axes = state.axes;
       if (!axes.length) {
@@ -2997,17 +3005,17 @@
       if (countEl) countEl.textContent = '판매 중 옵션 ' + total;
       updateStockSummary();
       var selN = state.combos.filter(function (c) { return c._sel; }).length;
-      // 컬럼 순서: [선택] 옵션명 · 옵션값 · 재고 · 판매 가능 · 주문 · 점유 · 가격 · 판매 여부 · 자체 옵션 코드
-      // (판매 가능/주문/점유는 비즈센터 연동 값 — 읽기 전용)
+      // 컬럼 순서: [선택] 옵션명 · 옵션값 · 판매 가능(편집) · 재고(읽기전용=판매가능+점유) · 주문 · 점유 · 가격 · 판매 여부 · 자체 옵션 코드
+      // (재고·주문·점유는 읽기 전용. 판매 가능만 편집 — 점유가 서버에서 변해도 재고=판매가능+점유로 안전하게 파생)
       var head = '<tr><th class="opt-th-chk"><span class="cbox3 opt-selall' + (total && selN === total ? ' on' : '') + '"></span></th>' +
         axes.map(function (a, ai) { return '<th class="opt-th-name"><input class="opt-hname" data-ax="' + ai + '" value="' + esc(a.type) + '" placeholder="옵션명" aria-label="옵션명" /></th>'; }).join('') +
-        '<th>재고</th><th>판매 가능</th><th>주문</th><th>점유</th><th>가격</th><th>판매 여부</th><th>자체 옵션 코드</th></tr>';
+        '<th>판매 가능</th><th>재고</th><th>주문</th><th>점유</th><th>가격</th><th>판매 여부</th><th>자체 옵션 코드</th></tr>';
       var body = state.combos.map(function (c, ci) {
         var vcells = valIdxOf(axes, ci).map(function (vi, p) { return '<td class="opt-td-vname"><input class="opt-vname" data-ax="' + p + '" data-vi="' + vi + '" value="' + esc((axes[p].values[vi] || {}).name || '') + '" placeholder="옵션값" aria-label="옵션값" /></td>'; }).join('');
-        var occ = comboOcc(c, ci), ord = ordOf(ci), avail = Math.max(0, numOf(c.stock) - occ);
+        var occ = comboOcc(c, ci), ord = ordOf(ci), avail = comboAvail(c, ci);
         return '<tr' + (c._sel ? ' class="is-sel"' : '') + '><td class="opt-td-chk"><span class="cbox3 opt-rowsel' + (c._sel ? ' on' : '') + '" data-ci="' + ci + '"></span></td>' + vcells +
-          '<td><span class="opt-cell-box is-input"><input class="opt-cell-num opt-stock-inp" data-ci="' + ci + '" value="' + fmt(numOf(c.stock)) + '" inputmode="numeric" aria-label="재고" /><span class="opt-unit">개</span></span></td>' +
-          '<td class="opt-ro"><b class="opt-avail' + (avail === 0 ? ' opt-soldout' : '') + '" data-ci="' + ci + '">' + (avail === 0 ? '품절' : fmt(avail)) + '</b> <span class="opt-unit opt-avail-unit" data-ci="' + ci + '"' + (avail === 0 ? ' style="display:none"' : '') + '>개</span></td>' +
+          '<td><span class="opt-cell-box is-input"><input class="opt-cell-num opt-avail-inp' + (avail === 0 ? ' opt-soldout' : '') + '" data-ci="' + ci + '" value="' + fmt(avail) + '" inputmode="numeric" aria-label="판매 가능" /><span class="opt-unit opt-avail-suffix' + (avail === 0 ? ' opt-soldout' : '') + '" data-ci="' + ci + '">' + (avail === 0 ? '품절' : '개') + '</span></span></td>' +
+          '<td class="opt-ro"><b class="opt-stock-ro" data-ci="' + ci + '">' + fmt(avail + occ) + '</b> <span class="opt-unit">개</span></td>' +
           '<td class="opt-ro">' + fmt(ord) + ' <span class="opt-unit">개</span></td>' +
           '<td class="opt-ro">' + fmt(occ) + ' <span class="opt-unit">개</span></td>' +
           '<td><span class="opt-cell-box is-input"><input class="opt-cell-num opt-price-inp" data-ci="' + ci + '" value="' + fmt(state.base + numOf(c.addPrice)) + '" inputmode="numeric" aria-label="가격" /><span class="opt-unit">원</span></span></td>' +
@@ -3056,8 +3064,8 @@
       var t = e.target;
       var pe = t.closest && t.closest('.opt-price-inp');
       if (pe) { var pcv = pe.value.replace(/[^\d,]/g, ''); if (pcv !== pe.value) pe.value = pcv; var pci = parseInt(pe.getAttribute('data-ci'), 10); if (state.combos[pci]) { state.combos[pci].addPrice = fmt(numOf(pe.value) - (state.base || 0)); persist(); updateRowPrice(currentRow); } return; }
-      var se = t.closest && t.closest('.opt-stock-inp');
-      if (se) { var scv = se.value.replace(/[^\d,]/g, ''); if (scv !== se.value) se.value = scv; var sci = parseInt(se.getAttribute('data-ci'), 10); if (state.combos[sci]) { state.combos[sci].stock = fmt(numOf(se.value)); persist(); paintAvail(sci, Math.max(0, numOf(se.value) - comboOcc(state.combos[sci], sci))); updateStockSummary(); syncHomeFromCombos(currentRow, state); } return; }
+      var ae = t.closest && t.closest('.opt-avail-inp');
+      if (ae) { var acv = ae.value.replace(/[^\d,]/g, ''); if (acv !== ae.value) ae.value = acv; var aci = parseInt(ae.getAttribute('data-ci'), 10); if (state.combos[aci]) { state.combos[aci].avail = fmt(numOf(ae.value)); persist(); refreshAvail(aci); updateStockSummary(); syncHomeFromCombos(currentRow, state); } return; }
       var ce = t.closest && t.closest('.opt-code-inp');
       if (ce) { var cci = parseInt(ce.getAttribute('data-ci'), 10); if (state.combos[cci]) { state.combos[cci].code = ce.value; persist(); } return; }
       var hn = t.closest && t.closest('.opt-hname');
@@ -3065,20 +3073,16 @@
       var vn = t.closest && t.closest('.opt-vname');
       if (vn) { var vai = parseInt(vn.getAttribute('data-ax'), 10), vvi = parseInt(vn.getAttribute('data-vi'), 10); if (state.axes[vai] && state.axes[vai].values[vvi]) { state.axes[vai].values[vvi].name = vn.value; persist(); Array.prototype.forEach.call(group.querySelectorAll('.opt-vname[data-ax="' + vai + '"][data-vi="' + vvi + '"]'), function (o) { if (o !== vn && o.value !== vn.value) o.value = vn.value; }); } return; }
     });
-    // 재고 확정(blur/Enter) 검증 — 재고는 '점유 수량' 미만으로 내릴 수 없음(점유 확보 불가). 판매가능 0이면 품절.
-    function commitStock(inp) {
+    // 판매 가능 확정(blur/Enter) — 편집 대상은 판매 가능만(재고·점유는 읽기전용). 0이면 품절. 재고 = 판매가능 + 점유로 파생.
+    function commitAvail(inp) {
       if (!state) return;
       var ci = parseInt(inp.getAttribute('data-ci'), 10), c = state.combos[ci]; if (!c) return;
-      var occ = comboOcc(c, ci), n = numOf(inp.value), clamped = n, warned = false;
-      if (n < occ) { clamped = occ; warned = true; }
-      c.stock = fmt(clamped); inp.value = fmt(clamped); persist();
-      var avail = Math.max(0, clamped - occ);
-      paintAvail(ci, avail); updateStockSummary(); syncHomeFromCombos(currentRow, state);
-      if (warned) toast('재고는 점유 수량(' + fmt(occ) + '개) 미만으로 설정할 수 없어 ' + fmt(occ) + '개로 조정했어요.', false);
-      else if (avail === 0) toast('판매 가능 수량이 0개 — 해당 조합은 품절로 표시됩니다.', true);
+      var n = numOf(inp.value); c.avail = fmt(n); inp.value = fmt(n); persist();
+      refreshAvail(ci); updateStockSummary(); syncHomeFromCombos(currentRow, state);
+      if (n === 0) toast('판매 가능 0개 — 적용 시 해당 조합은 품절로 표시됩니다.', true);
     }
-    if (group) group.addEventListener('focusout', function (e) { var inp = e.target.closest && e.target.closest('.opt-stock-inp'); if (inp) commitStock(inp); });
-    if (group) group.addEventListener('keydown', function (e) { if (e.key === 'Enter') { var inp = e.target.closest && e.target.closest('.opt-stock-inp'); if (inp) { e.preventDefault(); commitStock(inp); inp.blur(); } } });
+    if (group) group.addEventListener('focusout', function (e) { var inp = e.target.closest && e.target.closest('.opt-avail-inp'); if (inp) commitAvail(inp); });
+    if (group) group.addEventListener('keydown', function (e) { if (e.key === 'Enter') { var inp = e.target.closest && e.target.closest('.opt-avail-inp'); if (inp) { e.preventDefault(); commitAvail(inp); inp.blur(); } } });
     var sellAll = document.getElementById('optSellAll');
     if (sellAll) sellAll.addEventListener('click', function () { sellAll.classList.toggle('on'); });
 
@@ -3145,15 +3149,14 @@
       var selIdx = []; state.combos.forEach(function (c, ci) { if (c._sel) selIdx.push(ci); });
       if (!selIdx.length) { closeBulk(); return; }
       if (pv === '' && sv === '') { toast('가격 또는 재고를 입력해 주세요.', false); return; }
-      var clampedAny = false;
       selIdx.forEach(function (ci) {
         var c = state.combos[ci];
         if (pv !== '') c.addPrice = fmt(numOf(pv) - (state.base || 0));
-        if (sv !== '') { var occ = comboOcc(c, ci), target = numOf(sv); if (target < occ) { target = occ; clampedAny = true; } c.stock = fmt(target); }
+        if (sv !== '') c.avail = fmt(numOf(sv));
         c._sel = false;
       });
       persist(); updateRowPrice(currentRow); renderGroup(); syncHomeFromCombos(currentRow, state); closeBulk();
-      toast(selIdx.length + '개 조합에 일괄 적용했습니다.' + (clampedAny ? ' (일부는 점유 수량 이상으로 조정됨)' : ''), true);
+      toast(selIdx.length + '개 조합에 일괄 적용했습니다.', true);
     });
     var nameClose = document.getElementById('optNameClose'), nameReset = document.getElementById('optNameReset'), nameSave = document.getElementById('optNameSave');
     if (nameClose) nameClose.addEventListener('click', closeName);
@@ -3208,7 +3211,7 @@
     function showHover(btn) {
       var row = btn.closest('.product-row'); var st = stateForRow(row);
       if (!st.axes.length) { hov.classList.remove('on'); return; }
-      var items = st.combos.map(function (c, ci) { return { label: labelsOf(st.axes, ci).join('/'), stock: numOf(c.stock), price: st.base + numOf(c.addPrice) }; });
+      var items = st.combos.map(function (c, ci) { return { label: labelsOf(st.axes, ci).join('/'), stock: comboStock(c, ci), price: st.base + numOf(c.addPrice) }; });
       items.sort(function (a, b) { return a.stock - b.stock; });
       var top = items.slice(0, 4);
       hov.innerHTML = '<div class="opt-hover-h"><span>옵션 현황</span><span class="opt-hover-sub">재고 낮은 순 TOP ' + top.length + '</span></div>' +
@@ -3704,7 +3707,7 @@
         '<p>옵션이 많은 상품(다축·수십 조합)은 가격·재고·옵션명을 하나씩 고쳐야 해 번거롭고 실수가 잦다. 비즈센터·방송폰과 달리 스튜디오에는 옵션을 <b>일괄</b>로 관리하는 UI가 없었다.</p>' +
         '<span class="prd-k2">해결 (정책)</span>' +
 '<p><b>동작하는 위치를 구분</b>해서 봐야 한다.</p>' +
-        '<p>· <b>[리스트(홈)]</b> 옵션 상품은 <b>라이브가(단독 인풋) + 옵션가(범위)</b>로 표기. 라이브가는 자유 수정(단 <b>200원 미만 미적용</b>), 옵션가 = 라이브가 + 조합별 추가 가격의 최소~최대. 비옵션은 기존 3단.<br/>· 행의 <b>[옵션] 버튼</b> → <b>상품 옵션 관리 팝업</b>. 팝업 요약은 라이브가만(옵션 상품엔 상품가·상시 할인가 없음).<br/>· <b>[팝업 · 표]</b> 옵션명·옵션값·재고·가격·자체 옵션 코드 <b>인라인 수정</b>(가격은 자유 입력·부호만 차단). <b>판매 가능·주문·점유는 비즈센터 연동값(읽기 전용)</b>.<br/>· <b>[팝업 · 버튼]</b> [옵션명 수정하기] = 옵션 <b>종류·값의 이름만 변경</b>(구조 변경·조합 상세 편집 불가) / [일괄 수정] = 조합 체크박스 선택 후 가격·재고 일괄.<br/>· <b>[구조 변경 정책]</b> 옵션 <b>구조(종류·값 추가/삭제)</b>는 이미 셋업된 조합의 재고·점유·주문을 깨뜨리므로 <b>라이브 스튜디오에서 막고 상품 등록(셋업)에서만</b> 처리(비즈센터도 구조 변경 시 전체 초기화). 라이브 편집은 <b>재고·가격·이름·판매여부</b>만.<br/>· <b>[재고 검증]</b> 재고는 <b>점유 수량 미만 불가</b>(점유 확보 불가 → 점유 값으로 조정), 판매 가능(재고 − 점유)이 0이면 <b>품절</b> 표시. 판매 가능·주문·점유는 비즈센터 연동 <b>읽기 전용</b>.</p>',
+        '<p>· <b>[리스트(홈)]</b> 옵션 상품은 <b>라이브가(단독 인풋) + 옵션가(범위)</b>로 표기. 라이브가는 자유 수정(단 <b>200원 미만 미적용</b>), 옵션가 = 라이브가 + 조합별 추가 가격의 최소~최대. 비옵션은 기존 3단.<br/>· 행의 <b>[옵션] 버튼</b> → <b>상품 옵션 관리 팝업</b>. 팝업 요약은 <b>상품가(정가)·상시 할인가·라이브가</b> 3단.<br/>· <b>[팝업 · 표]</b> <b>판매 가능</b>·가격·옵션명·옵션값·자체 옵션 코드 <b>인라인 수정</b>. <b>재고·주문·점유는 읽기 전용</b>(재고 = 판매 가능 + 점유 파생).<br/>· <b>[팝업 · 버튼]</b> [옵션명 수정하기] = 옵션 <b>종류·값의 이름만 변경</b>(구조 변경·조합 상세 편집 불가) / [일괄 수정] = 조합 체크박스 선택 후 가격·판매 가능 일괄.<br/>· <b>[구조 변경 정책]</b> 옵션 <b>구조(종류·값 추가/삭제)</b>는 이미 셋업된 조합의 재고·점유·주문을 깨뜨리므로 <b>라이브 스튜디오에서 막고 상품 등록(셋업)에서만</b> 처리(비즈센터도 구조 변경 시 전체 초기화). 라이브 편집은 <b>판매 가능·가격·이름·판매여부</b>만.<br/>· <b>[편집 정책]</b> <b>재고·점유는 읽기 전용, 판매 가능만 편집</b> — 점유가 서버에서 변해도 재고 = 판매 가능 + 점유로 안전하게 파생(비즈센터도 동일 방향으로 전환). 판매 가능 <b>0이면 품절</b>.</p>',
       flowHTML:
         '<span class="prd-k2">리스트(홈) vs 상품 옵션 관리 팝업 — 동작 위치 구분</span>' +
         '<div class="fpath">' +
@@ -3714,25 +3717,25 @@
         '<div class="fmerge">↓ [옵션] 버튼</div>' +
         '<div class="fpath">' +
           '<div class="fpath-h"><span class="fpath-tag a">팝업</span> 상품 옵션 관리</div>' +
-          '<div class="frow"><span class="fnode">요약 = 라이브가만</span><span class="farr">→</span><span class="fnode">조합 표: 옵션명·옵션값·재고·판매가능·주문·점유·가격·판매여부·코드 인라인(가격 자유·부호차단)</span></div>' +
+          '<div class="frow"><span class="fnode">요약 = 상품가·상시할인가·라이브가</span><span class="farr">→</span><span class="fnode">조합 표: 옵션명·옵션값·<b>판매가능(편집)</b>·재고(읽기전용)·주문·점유·가격·판매여부·코드</span></div>' +
           '<div class="frow"><span class="fnode">[옵션명 수정하기]</span><span class="farr">→</span><span class="fnode">옵션 종류·값의 <b>이름만</b> 변경(구조 변경은 셋업 영역)</span></div>' +
           '<div class="frow"><span class="fnode">[일괄 수정]</span><span class="farr">→</span><span class="fnode">조합 체크박스 선택 → 가격/재고 일괄(팝업)</span></div>' +
         '</div>' +
-        '<div class="fnode final">판매 가능·주문·점유는 비즈센터 연동값(읽기 전용) · 조합 가격 = 라이브가 + 추가 가격 · 팝업 수정은 리스트 옵션가 범위와 동기화 · 재고는 <b>점유 수량 미만 불가</b>·판매가능 0이면 품절 · 옵션 <b>구조 변경은 셋업 영역</b></div>',
+        '<div class="fnode final">재고·주문·점유는 읽기 전용(재고 = 판매가능 + 점유) · <b>판매 가능만 편집</b> · 조합 가격 = 라이브가 + 추가 가격 · 팝업 수정은 리스트 옵션가 범위와 동기화 · <b>판매가능 0이면 품절</b> · 옵션 <b>구조 변경은 셋업 영역</b></div>',
       prd: [
         { n: 1, target: '.btn-option', title: '[리스트→팝업] 상품 옵션 관리 진입 & 요약', tag: '진입 · 팝업 요약',
           def: '스튜디오 리스트의 [옵션] 버튼을 누르면 상품 옵션 관리 팝업이 열린다. (진입은 리스트, 이후 편집은 모두 이 팝업 안)',
-          features: ['리스트 상품 행의 <b>[옵션] 버튼</b>(한정·스토어 공통) → <b>상품 옵션 관리 팝업</b>.', '<b>[팝업]</b> 상단 요약 = <b>라이브가만</b>(옵션 상품엔 상품가·상시 할인가 없음) + 전체 판매 토글 + 옵션 구성(옵션 종류 수·총 조합 수).', '<b>명세 2·3은 이 팝업 안</b>의 동작, <b>명세 4는 리스트(홈)</b>의 가격 표기 — 위치를 구분해 볼 것.'] },
+          features: ['리스트 상품 행의 <b>[옵션] 버튼</b>(한정·스토어 공통) → <b>상품 옵션 관리 팝업</b>.', '<b>[팝업]</b> 상단 요약 = <b>상품가(정가)·상시 할인가·라이브가</b> + 전체 판매 토글 + 옵션 구성(옵션 종류 수·총 조합 수).', '<b>명세 2·3은 이 팝업 안</b>의 동작, <b>명세 4는 리스트(홈)</b>의 가격 표기 — 위치를 구분해 볼 것.'] },
         { n: 2, target: '.btn-option', title: '[팝업] 옵션 정보 표 · 인라인 수정', tag: '팝업 · 표 편집',
           def: '상품 옵션 관리 팝업 안 조합 표에서 항목을 직접(인라인) 수정한다. (리스트가 아니라 팝업 내부)',
           asis: ['옵션(조합)별 가격·재고를 <b>하나씩 개별</b> 수정만 가능.', '상품 옵션 관리에서 조합별 <b>판매 가능·주문·점유 수량을 볼 수 없었음</b>.'],
-          tobe: ['표에서 <b>옵션명·옵션값·재고·가격·자체 옵션 코드 인라인 수정</b>.', '조합별 <b>판매 가능·주문·점유</b>(비즈센터 연동·읽기 전용)를 표에 함께 노출.'],
-          features: ['표 컬럼 = <b>옵션명 · 옵션값 · 재고 · 판매 가능 · 주문 · 점유 · 가격 · 판매 여부 · 자체 옵션 코드</b>.', '<b>인라인 수정</b>: 옵션명(옵션 종류)·옵션값·재고·가격·자체 옵션 코드. <b>가격은 자유 입력(부호만 차단)</b>.', '<b>[재고 검증]</b> 재고는 <b>점유 수량 미만 불가</b>(점유 확보 불가 → 점유 값으로 조정) · 판매 가능(재고 − 점유)이 0이면 <b>품절</b> 표시.', '<b>판매 가능·주문·점유는 비즈센터 연동값(읽기 전용)</b> — 스튜디오에서 수정하지 않음.', '판매 여부는 조합별 토글 · 팝업 재오픈 시 저장 상태 유지.'] },
+          tobe: ['표에서 <b>판매 가능·가격·옵션명·옵션값·자체 옵션 코드 인라인 수정</b>.', '<b>재고·주문·점유는 읽기 전용</b>(재고 = 판매 가능 + 점유 파생)로 표에 함께 노출.'],
+          features: ['표 컬럼 = <b>옵션명 · 옵션값 · 판매 가능 · 재고 · 주문 · 점유 · 가격 · 판매 여부 · 자체 옵션 코드</b> (판매 가능 → 재고 순).', '<b>인라인 수정</b>: 판매 가능·가격·옵션명(옵션 종류)·옵션값·자체 옵션 코드.', '<b>[편집 정책]</b> <b>판매 가능만 편집</b>(재고·점유는 읽기 전용) · <b>재고 = 판매 가능 + 점유</b>로 파생 · 점유가 서버에서 변해도 안전 · <b>판매 가능 0이면 품절</b>.', '<b>재고·주문·점유는 읽기 전용</b>(비즈센터 연동) — 스튜디오에서 수정하지 않음.', '판매 여부는 조합별 토글 · 팝업 재오픈 시 저장 상태 유지.'] },
         { n: 3, target: '.btn-option', title: '[팝업] 옵션명 수정하기 · 가격/재고 일괄 수정', tag: '팝업 · 두 버튼',
           def: '[옵션명 수정하기]은 옵션 종류·값의 이름만 변경한다(구조 변경 불가). [일괄 수정]은 선택 조합의 가격·재고를 한 번에 바꾼다. (둘 다 팝업 안)',
           asis: ['옵션 구성(종류·값)과 조합별 가격·재고를 한 화면에서 관리하기 어려웠음.', '조합이 많으면 가격·재고를 <b>하나씩</b> 고쳐야 함.'],
           tobe: ['<b>[옵션명 수정하기]</b> = 옵션 종류·값의 <b>이름만</b> 변경(구조 변경·조합 상세 편집 불가).', '옵션 <b>구조(종류·값 추가/삭제)</b>는 <b>상품 등록(셋업)</b>에서만 — 라이브 중 구조 변경은 셋업된 조합의 <b>재고·점유·주문을 깨뜨림</b>(비즈센터도 구조 변경 시 전체 초기화).', '<b>[일괄 수정]</b>으로 선택 조합의 가격·재고를 한 번에(재고는 <b>점유 수량 이상</b>으로 자동 조정).'],
-          features: ['<b>[옵션명 수정하기]</b> → 옵션 <b>종류·값의 이름</b>만 변경. 구조(추가/삭제)·조합 상세는 편집하지 않음.', '옵션 <b>구조 변경은 셋업(상품 등록) 영역</b> — 라이브 편집은 재고·가격·이름·판매여부만.', '<b>[일괄 수정]</b> → 조합을 <b>체크박스로 선택</b> → 팝업에서 가격/재고를 선택 조합에 일괄 반영(재고 <b>점유 하한</b> 검증 적용).', '팝업에서 수정한 가격은 <b>추가 가격(= 가격 − 라이브가)</b>으로 저장되어 <b>리스트 옵션가 범위</b>와 동기화(명세 4).'] },
+          features: ['<b>[옵션명 수정하기]</b> → 옵션 <b>종류·값의 이름</b>만 변경. 구조(추가/삭제)·조합 상세는 편집하지 않음.', '옵션 <b>구조 변경은 셋업(상품 등록) 영역</b> — 라이브 편집은 판매 가능·가격·이름·판매여부만.', '<b>[일괄 수정]</b> → 조합을 <b>체크박스로 선택</b> → 팝업에서 가격/판매 가능을 선택 조합에 일괄 반영.', '팝업에서 수정한 가격은 <b>추가 가격(= 가격 − 라이브가)</b>으로 저장되어 <b>리스트 옵션가 범위</b>와 동기화(명세 4).'] },
         { n: 4, target: '.pi-opt', title: '[리스트] 가격 모델 & 리스트 반영', tag: '리스트 · 라이브가+옵션가',
           def: '옵션 상품 가격 = 라이브가(판매가) + 조합별 추가 가격. 스튜디오 리스트(홈)에는 라이브가 인풋 + 옵션가 범위로 표기된다.',
           asis: ['옵션 상품의 경우 라이브가 노출이 안되어 가격이 명확하지 않음.'],
@@ -3742,8 +3745,8 @@
       steps: [
         { tag: '시작', t: '옵션 상품의 <b>가격·재고·옵션명</b>을 <b>모달 하나에서</b> 수정하는 흐름을 시연합니다. (Jira GRIPPGM-3336)', target: function () { var r = rowN(1); return r ? r.querySelector('.btn-option') : null; }, act: function () { resetUI(); } },
         { tag: '리스트 · 라이브가 노출', t: '옵션 상품은 조합마다 가격이 달라 <b>옵션가가 범위</b>로만 보여 <b>이 상품의 기준가(라이브가)를 알기 어려웠습니다(AS-IS)</b>. 그래서 스튜디오 홈 리스트에서 옵션 상품도 <b>라이브가를 따로 노출</b>합니다(+ 옵션가 범위). 라이브가는 여기서 바로 수정할 수 있어요(200원 미만 미적용).', target: function () { var r = rowN(1); return r ? r.querySelector('.pi-opt') : null; }, act: function () { ['#optionModal', '#optNameModal', '#optBulkModal', '#optDelAllModal'].forEach(function (s) { var m = q(s); if (m) m.classList.remove('open'); }); var r = rowN(1); if (r) r.scrollIntoView({ block: 'center' }); } },
-        { tag: '[옵션] 진입 & 요약', t: '옵션 상품의 <b>[옵션]</b> 버튼 → <b>상품 옵션 관리</b>. 요약은 <b>라이브가만</b> 보입니다.', target: function () { return q('#optionModal .opt-summary'); }, act: function () { var r = rowN(1); if (r) { var b = r.querySelector('.btn-option'); if (b) b.click(); } } },
-        { tag: '표에서 바로 수정', t: '조합 표에서 <b>옵션명·옵션값·재고·가격·자체 옵션 코드</b>를 클릭해 바로 수정·저장합니다. 재고는 <b>점유 수량 미만으로 내릴 수 없고</b>, 판매 가능이 0이면 <b>품절</b>로 표시됩니다. (판매 가능·주문·점유는 비즈센터 연동값 — 읽기 전용)', target: function () { return q('#optGroup .opt-table'); }, act: function () { if (!q('#optionModal').classList.contains('open')) { var r = rowN(1); var b = r && r.querySelector('.btn-option'); if (b) b.click(); } } },
+        { tag: '[옵션] 진입 & 요약', t: '옵션 상품의 <b>[옵션]</b> 버튼 → <b>상품 옵션 관리</b>. 요약은 <b>상품가(정가)·상시 할인가·라이브가</b>가 함께 보입니다.', target: function () { return q('#optionModal .opt-summary'); }, act: function () { var r = rowN(1); if (r) { var b = r.querySelector('.btn-option'); if (b) b.click(); } } },
+        { tag: '표에서 바로 수정', t: '조합 표에서 <b>판매 가능·가격·옵션명·옵션값·자체 옵션 코드</b>를 클릭해 바로 수정·저장합니다. <b>판매 가능을 0으로 하면 품절</b>로 표시되고, <b>재고(= 판매 가능 + 점유)·주문·점유는 읽기 전용</b>입니다. (점유가 서버에서 변해도 재고가 안전하게 파생)', target: function () { return q('#optGroup .opt-table'); }, act: function () { if (!q('#optionModal').classList.contains('open')) { var r = rowN(1); var b = r && r.querySelector('.btn-option'); if (b) b.click(); } } },
         { tag: '옵션명 수정하기 팝업', t: '<b>[옵션명 수정하기]</b> → 옵션 <b>종류·값의 이름만</b> 변경합니다. 옵션 <b>구조(종류·값 추가/삭제)</b>는 이미 셋업된 조합의 재고·점유·주문을 깨뜨리므로 <b>상품 등록(셋업)에서만</b> 가능해요. (조합별 재고·가격은 표에서 수정)', target: function () { return q('#optNameModal .modal'); }, act: function () { var eb = q('#optEditNameBtn'); if (eb && !q('#optNameModal').classList.contains('open')) eb.click(); } },
         { tag: '일괄 수정 — 선택', t: '조합을 <b>체크박스로 선택</b>하면 상단 <b>[일괄 수정]</b> 버튼이 활성화됩니다.', target: function () { return q('#optBulkBtn'); }, act: function () { var nm = q('#optNameModal'); if (nm) nm.classList.remove('open'); var cbs = document.querySelectorAll('#optGroup .opt-rowsel'); [0, 1].forEach(function (i) { if (cbs[i] && !cbs[i].classList.contains('on')) cbs[i].click(); }); } },
         { tag: '일괄 수정 팝업', t: '<b>[일괄 수정]</b> → 작은 팝업에서 <b>가격/재고를 한 번에 입력·적용</b>합니다. (선택한 조합에만 반영)', target: function () { return q('#optBulkModal .modal'); }, act: function () { var bb = q('#optBulkBtn'); if (bb) bb.click(); } }
