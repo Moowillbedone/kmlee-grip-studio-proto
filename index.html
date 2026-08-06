@@ -1759,24 +1759,14 @@
         <div class="opt-price-row"><span>상품가 <s id="optPriceRegular">-</s></span><span>상시 할인가 <b id="optPriceDiscount">-</b></span><span class="opt-live">라이브가 <b id="optPriceLive">-</b></span><label class="opt-sell-all"><span>전체 판매</span><span class="opt-sw on" id="optSellAll"></span></label></div>
         <div class="opt-compose">옵션 구성 <b id="optCompose">옵션 구성</b></div>
       </div>
-      <div class="opt-info-head"><span class="opt-info-lbl">옵션 정보</span><span class="opt-info-btns"><button class="opt-bulk-btn" id="optBulkBtn" disabled>일괄 수정</button><button class="opt-editname-btn" id="optEditNameBtn">옵션명 수정하기</button></span></div>
+      <div class="opt-info-head"><span class="opt-info-lbl">옵션 정보</span><span class="opt-info-btns"><button class="opt-bulk-btn" id="optBulkBtn" disabled>일괄 수정</button></span></div>
       <div class="opt-group" id="optGroup"></div>
     </div>
     <div class="modal-foot"><button class="btn-close" id="optCancel">닫기</button><button class="btn-apply" id="optApply">적용</button></div>
   </div>
 </div>
 
-<!-- 옵션명 수정하기 (팝업) -->
-<div class="modal-overlay" id="optNameModal">
-  <div class="modal opt-bulk-modal" role="dialog" aria-modal="true" aria-label="옵션명 수정하기" style="max-width:900px;">
-    <div class="opt-head"><span class="opt-h-title">옵션명 수정하기</span><button class="opt-x" id="optNameClose" aria-label="닫기">&times;</button></div>
-    <div class="modal-body opt-bulk-body">
-      <div class="opt-note">옵션 <b>종류·값의 이름</b>만 변경합니다. 옵션 <b>구조(종류·값 추가/삭제)</b>는 이미 셋업된 조합의 재고·점유·주문을 깨뜨리므로 여기서는 막고, <b>상품 등록(셋업)</b>에서만 변경합니다(비즈센터도 구조 변경 시 전체 초기화). 조합별 <b>재고·가격·판매 여부·코드</b>는 <b>상품 옵션 관리 표</b>에서 수정하세요.<br/><b>[옵션 적용 하기]</b>를 누르면 변경한 이름이 표에 즉시 반영됩니다.</div>
-      <div id="optNameBody"></div>
-    </div>
-    <div class="modal-foot" style="justify-content:center;gap:12px;"><button class="btn-close" id="optNameReset">초기화</button><button class="btn-apply" id="optNameSave">옵션 적용 하기</button></div>
-  </div>
-</div>
+<!-- (옵션명 수정하기 팝업 — 기존 기능이라 본 과제 범위에서 제외. 옵션명/옵션값은 상품 옵션 관리 표에서 인라인으로 수정) -->
 
 <!-- 옵션 전체 삭제 확인 -->
 <div class="modal-overlay" id="optDelAllModal">
@@ -3705,7 +3695,7 @@
         '<p>옵션이 많은 상품(다축·수십 조합)은 가격·재고·옵션명을 하나씩 고쳐야 해 번거롭고 실수가 잦다. 비즈센터·방송폰과 달리 스튜디오에는 옵션을 <b>일괄</b>로 관리하는 UI가 없었다.</p>' +
         '<span class="prd-k2">해결 (정책)</span>' +
 '<p><b>동작하는 위치를 구분</b>해서 봐야 한다.</p>' +
-        '<p>· <b>[리스트(홈)]</b> 옵션 상품은 <b>라이브가(단독 인풋) + 옵션가(범위)</b>로 표기. 라이브가는 자유 수정(단 <b>200원 미만 미적용</b>), 옵션가 = 라이브가 + 조합별 추가 가격의 최소~최대. 비옵션은 기존 3단.<br/>· 행의 <b>[옵션] 버튼</b> → <b>상품 옵션 관리 팝업</b>. 팝업 요약은 <b>상품가(정가)·상시 할인가·라이브가</b> 3단.<br/>· <b>[팝업 · 표]</b> <b>판매 가능</b>·가격·옵션명·옵션값·자체 옵션 코드 <b>인라인 수정</b>. <b>재고·주문·점유는 읽기 전용</b>(재고 = 판매 가능 + 점유 파생).<br/>· <b>[팝업 · 버튼]</b> [옵션명 수정하기] = 옵션 <b>종류·값의 이름만 변경</b>(구조 변경·조합 상세 편집 불가) / [일괄 수정] = 조합 체크박스 선택 후 가격·판매 가능 일괄.<br/>· <b>[구조 변경 정책]</b> 옵션 <b>구조(종류·값 추가/삭제)</b>는 이미 셋업된 조합의 재고·점유·주문을 깨뜨리므로 <b>라이브 스튜디오에서 막고 상품 등록(셋업)에서만</b> 처리(비즈센터도 구조 변경 시 전체 초기화). 라이브 편집은 <b>판매 가능·가격·이름·판매여부</b>만.<br/>· <b>[편집 정책]</b> <b>재고·점유는 읽기 전용, 판매 가능만 편집</b> — 점유가 서버에서 변해도 재고 = 판매 가능 + 점유로 안전하게 파생(비즈센터도 동일 방향으로 전환). 판매 가능 <b>0이면 품절</b>.</p>',
+        '<p>· <b>[리스트(홈)]</b> 옵션 상품은 <b>라이브가(단독 인풋) + 옵션가(범위)</b>로 표기. 라이브가는 자유 수정(단 <b>200원 미만 미적용</b>), 옵션가 = 라이브가 + 조합별 추가 가격의 최소~최대. 비옵션은 기존 3단.<br/>· 행의 <b>[옵션] 버튼</b> → <b>상품 옵션 관리 팝업</b>. 팝업 요약은 <b>상품가(정가)·상시 할인가·라이브가</b> 3단.<br/>· <b>[팝업 · 표]</b> <b>판매 가능</b>·가격·옵션명·옵션값·자체 옵션 코드 <b>인라인 수정</b>. <b>재고·주문·점유는 읽기 전용</b>(재고 = 판매 가능 + 점유 파생).<br/>· <b>[팝업 · 버튼]</b> [일괄 수정] = 조합 체크박스 선택 후 가격·판매 가능 일괄. (옵션 종류·값 이름은 표에서 인라인 수정)<br/>· <b>[구조 변경 정책]</b> 옵션 <b>구조(종류·값 추가/삭제)</b>는 이미 셋업된 조합의 재고·점유·주문을 깨뜨리므로 <b>라이브 스튜디오에서 막고 상품 등록(셋업)에서만</b> 처리(비즈센터도 구조 변경 시 전체 초기화). 라이브 편집은 <b>판매 가능·가격·이름·판매여부</b>만.<br/>· <b>[편집 정책]</b> <b>재고·점유는 읽기 전용, 판매 가능만 편집</b> — 점유가 서버에서 변해도 재고 = 판매 가능 + 점유로 안전하게 파생(비즈센터도 동일 방향으로 전환). 판매 가능 <b>0이면 품절</b>.</p>',
       flowHTML:
         '<span class="prd-k2">리스트(홈) vs 상품 옵션 관리 팝업 — 동작 위치 구분</span>' +
         '<div class="fpath">' +
@@ -3717,11 +3707,7 @@
           '<div class="fpath-h"><span class="fpath-tag b">팝업</span> 상품 옵션 관리</div>' +
           '<div class="frow"><span class="fnode">요약</span><span class="farr">→</span><span class="fnode">상품가 · 상시할인가 · 라이브가</span></div>' +
           '<div class="frow"><span class="fnode">조합 표</span><span class="farr">→</span><span class="fnode"><b>판매 가능(편집)</b> · 재고(읽기전용) · 주문 · 점유 · 가격 · 옵션명 · 옵션값 · 판매여부 · 코드</span></div>' +
-          '<div class="fmerge">↓ 표 상단 두 버튼</div>' +
-          '<div class="fbranch">' +
-            '<span class="fout ok">[옵션명 수정하기]<br/>옵션 종류 · 값의 <b>이름만</b> 변경<br/><em>구조 변경 · 조합 상세는 셋업 영역</em></span>' +
-            '<span class="fout no">[일괄 수정]<br/>조합 체크박스 선택 →<br/>가격 · <b>판매 가능</b> 일괄 반영</span>' +
-          '</div>' +
+          '<div class="frow"><span class="fnode">[일괄 수정]</span><span class="farr">→</span><span class="fnode">조합 체크박스 선택 → 가격 · <b>판매 가능</b> 일괄 반영</span></div>' +
         '</div>' +
         '<div class="fnode final">재고 · 주문 · 점유 = 읽기 전용 · <b>판매 가능만 편집</b>(재고 = 판매 가능 + 점유) · <b>판매 가능 0이면 품절</b><br/>조합 가격 = 라이브가 + 추가 가격(리스트 옵션가 범위와 동기화) · 옵션 <b>구조 변경은 셋업 영역</b></div>',
       prd: [
@@ -3733,11 +3719,11 @@
           asis: ['옵션(조합)별 가격·재고를 <b>하나씩 개별</b> 수정만 가능.', '상품 옵션 관리에서 조합별 <b>판매 가능·주문·점유 수량을 볼 수 없었음</b>.'],
           tobe: ['표에서 <b>판매 가능·가격·옵션명·옵션값·자체 옵션 코드 인라인 수정</b>.', '<b>재고·주문·점유는 읽기 전용</b>(재고 = 판매 가능 + 점유 파생)로 표에 함께 노출.'],
           features: ['표 컬럼 = <b>옵션명 · 옵션값 · 판매 가능 · 재고 · 주문 · 점유 · 가격 · 판매 여부 · 자체 옵션 코드</b> (판매 가능 → 재고 순).', '<b>인라인 수정</b>: 판매 가능·가격·옵션명(옵션 종류)·옵션값·자체 옵션 코드.', '<b>[편집 정책]</b> <b>판매 가능만 편집</b>(재고·점유는 읽기 전용) · <b>재고 = 판매 가능 + 점유</b>로 파생 · 점유가 서버에서 변해도 안전 · <b>판매 가능 0이면 품절</b>.', '<b>재고·주문·점유는 읽기 전용</b>(비즈센터 연동) — 스튜디오에서 수정하지 않음.', '판매 여부는 조합별 토글 · 팝업 재오픈 시 저장 상태 유지.'] },
-        { n: 3, target: '.btn-option', title: '[팝업] 옵션명 수정하기 · 가격/판매 가능 일괄 수정', tag: '팝업 · 두 버튼',
-          def: '[옵션명 수정하기]은 옵션 종류·값의 이름만 변경한다(구조 변경 불가). [일괄 수정]은 선택 조합의 가격·판매 가능을 한 번에 바꾼다. (둘 다 팝업 안)',
-          asis: ['옵션 구성(종류·값)과 조합별 가격·재고를 한 화면에서 관리하기 어려웠음.', '조합이 많으면 가격·재고를 <b>하나씩</b> 고쳐야 함.'],
-          tobe: ['<b>[옵션명 수정하기]</b> = 옵션 종류·값의 <b>이름만</b> 변경(구조 변경·조합 상세 편집 불가).', '옵션 <b>구조(종류·값 추가/삭제)</b>는 <b>상품 등록(셋업)</b>에서만 — 라이브 중 구조 변경은 셋업된 조합의 <b>재고·점유·주문을 깨뜨림</b>(비즈센터도 구조 변경 시 전체 초기화).', '<b>[일괄 수정]</b>으로 선택 조합의 가격·재고를 한 번에(재고는 <b>점유 수량 이상</b>으로 자동 조정).'],
-          features: ['<b>[옵션명 수정하기]</b> → 옵션 <b>종류·값의 이름</b>만 변경. 구조(추가/삭제)·조합 상세는 편집하지 않음.', '옵션 <b>구조 변경은 셋업(상품 등록) 영역</b> — 라이브 편집은 판매 가능·가격·이름·판매여부만.', '<b>[일괄 수정]</b> → 조합을 <b>체크박스로 선택</b> → 팝업에서 가격/판매 가능을 선택 조합에 일괄 반영.', '팝업에서 수정한 가격은 <b>추가 가격(= 가격 − 라이브가)</b>으로 저장되어 <b>리스트 옵션가 범위</b>와 동기화(명세 4).'] },
+        { n: 3, target: '.btn-option', title: '[팝업] 가격 · 판매 가능 일괄 수정', tag: '팝업 · 일괄 수정',
+          def: '[일괄 수정]으로 선택한 여러 조합의 가격·판매 가능을 한 번에 바꾼다. (팝업 안)',
+          asis: ['조합이 많으면 가격·판매 가능을 <b>하나씩</b> 고쳐야 함.'],
+          tobe: ['<b>[일괄 수정]</b>으로 선택 조합의 가격·판매 가능을 한 번에.'],
+          features: ['<b>[일괄 수정]</b> → 조합을 <b>체크박스로 선택</b> → 팝업에서 가격/판매 가능을 선택 조합에 일괄 반영.', '팝업에서 수정한 가격은 <b>추가 가격(= 가격 − 라이브가)</b>으로 저장되어 <b>리스트 옵션가 범위</b>와 동기화(명세 4).', '옵션 종류·값의 <b>이름</b>은 표에서 <b>인라인</b>으로 수정(별도 버튼 없음) · 옵션 <b>구조(종류·값 추가/삭제)</b>는 상품 등록(셋업) 영역.'] },
         { n: 4, target: '.pi-opt', title: '[리스트] 가격 모델 & 리스트 반영', tag: '리스트 · 라이브가+옵션가',
           def: '옵션 상품 가격 = 라이브가(판매가) + 조합별 추가 가격. 스튜디오 리스트(홈)에는 라이브가 인풋 + 옵션가 범위로 표기된다.',
           asis: ['옵션 상품의 경우 라이브가 노출이 안되어 가격이 명확하지 않음.'],
@@ -3749,8 +3735,7 @@
         { tag: '리스트 · 라이브가 노출', t: '옵션 상품은 조합마다 가격이 달라 <b>옵션가가 범위</b>로만 보여 <b>이 상품의 기준가(라이브가)를 알기 어려웠습니다(AS-IS)</b>. 그래서 스튜디오 홈 리스트에서 옵션 상품도 <b>라이브가를 따로 노출</b>합니다(+ 옵션가 범위). 라이브가는 여기서 바로 수정할 수 있어요(200원 미만 미적용).', target: function () { var r = rowN(1); return r ? r.querySelector('.pi-opt') : null; }, act: function () { ['#optionModal', '#optNameModal', '#optBulkModal', '#optDelAllModal'].forEach(function (s) { var m = q(s); if (m) m.classList.remove('open'); }); var r = rowN(1); if (r) r.scrollIntoView({ block: 'center' }); } },
         { tag: '[옵션] 진입 & 요약', t: '옵션 상품의 <b>[옵션]</b> 버튼 → <b>상품 옵션 관리</b>. 요약은 <b>상품가(정가)·상시 할인가·라이브가</b>가 함께 보입니다.', target: function () { return q('#optionModal .opt-summary'); }, act: function () { var r = rowN(1); if (r) { var b = r.querySelector('.btn-option'); if (b) b.click(); } } },
         { tag: '표에서 바로 수정', t: '조합 표에서 <b>판매 가능·가격·옵션명·옵션값·자체 옵션 코드</b>를 클릭해 바로 수정·저장합니다. <b>판매 가능을 0으로 하면 품절</b>로 표시되고, <b>재고(= 판매 가능 + 점유)·주문·점유는 읽기 전용</b>입니다. (점유가 서버에서 변해도 재고가 안전하게 파생)', target: function () { return q('#optGroup .opt-table'); }, act: function () { if (!q('#optionModal').classList.contains('open')) { var r = rowN(1); var b = r && r.querySelector('.btn-option'); if (b) b.click(); } } },
-        { tag: '옵션명 수정하기 팝업', t: '<b>[옵션명 수정하기]</b> → 옵션 <b>종류·값의 이름만</b> 변경합니다. 옵션 <b>구조(종류·값 추가/삭제)</b>는 이미 셋업된 조합의 재고·점유·주문을 깨뜨리므로 <b>상품 등록(셋업)에서만</b> 가능해요. (조합별 재고·가격은 표에서 수정)', target: function () { return q('#optNameModal .modal'); }, act: function () { var eb = q('#optEditNameBtn'); if (eb && !q('#optNameModal').classList.contains('open')) eb.click(); } },
-        { tag: '일괄 수정 — 선택', t: '조합을 <b>체크박스로 선택</b>하면 상단 <b>[일괄 수정]</b> 버튼이 활성화됩니다.', target: function () { return q('#optBulkBtn'); }, act: function () { var nm = q('#optNameModal'); if (nm) nm.classList.remove('open'); var cbs = document.querySelectorAll('#optGroup .opt-rowsel'); [0, 1].forEach(function (i) { if (cbs[i] && !cbs[i].classList.contains('on')) cbs[i].click(); }); } },
+        { tag: '일괄 수정 — 선택', t: '조합을 <b>체크박스로 선택</b>하면 상단 <b>[일괄 수정]</b> 버튼이 활성화됩니다.', target: function () { return q('#optBulkBtn'); }, act: function () { var cbs = document.querySelectorAll('#optGroup .opt-rowsel'); [0, 1].forEach(function (i) { if (cbs[i] && !cbs[i].classList.contains('on')) cbs[i].click(); }); } },
         { tag: '일괄 수정 팝업', t: '<b>[일괄 수정]</b> → 작은 팝업에서 <b>가격/판매 가능을 한 번에 입력·적용</b>합니다. (선택한 조합에만 반영)', target: function () { return q('#optBulkModal .modal'); }, act: function () { var bb = q('#optBulkBtn'); if (bb) bb.click(); } }
       ]
     });
