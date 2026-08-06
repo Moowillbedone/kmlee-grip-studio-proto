@@ -1787,10 +1787,10 @@
   </div>
 </div>
 
-<!-- 옵션 가격·재고 일괄 수정 팝업 -->
+<!-- 옵션 가격·판매 가능 일괄 수정 팝업 -->
 <div class="modal-overlay" id="optBulkModal">
   <div class="modal" role="dialog" aria-modal="true" aria-label="옵션 일괄 수정" style="max-width:420px;">
-    <div class="modal-title">가격·재고 일괄 수정</div>
+    <div class="modal-title">가격·판매 가능 일괄 수정</div>
     <div class="modal-body">
       <p class="modal-lead">선택한 <b id="optBulkCount">0</b>개 조합에 적용합니다. <span style="color:#9aa0ab;">입력한 항목만 반영됩니다.</span></p>
       <div class="obk-row"><label>가격</label><span class="opt-cell-box is-input"><input class="opt-cell-num" id="optBulkPriceI" placeholder="변경 안 함" inputmode="numeric" /><span class="opt-unit">원</span></span></div>
@@ -2975,10 +2975,8 @@
       if (!group || !state) return;
       var c = state.combos[ci]; if (!c) return;
       var occ = comboOcc(c, ci), avail = comboAvail(c, ci);
-      var suf = group.querySelector('.opt-avail-suffix[data-ci="' + ci + '"]');
-      if (suf) { suf.textContent = (avail === 0 ? '품절' : '개'); suf.classList.toggle('opt-soldout', avail === 0); }
       var inp = group.querySelector('.opt-avail-inp[data-ci="' + ci + '"]');
-      if (inp) inp.classList.toggle('opt-soldout', avail === 0);
+      if (inp) inp.classList.toggle('opt-soldout', avail === 0);   // 0이면 붉은 텍스트(숫자만) — '품절' 텍스트는 인라인에 노출하지 않음
       var st = group.querySelector('.opt-stock-ro[data-ci="' + ci + '"]');
       if (st) st.textContent = fmt(avail + occ);
     }
@@ -3014,7 +3012,7 @@
         var vcells = valIdxOf(axes, ci).map(function (vi, p) { return '<td class="opt-td-vname"><input class="opt-vname" data-ax="' + p + '" data-vi="' + vi + '" value="' + esc((axes[p].values[vi] || {}).name || '') + '" placeholder="옵션값" aria-label="옵션값" /></td>'; }).join('');
         var occ = comboOcc(c, ci), ord = ordOf(ci), avail = comboAvail(c, ci);
         return '<tr' + (c._sel ? ' class="is-sel"' : '') + '><td class="opt-td-chk"><span class="cbox3 opt-rowsel' + (c._sel ? ' on' : '') + '" data-ci="' + ci + '"></span></td>' + vcells +
-          '<td><span class="opt-cell-box is-input"><input class="opt-cell-num opt-avail-inp' + (avail === 0 ? ' opt-soldout' : '') + '" data-ci="' + ci + '" value="' + fmt(avail) + '" inputmode="numeric" aria-label="판매 가능" /><span class="opt-unit opt-avail-suffix' + (avail === 0 ? ' opt-soldout' : '') + '" data-ci="' + ci + '">' + (avail === 0 ? '품절' : '개') + '</span></span></td>' +
+          '<td><span class="opt-cell-box is-input"><input class="opt-cell-num opt-avail-inp' + (avail === 0 ? ' opt-soldout' : '') + '" data-ci="' + ci + '" value="' + fmt(avail) + '" inputmode="numeric" aria-label="판매 가능" /><span class="opt-unit" data-ci="' + ci + '">개</span></span></td>' +
           '<td class="opt-ro"><b class="opt-stock-ro" data-ci="' + ci + '">' + fmt(avail + occ) + '</b> <span class="opt-unit">개</span></td>' +
           '<td class="opt-ro">' + fmt(ord) + ' <span class="opt-unit">개</span></td>' +
           '<td class="opt-ro">' + fmt(occ) + ' <span class="opt-unit">개</span></td>' +
@@ -3716,12 +3714,16 @@
         '</div>' +
         '<div class="fmerge">↓ [옵션] 버튼</div>' +
         '<div class="fpath">' +
-          '<div class="fpath-h"><span class="fpath-tag a">팝업</span> 상품 옵션 관리</div>' +
-          '<div class="frow"><span class="fnode">요약 = 상품가·상시할인가·라이브가</span><span class="farr">→</span><span class="fnode">조합 표: 옵션명·옵션값·<b>판매가능(편집)</b>·재고(읽기전용)·주문·점유·가격·판매여부·코드</span></div>' +
-          '<div class="frow"><span class="fnode">[옵션명 수정하기]</span><span class="farr">→</span><span class="fnode">옵션 종류·값의 <b>이름만</b> 변경(구조 변경은 셋업 영역)</span></div>' +
-          '<div class="frow"><span class="fnode">[일괄 수정]</span><span class="farr">→</span><span class="fnode">조합 체크박스 선택 → 가격/재고 일괄(팝업)</span></div>' +
+          '<div class="fpath-h"><span class="fpath-tag b">팝업</span> 상품 옵션 관리</div>' +
+          '<div class="frow"><span class="fnode">요약</span><span class="farr">→</span><span class="fnode">상품가 · 상시할인가 · 라이브가</span></div>' +
+          '<div class="frow"><span class="fnode">조합 표</span><span class="farr">→</span><span class="fnode"><b>판매 가능(편집)</b> · 재고(읽기전용) · 주문 · 점유 · 가격 · 옵션명 · 옵션값 · 판매여부 · 코드</span></div>' +
+          '<div class="fmerge">↓ 표 상단 두 버튼</div>' +
+          '<div class="fbranch">' +
+            '<span class="fout ok">[옵션명 수정하기]<br/>옵션 종류 · 값의 <b>이름만</b> 변경<br/><em>구조 변경 · 조합 상세는 셋업 영역</em></span>' +
+            '<span class="fout no">[일괄 수정]<br/>조합 체크박스 선택 →<br/>가격 · <b>판매 가능</b> 일괄 반영</span>' +
+          '</div>' +
         '</div>' +
-        '<div class="fnode final">재고·주문·점유는 읽기 전용(재고 = 판매가능 + 점유) · <b>판매 가능만 편집</b> · 조합 가격 = 라이브가 + 추가 가격 · 팝업 수정은 리스트 옵션가 범위와 동기화 · <b>판매가능 0이면 품절</b> · 옵션 <b>구조 변경은 셋업 영역</b></div>',
+        '<div class="fnode final">재고 · 주문 · 점유 = 읽기 전용 · <b>판매 가능만 편집</b>(재고 = 판매 가능 + 점유) · <b>판매 가능 0이면 품절</b><br/>조합 가격 = 라이브가 + 추가 가격(리스트 옵션가 범위와 동기화) · 옵션 <b>구조 변경은 셋업 영역</b></div>',
       prd: [
         { n: 1, target: '.btn-option', title: '[리스트→팝업] 상품 옵션 관리 진입 & 요약', tag: '진입 · 팝업 요약',
           def: '스튜디오 리스트의 [옵션] 버튼을 누르면 상품 옵션 관리 팝업이 열린다. (진입은 리스트, 이후 편집은 모두 이 팝업 안)',
@@ -3731,8 +3733,8 @@
           asis: ['옵션(조합)별 가격·재고를 <b>하나씩 개별</b> 수정만 가능.', '상품 옵션 관리에서 조합별 <b>판매 가능·주문·점유 수량을 볼 수 없었음</b>.'],
           tobe: ['표에서 <b>판매 가능·가격·옵션명·옵션값·자체 옵션 코드 인라인 수정</b>.', '<b>재고·주문·점유는 읽기 전용</b>(재고 = 판매 가능 + 점유 파생)로 표에 함께 노출.'],
           features: ['표 컬럼 = <b>옵션명 · 옵션값 · 판매 가능 · 재고 · 주문 · 점유 · 가격 · 판매 여부 · 자체 옵션 코드</b> (판매 가능 → 재고 순).', '<b>인라인 수정</b>: 판매 가능·가격·옵션명(옵션 종류)·옵션값·자체 옵션 코드.', '<b>[편집 정책]</b> <b>판매 가능만 편집</b>(재고·점유는 읽기 전용) · <b>재고 = 판매 가능 + 점유</b>로 파생 · 점유가 서버에서 변해도 안전 · <b>판매 가능 0이면 품절</b>.', '<b>재고·주문·점유는 읽기 전용</b>(비즈센터 연동) — 스튜디오에서 수정하지 않음.', '판매 여부는 조합별 토글 · 팝업 재오픈 시 저장 상태 유지.'] },
-        { n: 3, target: '.btn-option', title: '[팝업] 옵션명 수정하기 · 가격/재고 일괄 수정', tag: '팝업 · 두 버튼',
-          def: '[옵션명 수정하기]은 옵션 종류·값의 이름만 변경한다(구조 변경 불가). [일괄 수정]은 선택 조합의 가격·재고를 한 번에 바꾼다. (둘 다 팝업 안)',
+        { n: 3, target: '.btn-option', title: '[팝업] 옵션명 수정하기 · 가격/판매 가능 일괄 수정', tag: '팝업 · 두 버튼',
+          def: '[옵션명 수정하기]은 옵션 종류·값의 이름만 변경한다(구조 변경 불가). [일괄 수정]은 선택 조합의 가격·판매 가능을 한 번에 바꾼다. (둘 다 팝업 안)',
           asis: ['옵션 구성(종류·값)과 조합별 가격·재고를 한 화면에서 관리하기 어려웠음.', '조합이 많으면 가격·재고를 <b>하나씩</b> 고쳐야 함.'],
           tobe: ['<b>[옵션명 수정하기]</b> = 옵션 종류·값의 <b>이름만</b> 변경(구조 변경·조합 상세 편집 불가).', '옵션 <b>구조(종류·값 추가/삭제)</b>는 <b>상품 등록(셋업)</b>에서만 — 라이브 중 구조 변경은 셋업된 조합의 <b>재고·점유·주문을 깨뜨림</b>(비즈센터도 구조 변경 시 전체 초기화).', '<b>[일괄 수정]</b>으로 선택 조합의 가격·재고를 한 번에(재고는 <b>점유 수량 이상</b>으로 자동 조정).'],
           features: ['<b>[옵션명 수정하기]</b> → 옵션 <b>종류·값의 이름</b>만 변경. 구조(추가/삭제)·조합 상세는 편집하지 않음.', '옵션 <b>구조 변경은 셋업(상품 등록) 영역</b> — 라이브 편집은 판매 가능·가격·이름·판매여부만.', '<b>[일괄 수정]</b> → 조합을 <b>체크박스로 선택</b> → 팝업에서 가격/판매 가능을 선택 조합에 일괄 반영.', '팝업에서 수정한 가격은 <b>추가 가격(= 가격 − 라이브가)</b>으로 저장되어 <b>리스트 옵션가 범위</b>와 동기화(명세 4).'] },
@@ -3749,7 +3751,7 @@
         { tag: '표에서 바로 수정', t: '조합 표에서 <b>판매 가능·가격·옵션명·옵션값·자체 옵션 코드</b>를 클릭해 바로 수정·저장합니다. <b>판매 가능을 0으로 하면 품절</b>로 표시되고, <b>재고(= 판매 가능 + 점유)·주문·점유는 읽기 전용</b>입니다. (점유가 서버에서 변해도 재고가 안전하게 파생)', target: function () { return q('#optGroup .opt-table'); }, act: function () { if (!q('#optionModal').classList.contains('open')) { var r = rowN(1); var b = r && r.querySelector('.btn-option'); if (b) b.click(); } } },
         { tag: '옵션명 수정하기 팝업', t: '<b>[옵션명 수정하기]</b> → 옵션 <b>종류·값의 이름만</b> 변경합니다. 옵션 <b>구조(종류·값 추가/삭제)</b>는 이미 셋업된 조합의 재고·점유·주문을 깨뜨리므로 <b>상품 등록(셋업)에서만</b> 가능해요. (조합별 재고·가격은 표에서 수정)', target: function () { return q('#optNameModal .modal'); }, act: function () { var eb = q('#optEditNameBtn'); if (eb && !q('#optNameModal').classList.contains('open')) eb.click(); } },
         { tag: '일괄 수정 — 선택', t: '조합을 <b>체크박스로 선택</b>하면 상단 <b>[일괄 수정]</b> 버튼이 활성화됩니다.', target: function () { return q('#optBulkBtn'); }, act: function () { var nm = q('#optNameModal'); if (nm) nm.classList.remove('open'); var cbs = document.querySelectorAll('#optGroup .opt-rowsel'); [0, 1].forEach(function (i) { if (cbs[i] && !cbs[i].classList.contains('on')) cbs[i].click(); }); } },
-        { tag: '일괄 수정 팝업', t: '<b>[일괄 수정]</b> → 작은 팝업에서 <b>가격/재고를 한 번에 입력·적용</b>합니다. (선택한 조합에만 반영)', target: function () { return q('#optBulkModal .modal'); }, act: function () { var bb = q('#optBulkBtn'); if (bb) bb.click(); } }
+        { tag: '일괄 수정 팝업', t: '<b>[일괄 수정]</b> → 작은 팝업에서 <b>가격/판매 가능을 한 번에 입력·적용</b>합니다. (선택한 조합에만 반영)', target: function () { return q('#optBulkModal .modal'); }, act: function () { var bb = q('#optBulkBtn'); if (bb) bb.click(); } }
       ]
     });
 
