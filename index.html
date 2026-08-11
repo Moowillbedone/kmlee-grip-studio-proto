@@ -2323,8 +2323,11 @@
           upOrder.forEach(function (x) { var b = x.querySelector('.btn-up'); if (b) b.classList.remove('on'); });
           upOrder = [r]; if (btn) btn.classList.add('on');
           if (everUp.indexOf(r) < 0) everUp.push(r);
-        } else {                                   // 스토어판매: 최대 5개
-          if (upOrder.length >= maxUp()) { showUpMax(); return false; }
+        } else {                                   // 스토어판매: 최대 5개 — 가득 차면 FIFO(과거순 자동 OFF) 스위칭, 얼럿 없음 (GRIPPGM-3183)
+          if (upOrder.length >= maxUp()) {
+            var oldest = upOrder.shift();            // 가장 오래된 UP 카드 자동 OFF
+            var ob = oldest && oldest.querySelector('.btn-up'); if (ob) ob.classList.remove('on');
+          }
           upOrder.push(r); if (btn) btn.classList.add('on');
           if (everUp.indexOf(r) < 0) everUp.push(r);
         }
@@ -2414,7 +2417,7 @@
           '</div>';
         return row;
       }
-      function addRow(o) { var el = buildRowEl(o); listEl.appendChild(el); order.push(el); META.push({ img: o.img, code: o.code || '' }); sortListView(); if (window.__gripSelRefresh) window.__gripSelRefresh(); return el; }
+      function addRow(o) { var el = buildRowEl(o); listEl.appendChild(el); order.push(el); META.push({ img: o.img, code: o.code || '' }); var ub = el.querySelector('.btn-up'); if (ub) ub.addEventListener('click', function () { setUp(el, upOrder.indexOf(el) < 0); }); sortListView(); if (window.__gripSelRefresh) window.__gripSelRefresh(); return el; }
       setTimeout(sortListView, 0);   // 초기 표시를 이름순으로 (옵션 초기화 등 동기 실행 이후에 정렬)
 
       // ================= 플래시 상품 등록/수정 =================
@@ -2531,7 +2534,9 @@
             updateCard(editRow); sortListView(); toast('플래시 상품을 수정했습니다.', true);
           } else {
             var row = addRow({ img: baked, name: data.name, price: data.price, qty: data.qty, flash: true, code: 'flash-' + (++flSeq) });
-            row.__flash = data; toast('플래시 상품을 등록했습니다.', true);
+            row.__flash = data;
+            setUp(row, true);                        // GRIPPGM-3183: 등록 즉시 자동 UP(카드 노출). 스토어 5개 가득이면 FIFO 스위칭
+            toast('플래시 상품을 등록해 바로 노출했습니다.', true);
           }
         });
         closeFlash();
@@ -3975,6 +3980,53 @@
         { tag: '방송 앱 미리보기', t: '<b>[방송 앱 미리보기]</b>를 열면 모바일 방송 화면 목업이 뜹니다.', target: function () { return q('#castModal .cast-modal'); }, act: function () { if (!q('#castModal').classList.contains('open') && window.__gripCastOpen) window.__gripCastOpen(); } },
         { tag: '영상 첨부 = 쇼츠 노출', t: '<b>[영상 첨부]</b>를 누르면 첨부 미디어가 <b>방송 화면 위 정중앙 70%</b>로 노출됩니다. <b>탭하면 갤러리</b>에서 다시 고를 수 있어요.', target: function () { return q('#castShorts'); }, act: function () { if (!q('#castModal').classList.contains('open') && window.__gripCastOpen) window.__gripCastOpen(); var v = q('#castVideo'); if (v) v.click(); } },
         { tag: '자리비움', t: '기존 ‘스티커’가 <b>자리비움</b>으로 바뀌었습니다. 셀러가 잠시 자리를 비울 때 방송에 표시합니다.', target: function () { return q('#castAway'); }, act: function () { if (!q('#castModal').classList.contains('open') && window.__gripCastOpen) window.__gripCastOpen(); var v = q('#castVideo'); if (v) v.click(); var a = q('#castAwayBtn'); if (a) a.click(); } }
+      ]
+    });
+
+    // ===== 기능 12: 플래시 상품 즉시 노출 & UP 자동화(FIFO) (GRIPPGM-3183, 스토어·방송) =====
+    FEATURES.push({
+      id: 'flashup', demoMode: 'store', jira: 'GRIPPGM-3183', name: '[스토어·방송] 플래시 상품 즉시 노출 및 UP 자동화 개선',
+      overviewHTML:
+        '<div class="ov-title">🎯 과제 개요</div>' +
+        '<span class="prd-k2">과제의 목적</span>' +
+        '<p>라이브(스토어판매) 중 <b>플래시 상품을 등록하면 즉시 방송 카드로 자동 노출</b>하고, UP 5칸이 가득 차도 <b>셀러의 추가 조작 없이</b> 가장 오래된 카드가 자동으로 빠지며 최신 상품이 올라오도록(FIFO 스위칭) 개선한다. (Jira <b>GRIPPGM-3183</b>)</p>' +
+        '<span class="prd-k2">배경 · VOC (셀러 불편)</span>' +
+        '<p>· 라이브 중 플래시 상품을 등록해도 카드에 즉시 반영되지 않아, <b>스토어에 재진입해 수동으로 UP</b>해야 함 → 라이브 속도감 저하.<br/>· 이미 5개가 UP된 상태에서 추가 UP 시 <b>“최대 5개까지 UP 가능. 기존 UP 해제 후 재시도” 얼럿</b> → 직접 해제하고 다시 UP하는 번거로움.</p>' +
+        '<span class="prd-k2">해결 (핵심 컨셉 = FIFO 스위칭)</span>' +
+        '<p><b>셀러의 추가 행동 없이, 최신 상품이 자동으로 5개 슬롯에 올라오는 FIFO 방식.</b><br/>· <b>플래시 상품 등록 → 즉시 자동 UP(카드 노출).</b><br/>· <b>5칸 가득 + 플래시 등록/다른 상품 UP</b> → 가장 오래된(과거순) UP 카드 <b>자동 OFF + 신규 스위칭</b>, <b>얼럿 없음.</b><br/>· 적용 범위: 방송화면·스튜디오 (비즈니스센터 작업 불필요).</p>',
+      flowHTML:
+        '<span class="prd-k2">UP 5칸 FIFO 스위칭 흐름 (스토어판매)</span>' +
+        '<div class="fpath">' +
+          '<div class="fpath-h"><span class="fpath-tag a">트리거</span> 플래시 등록 · 또는 상품 UP</div>' +
+          '<div class="frow"><span class="fnode">플래시 상품 등록</span><span class="farr">→</span><span class="fnode">즉시 자동 UP(카드 노출)</span></div>' +
+          '<div class="frow"><span class="fnode">상품 UP 시도</span><span class="farr">→</span><span class="fnode">UP 슬롯에 추가</span></div>' +
+        '</div>' +
+        '<div class="fmerge">↓ UP 슬롯이 5개 가득이면</div>' +
+        '<div class="fpath">' +
+          '<div class="fpath-h"><span class="fpath-tag b">FIFO</span> 자동 스위칭 (얼럿 없음)</div>' +
+          '<div class="frow"><span class="fnode">가장 오래된 UP 카드 자동 OFF</span><span class="farr">→</span><span class="fnode">신규 카드 UP</span><span class="farr">→</span><span class="fnode">항상 최신 5개 노출</span></div>' +
+        '</div>' +
+        '<div class="fnode final">셀러 추가 조작 0 · 라이브 속도감 유지 · 적용: 방송화면·스튜디오(비즈센터 제외)</div>',
+      prd: [
+        { n: 1, target: '.product-list', title: '[스토어] 플래시 상품 등록 즉시 자동 노출', tag: '즉시 노출',
+          def: '라이브 중 플래시 상품을 등록하면 별도 조작 없이 즉시 UP되어 방송 카드로 노출된다.',
+          asis: ['등록해도 카드에 즉시 반영 안 됨 → <b>스토어 재진입 후 수동 UP</b> 필요(속도감 저하).'],
+          tobe: ['등록 <b>즉시 자동 UP</b> → 방송 카드로 바로 노출.'],
+          features: ['[플래시 상품 등록] 적용 시 <b>새 카드가 즉시 UP 슬롯에 올라옴</b>.', '5칸 가득이면 <b>과거순 자동 OFF(FIFO)</b> 후 노출.'] },
+        { n: 2, target: '.btn-up', title: 'UP 5칸 가득 → FIFO 자동 스위칭', tag: '핵심 · FIFO',
+          def: 'UP이 5개 가득 찬 상태에서 새 UP(플래시 등록/다른 상품)이 생기면 가장 오래된 카드가 자동 OFF되고 신규가 올라온다. 얼럿 없음.',
+          asis: ['5개 가득에서 추가 UP 시 <b>“최대 5개…해제 후 재시도” 얼럿</b> → 셀러가 직접 해제·재UP.'],
+          tobe: ['<b>과거순(가장 오래된) UP 카드 자동 OFF + 신규 스위칭</b>, <b>얼럿 제거</b>.'],
+          features: ['UP 슬롯은 항상 <b>최신 5개</b> 유지(FIFO).', '“최대 5개” 얼럿 없이 <b>셀러 조작 0</b>.'] },
+        { n: 3, target: '.product-list', title: '적용 범위', tag: '범위',
+          def: '방송화면·스튜디오에 적용. 비즈니스센터는 작업 불필요.',
+          features: ['스토어판매 모드의 UP(최대 5) 대상.', '한정판매(1칸)는 기존처럼 이전 UP 자동 해제(단일 노출).'] }
+      ],
+      steps: [
+        { tag: '시작', t: '<b>스토어판매</b> 방송에서 <b>플래시 상품 즉시 노출</b>과 <b>UP 5칸 FIFO 자동 스위칭</b>을 시연합니다. (Jira GRIPPGM-3183)', target: function () { return q('.product-list'); }, act: function () { resetUI(); } },
+        { tag: 'UP 5칸 채우기', t: '스토어판매는 방송 카드 <b>최대 5개</b>를 UP합니다. 5칸을 채워 둡니다.', target: function () { return q('#poStrip'); }, act: function () { var rows = document.querySelectorAll('.product-list .product-row'); Array.prototype.forEach.call(rows, function (r) { var b = r.querySelector('.btn-up'); if (b && b.classList.contains('on')) b.click(); }); for (var i = 0; i < 5; i++) { var b = rows[i] && rows[i].querySelector('.btn-up'); if (b) b.click(); } } },
+        { tag: 'FIFO 자동 스위칭', t: '5칸이 가득한 상태에서 <b>6번째 상품을 UP</b>하면 — <b>얼럿 없이</b> 가장 오래된 카드가 자동으로 빠지고 새 상품이 올라옵니다(FIFO). 항상 최신 5개가 노출돼요.', target: function () { return q('#poStrip'); }, act: function () { var rows = document.querySelectorAll('.product-list .product-row'); var b = rows[5] && rows[5].querySelector('.btn-up'); if (b && !b.classList.contains('on')) b.click(); } },
+        { tag: '플래시 등록 = 즉시 노출', t: '<b>[플래시 상품 등록]</b>으로 상품을 등록하면 <b>즉시 자동 UP</b>되어 방송 카드로 바로 노출됩니다. 5칸이 가득이면 <b>과거순 자동 OFF(FIFO)</b>로 스위칭돼요. (스토어 재진입·수동 UP 불필요)', target: function () { return q('#flashModal .flash-modal'); }, act: function () { if (!q('#flashModal').classList.contains('open') && window.__gripFlashOpen) window.__gripFlashOpen(null); } }
       ]
     });
 
