@@ -27,7 +27,7 @@
 ### PRD 모드 = 기능 레지스트리 (컨트롤러 IIFE)
 - `var FEATURES = []` 배열. 각 원소:
   `{ id, demoMode:'limited'|'store', jira:'GRIPPGM-xxxx', name, overviewHTML, flowHTML, prd:[{n,target,title,tag,def,asis?,tobe?,features:[]}], steps:[{tag,t,target,act}] }`
-- 현재 **11개**: price(3338)·delete(3357)·chat(3224)·qavis(3402)·**option(3336)**·**stock(3319)**·**capzoom(3433)**·**repimg(3434)**·**impfilter(3459)**·**upsearch(3460)**·**shorts(2941)**. (index.html의 `id: 'xxx', demoMode`로 확인)
+- 현재 **12개**: price(3338)·delete(3357)·chat(3224)·qavis(3402)·**option(3336)**·**stock(3319)**·**capzoom(3433)**·**repimg(3434)**·**impfilter(3459)**·**upsearch(3460)**·**shorts(2941)**·**flashup(3183)**. (index.html의 `id: 'xxx', demoMode`로 확인)
 - PRD 패널 상단 **기능 스위처**(`#pfsBtn`/`#pfsMenu`)로 전환 → 개요·검증플로우·명세·화면마커(`.prd-marker`)·자동데모(steps)가 통째로 교체(`renderFeature()`).
 - **새 과제 추가 = FEATURES 배열에 항목 하나 push** 하면 목록·마커·데모 자동 편입.
 - 자동 데모(`#tourOverlay`): 스포트라이트(box-shadow) + 콜아웃. **rebuild(idx): 매 렌더 0단계부터 재구성**(좌/우 화살표·자동진행 어디서 오든 깨끗). 스텝 target은 **항상 보이는 요소**여야 함(숨겨지는 요소면 콜아웃이 0,0으로 날아감 — 실제 겪은 버그). placeSpot은 240/460/700ms 다중 배치(모달 트랜지션 대비).
@@ -101,7 +101,7 @@
 
 ## 4. 컨플루언스 PRD
 - 공간 spaceId **4030468**, 부모 페이지 **2306867212**("[스튜디오] 과제 모음").
-- 페이지: 가격 **2306113587**(3338) / 삭제 **2319581187**(3357) / 채팅 **2319515671**(3224) / **Q&A 노출범위(스튜디오) 2320039942**(3402) / 옵션 **2337406981**(3336) / **Q&A 노출범위(그립 앱·모바일) 2342289409**(GRIPPGM-3424).
+- 페이지: 가격 **2306113587**(3338) / 삭제 **2319581187**(3357) / 채팅 **2319515671**(3224) / **Q&A 노출범위(스튜디오) 2320039942**(3402) / 옵션 **2337406981**(3336) / **Q&A 노출범위(그립 앱·모바일) 2342289409**(GRIPPGM-3424) / **플래시 즉시노출·UP FIFO 2405040130**(GRIPPGM-3183, flow_3183.png).
 - **모바일 Q&A PRD(2342289409, GRIPPGM-3424 「[그립 앱] 채팅 내용 답변 시 Q&A 미노출 기능」):** 스튜디오 3402의 모바일(코어 서비스) 카운터파트. 지라 첨부 이미지 4장(AS-IS/답변화면/Q&A바텀시트/⋮수정) 임베드 + PIL 플로우차트(draw_qa_mobile.py). 모바일 동작: 유저 채팅 탭→답변 UI+[본인만 보기] 토글(기본 OFF=전체) → 전체=모든 시청자 띠지·바텀시트 / 본인만=문의자 본인에게만. Q&A 바텀시트=[공지|Q&A N]+항목별 🌐전체공개/🔒본인만 배지. 답변 ⋮→수정하기(토글 재노출)/삭제하기. 스크립트 prd_qa_mobile.xhtml/confluence_create_qa_mobile.py. ⚠️토큰은 `~/.config/grip/atlassian.env`에서 로드.
 - 양식(가격 PRD 기준): TOC 매크로 → info 패널(프로토타입 링크) → 문서정보(Jira 매크로 포함) → 문서 히스토리 → 1.배경목적 2.KPI 3.용어 4.ASIS/TOBE 5.기능요구 6.검증규칙·수용기준 7.검증플로우(**플로우차트 이미지**) 8.화면UX 9.영향범위.
 - **Jira 매크로:** `<ac:structured-macro ac:name="jira"><ac:parameter ac:name="server">System Jira</ac:parameter><ac:parameter ac:name="serverId">174ac8ba-9990-3d59-be10-643a4aa0d945</ac:parameter><ac:parameter ac:name="key">GRIPPGM-xxxx</ac:parameter></ac:structured-macro>`
