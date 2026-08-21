@@ -276,6 +276,20 @@
   .search svg { color: #b9bdc6; flex: 0 0 auto; }
   .search input { border: 0; outline: 0; flex: 1; font-size: 13.5px; color: #34373f; background: none; }
   .search input::placeholder { color: #b3b7c0; }
+  /* 홈 검색 드롭다운(전체 / 상품명·상품코드·자체상품코드) — GRIPPGM-3460 */
+  .hdrop { position: relative; flex: 0 0 auto; }
+  .hdrop-btn { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-width: 118px; background: #fff; border: 1px solid var(--field-border); border-radius: 9px; padding: 9px 12px; font-size: 13.5px; font-weight: 500; color: #34373f; cursor: pointer; font-family: inherit; }
+  .hdrop-btn svg { color: #b0b4bd; transition: transform .15s; }
+  .hdrop.open .hdrop-btn { border-color: var(--grip); }
+  .hdrop.open .hdrop-btn svg { transform: rotate(180deg); }
+  .hdrop-menu { display: none; position: absolute; top: calc(100% + 4px); left: 0; min-width: 100%; z-index: 30; background: #fff; border: 1px solid #e3e4e8; border-radius: 10px; box-shadow: 0 12px 30px rgba(20,22,30,.14); padding: 5px; }
+  .hdrop.open .hdrop-menu { display: block; }
+  .hdrop-menu button { display: block; width: 100%; text-align: left; border: 0; background: none; padding: 10px 13px; font-size: 13.5px; color: #34373f; cursor: pointer; border-radius: 7px; white-space: nowrap; font-family: inherit; }
+  .hdrop-menu button:hover { background: #f4f5f7; }
+  .hdrop-menu button.sel { background: var(--grip-soft-2); color: var(--grip); font-weight: 700; }
+  .product-row.pr-hidden { display: none !important; }
+  .btn-store.filter-on { background: var(--grip); border-color: var(--grip); color: #fff; }
+  .btn-store.filter-on:hover { background: var(--grip-strong); }
 
   .select-row {
     display: flex; align-items: center; justify-content: space-between;
@@ -1329,7 +1343,6 @@
         <div class="sales-head">
           <h1 class="sales-title">한정판매</h1>
           <div class="head-btns">
-            <button class="btn-ghost" id="btnUpList">UP한 상품 목록</button>
             <button class="btn-ghost" id="btnImport">등록된 상품 가져오기</button>
             <button class="btn-ghost" id="btnFlash">플래시 상품 등록</button>
           </div>
@@ -1338,11 +1351,17 @@
         <div class="sales-note">한정판매 상품은 1개씩만 판매 가능합니다.</div>
 
         <div class="toolbar">
-          <div class="select" data-sort="name">이름순 <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <div class="select" data-sort="name">상품명 <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="hdrop" id="hStatusSel" data-val="all">
+            <button class="hdrop-btn" type="button"><span class="hdrop-lbl">전체</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="hdrop-menu"><button type="button" data-v="all">전체</button><button type="button" data-v="판매예정">판매예정</button><button type="button" data-v="판매시작">판매시작</button><button type="button" data-v="품절">품절</button></div>
+          </div>
+          <div class="hdrop" id="hFieldSel" data-val="name">
+            <button class="hdrop-btn" type="button"><span class="hdrop-lbl">상품명</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="hdrop-menu"><button type="button" data-v="name">상품명</button><button type="button" data-v="code">상품코드</button><button type="button" data-v="self">자체상품코드</button></div>
+          </div>
           <div class="search">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.2-3.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            <input placeholder="검색어를 입력하세요" />
+            <input id="homeSearch" placeholder="검색어를 입력하세요" />
           </div>
         </div>
 
@@ -1351,6 +1370,7 @@
             <span class="cbox" id="selectAllBox"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="m5 12 5 5 9-10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span> 전체선택 <span id="selectAllText">(0/6)</span>
           </label>
           <div class="store-toggle">
+            <button class="btn-store" id="btnUpFilter">UP한 상품</button>
             <button class="btn-store" id="btnPriceEdit">가격 수정</button>
             <button class="btn-store danger" id="btnDelSel">선택 삭제</button>
             <button class="btn-store mode-limited-only" id="btnStoreOn">스토어 ON</button>
@@ -1718,25 +1738,7 @@
   </div>
 </div>
 
-<!-- UP한 상품 목록 -->
-<div class="modal-overlay" id="upListModal">
-  <div class="modal" role="dialog" aria-modal="true" aria-label="UP한 상품 목록" style="max-width:640px;">
-    <div class="modal-title">UP한 상품 목록</div>
-    <div class="modal-body">
-      <div class="up2-head">
-        <label class="up2-all" id="upAll"><span class="cbox2" id="upAllBox"></span> 전체 선택</label>
-        <span class="up2-count" id="upCountLabel">UP한 상품 0</span>
-      </div>
-      <div class="up2-search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#9aa0ab" stroke-width="2"/><path d="m20 20-3.2-3.2" stroke="#9aa0ab" stroke-width="2" stroke-linecap="round"/></svg><input id="upSearch" placeholder="상품명·상품코드로 검색" /></div>
-      <ul class="up-list2" id="upListBody"></ul>
-    </div>
-    <div class="modal-foot">
-      <button class="btn-close" id="upListClose">닫기</button>
-      <button class="btn-storeoff2" id="upStoreOff">스토어 OFF</button>
-      <button class="btn-storeon2" id="upStoreOn">스토어 ON</button>
-    </div>
-  </div>
-</div>
+<!-- (UP한 상품 목록 모달 제거 — GRIPPGM-3460 리뷰 반영: 홈 [UP한 상품] 필터 + 홈 검색으로 대체) -->
 
 <!-- UP 최대 5개 안내 -->
 <div class="modal-overlay" id="upMaxModal">
@@ -2045,7 +2047,7 @@
     var pmCount = document.getElementById('pmCount');
 
     function box(r) { return r.querySelector('.cbox'); }
-    function liveRows() { return Array.prototype.slice.call(document.querySelectorAll('.product-row')); }
+    function liveRows() { return Array.prototype.slice.call(document.querySelectorAll('.product-row')).filter(function (r) { return !r.classList.contains('pr-hidden'); }); }
     function checkedRows() { return liveRows().filter(function (r) { return box(r).classList.contains('checked'); }); }
 
     function refresh() {
@@ -2335,7 +2337,7 @@
         var k = upOrder.indexOf(r); if (k >= 0) upOrder.splice(k, 1);
         if (btn) btn.classList.remove('on');
       }
-      renderPreview(); renderUpModal(); applyUpOnly(); return true;
+      renderPreview(); updateUpFilterBtn(); applyListFilter(); return true;
     }
     order.forEach(function (r) {
       var btn = r.querySelector('.btn-up');
@@ -2619,64 +2621,79 @@
       order.forEach(function (r) { var b = r.querySelector('.btn-up'); if (b) b.classList.remove('on'); });
       DEFAULT_UP.forEach(function (i) { if (order[i]) { upOrder.push(order[i]); everUp.push(order[i]); var b = order[i].querySelector('.btn-up'); if (b) b.classList.add('on'); } });
       if (upOnlyBtn) upOnlyBtn.classList.remove('on');
-      renderPreview(); renderUpModal(); applyUpOnly();
+      resetHomeFilters();
+      renderPreview(); updateUpFilterBtn(); applyListFilter();
     }
 
-    // ---- UP한 상품 목록 모달 ----
-    var upModal = document.getElementById('upListModal');
-    var upBody = document.getElementById('upListBody');
-    var upCountLabel = document.getElementById('upCountLabel');
-    var upAll = document.getElementById('upAll'), upAllBox = document.getElementById('upAllBox');
-    var upQuery = '';
-    function upList() { return everUp.filter(function (r) { return r.parentNode === listEl; }); }
-    // 3460: 상품명·상품코드 검색으로 걸러낸 '보이는' UP 상품
-    function upVisible() { var q = upQuery.trim(); return upList().filter(function (r) { if (!q) return true; var d = readRow(r); return (d.name && d.name.indexOf(q) >= 0) || (d.code && String(d.code).indexOf(q) >= 0); }); }
-    function updateAllBox() { var list = upVisible(); if (upAllBox) upAllBox.classList.toggle('on', list.length > 0 && list.every(function (r) { return checked[idxOf(r)]; })); }
-    function renderUpModal() {
-      if (!upBody) return;
-      var full = upList(), list = upVisible();
-      if (upCountLabel) upCountLabel.textContent = 'UP한 상품 ' + full.length;
-      upBody.innerHTML = list.length ? list.map(function (r) {
-        var d = readRow(r), i = idxOf(r);
-        return '<li class="ul2" data-idx="' + i + '">' +
-          '<span class="cbox2' + (checked[i] ? ' on' : '') + '" data-check="' + i + '"></span>' +
-          '<span class="ul2-thumb" style="background-image:url(' + d.img + ')"></span>' +
-          '<span class="ul2-info"><div class="ul2-name">' + d.name + '</div><div class="ul2-code">상품번호: ' + d.code + '</div>' +
-          '<div class="ul2-stat">점유수량 <b>' + d.occupy + '</b> · 주문수량 <b>' + d.ordered + '</b> · 재고 <b>' + d.stock + '</b></div></span>' +
-          '<span class="ul2-store' + (storeOn[i] ? ' on' : '') + '">' + (storeOn[i] ? '스토어 ON' : '스토어 OFF') + '</span>' +
-          '</li>';
-      }).join('') : (full.length ? '<li class="ul-empty">검색 결과가 없습니다.</li>' : '<li class="ul-empty">UP한 상품이 없습니다.</li>');
-      updateAllBox();
-      Array.prototype.slice.call(upBody.querySelectorAll('.cbox2')).forEach(function (cb) {
-        cb.addEventListener('click', function () { var i = parseInt(cb.getAttribute('data-check'), 10); checked[i] = !checked[i]; renderUpModal(); });
+    // ---- 홈 [UP한 상품] 필터 + 홈 검색(상품명·상품코드·자체상품코드) — GRIPPGM-3460 (UP 목록 모달 대체) ----
+    var upOnlyBtn = document.getElementById('btnUpOnly');       // [UP 상품만 보기] (스토어 전용, 기존)
+    var upFilterBtn = document.getElementById('btnUpFilter');   // [UP한 상품] 필터 (신규, 가격 수정 좌측)
+    var searchInput = document.getElementById('homeSearch');
+    var searchField = 'name';   // 'name' | 'code' | 'self'
+    var statusFilter = 'all';   // 'all' | 판매예정 | 판매시작 | 품절
+    var searchQuery = '';
+    function selfCodeOf(r) { var m = meta(r); return 'SELF-' + String(m.code || '').replace(/[^a-z0-9]/gi, '').toUpperCase(); }
+    function activeSaleOf(r) { var a = r.querySelector('.pr-sale-btns .btn-sale.active'); return a ? a.textContent.trim() : ''; }
+    function rowMatch(r) {
+      if (statusFilter !== 'all' && activeSaleOf(r) !== statusFilter) return false;
+      var q = searchQuery.trim().toLowerCase();
+      if (q) {
+        var d = readRow(r);
+        var hay = (searchField === 'code') ? String(d.code || '') : (searchField === 'self') ? selfCodeOf(r) : String(d.name || '');
+        if (hay.toLowerCase().indexOf(q) < 0) return false;
+      }
+      return true;
+    }
+    // 통합 리스트 필터: [UP한 상품] 필터 ∩ [UP 상품만 보기](스토어) ∩ 상태 ∩ 검색어. 숨김은 .pr-hidden → liveRows/전체선택은 '보이는 것'만 대상(검색된 상품만 전체선택)
+    function applyListFilter() {
+      var upOn = !!(upFilterBtn && upFilterBtn.classList.contains('filter-on'));
+      var storeUpOnly = !!(upOnlyBtn && upOnlyBtn.classList.contains('on'));
+      Array.prototype.forEach.call(listEl.querySelectorAll('.product-row'), function (r) {
+        var vis = true;
+        if (upOn && everUp.indexOf(r) < 0) vis = false;
+        if (vis && storeUpOnly && upOrder.indexOf(r) < 0) vis = false;
+        if (vis && !rowMatch(r)) vis = false;
+        r.classList.toggle('pr-hidden', !vis);
+      });
+      if (window.__gripSelRefresh) window.__gripSelRefresh();
+    }
+    window.__gripApplyListFilter = applyListFilter;
+    // [UP한 상품] 필터는 UP한 상품(everUp)이 1개 이상일 때만 활성(가격수정/선택삭제와 동일 패턴)
+    function updateUpFilterBtn() {
+      if (!upFilterBtn) return;
+      var has = everUp.filter(function (r) { return r.parentNode === listEl; }).length > 0;
+      upFilterBtn.classList.toggle('enabled', has);
+      if (!has && upFilterBtn.classList.contains('filter-on')) upFilterBtn.classList.remove('filter-on');
+    }
+    function resetHomeFilters() {
+      searchField = 'name'; statusFilter = 'all'; searchQuery = '';
+      if (searchInput) searchInput.value = '';
+      if (upFilterBtn) upFilterBtn.classList.remove('filter-on');
+      var fs = document.getElementById('hFieldSel'); if (fs) { fs.setAttribute('data-val', 'name'); var l = fs.querySelector('.hdrop-lbl'); if (l) l.textContent = '상품명'; fs.classList.remove('open'); }
+      var ss = document.getElementById('hStatusSel'); if (ss) { ss.setAttribute('data-val', 'all'); var l2 = ss.querySelector('.hdrop-lbl'); if (l2) l2.textContent = '전체'; ss.classList.remove('open'); }
+    }
+    if (upFilterBtn) upFilterBtn.addEventListener('click', function () {
+      if (!upFilterBtn.classList.contains('enabled')) return;
+      upFilterBtn.classList.toggle('filter-on');
+      applyListFilter();
+    });
+    if (searchInput) searchInput.addEventListener('input', function () { searchQuery = this.value; applyListFilter(); });
+    function wireDrop(id, onPick) {
+      var el = document.getElementById(id); if (!el) return;
+      var btn = el.querySelector('.hdrop-btn'), lbl = el.querySelector('.hdrop-lbl');
+      if (btn) btn.addEventListener('click', function (e) { e.stopPropagation(); var wasOpen = el.classList.contains('open'); Array.prototype.forEach.call(document.querySelectorAll('.hdrop.open'), function (o) { o.classList.remove('open'); }); if (!wasOpen) el.classList.add('open'); });
+      Array.prototype.forEach.call(el.querySelectorAll('.hdrop-menu button'), function (b) {
+        b.addEventListener('click', function () {
+          var v = b.getAttribute('data-v'); el.setAttribute('data-val', v); if (lbl) lbl.textContent = b.textContent;
+          Array.prototype.forEach.call(el.querySelectorAll('.hdrop-menu button'), function (x) { x.classList.toggle('sel', x === b); });
+          el.classList.remove('open'); onPick(v); applyListFilter();
+        });
       });
     }
-    if (upAll) upAll.addEventListener('click', function (e) {
-      e.preventDefault();
-      var list = upVisible();
-      var all = list.length > 0 && list.every(function (r) { return checked[idxOf(r)]; });
-      if (all) list.forEach(function (r) { delete checked[idxOf(r)]; }); else list.forEach(function (r) { checked[idxOf(r)] = true; });
-      renderUpModal();
-    });
-    function applyStore(on) {
-      var tgt = upList().filter(function (r) { return checked[idxOf(r)]; });
-      if (!tgt.length) { toast('상품을 선택해 주세요.', false); return; }
-      tgt.forEach(function (r) { storeOn[idxOf(r)] = on; });
-      toast('선택 상품을 스토어 ' + (on ? 'ON' : 'OFF') + ' 했습니다.', true);
-      renderUpModal();
-    }
-    var upStoreOn = document.getElementById('upStoreOn'), upStoreOff = document.getElementById('upStoreOff');
-    if (upStoreOn) upStoreOn.addEventListener('click', function () { applyStore(true); });
-    if (upStoreOff) upStoreOff.addEventListener('click', function () { applyStore(false); });
-    function openUp() { upQuery = ''; var us = document.getElementById('upSearch'); if (us) us.value = ''; renderUpModal(); if (upModal) upModal.classList.add('open'); }
-    function closeUp() { if (upModal) upModal.classList.remove('open'); }
-    var btnUp = document.getElementById('btnUpList');
-    if (btnUp) btnUp.addEventListener('click', openUp);
-    var upSearchEl = document.getElementById('upSearch');
-    if (upSearchEl) upSearchEl.addEventListener('input', function () { upQuery = this.value; renderUpModal(); });
-    var upClose = document.getElementById('upListClose');
-    if (upClose) upClose.addEventListener('click', closeUp);
-    if (upModal) upModal.addEventListener('click', function (e) { if (e.target === upModal) closeUp(); });
+    wireDrop('hFieldSel', function (v) { searchField = v; });
+    wireDrop('hStatusSel', function (v) { statusFilter = v; });
+    document.addEventListener('click', function (e) { if (!(e.target.closest && e.target.closest('.hdrop'))) Array.prototype.forEach.call(document.querySelectorAll('.hdrop.open'), function (o) { o.classList.remove('open'); }); });
+    if (upOnlyBtn) upOnlyBtn.addEventListener('click', function () { upOnlyBtn.classList.toggle('on'); applyListFilter(); });
 
     // ---- 선택 삭제 확인 모달 (체크박스 기반 일괄 제거) ----
     var delModal = document.getElementById('deleteModal');
@@ -2686,7 +2703,7 @@
       var dd = document.getElementById('delDetail'); if (!dd) return;
       dd.innerHTML = (mode === 'store')
         ? '· 스튜디오 방송 리스트에서 제거됩니다.'
-        : '· 스튜디오 방송 리스트와 <b>UP한 상품 목록</b>에서 제거됩니다.';
+        : '· 스튜디오 방송 리스트와 <b>UP한 상품</b>에서 제거됩니다.';
     }
     function askBulkDelete(rowsToDel) {
       pendingRows = (rowsToDel || []).slice(); if (!pendingRows.length) return;
@@ -2710,18 +2727,11 @@
       if (n) { pendingRows.forEach(doRemove); toast(n + '개 상품을 삭제했습니다.', true); if (window.__gripSelRefresh) window.__gripSelRefresh(); }
       closeDel();
     });
-    // ---- [UP 상품만 보기] 필터 (스토어판매 전용) ----
-    var upOnlyBtn = document.getElementById('btnUpOnly');
-    function applyUpOnly() {
-      var on = !!(upOnlyBtn && upOnlyBtn.classList.contains('on'));
-      order.forEach(function (r) { if (r.parentNode === listEl) r.style.display = (on && upOrder.indexOf(r) < 0) ? 'none' : ''; });
-    }
-    if (upOnlyBtn) upOnlyBtn.addEventListener('click', function () { upOnlyBtn.classList.toggle('on'); applyUpOnly(); });
     function doRemove(row) {
       var k = upOrder.indexOf(row); if (k >= 0) upOrder.splice(k, 1);
       var e = everUp.indexOf(row); if (e >= 0) everUp.splice(e, 1);   // UP한 상품 목록에서도 제거
       if (row && row.parentNode) row.parentNode.removeChild(row);
-      renderPreview(); renderUpModal();
+      renderPreview(); updateUpFilterBtn(); applyListFilter();
     }
 
     // ---- 판매종료/품절 시 UP 자동 해제 ----
@@ -2752,7 +2762,6 @@
       if (salesNote) salesNote.innerHTML = (m === 'store'
         ? '방송 화면에 노출할 상품을 UP 해주세요.(최대 5개)<br/>판매종료 또는 품절 시 UP 상태가 자동 해제됩니다.'
         : '한정판매 상품은 1개씩만 판매 가능합니다.');
-      if (btnUp) btnUp.style.display = (m === 'store' ? 'none' : '');
       if (salesCard) salesCard.classList.toggle('is-store', m === 'store');
       segs.forEach(function (s) { s.classList.toggle('on', s.getAttribute('data-mode') === m); });
       resetUpState();
@@ -3573,26 +3582,26 @@
           features: ['리스트 체크박스로 상품 선택 → <b>[가격 수정] 라인의 [선택 삭제]</b>(1개 이상 선택 시 활성화).', '<b>[제거]</b> 확인 시 선택 상품이 방송 리스트에서 즉시 삭제 · 성공 토스트.', '확인 모달 문구는 <b>판매 모드별로 분기</b>(2번 참고).'] },
         { n: 2, target: '.mode-toggle', title: '판매 모드별 삭제 확인 문구', tag: '한정 / 스토어 분기',
           def: '삭제 확인 모달의 안내 문구가 현재 판매 모드에 따라 달라진다.',
-          features: ['<b>한정판매:</b> “방송 리스트 + <b>UP한 상품 목록</b>에서도 제거” 안내.', '<b>스토어판매:</b> UP한 상품 목록 문구 <b>제외</b> — 스토어엔 <b>[UP한 상품 목록] 버튼 자체가 없음</b>.', '모달엔 <b>비즈센터/상품 마스터 언급 없음</b> — 단순 “삭제” 안내(내부 연동 정책은 미표기).'] },
-        { n: 3, target: '#btnUpList', title: 'UP한 상품 목록 동기화 (한정판매)', tag: '누적 · 자동 반영',
-          def: '(한정판매) UP한 상품 목록에는 한 번이라도 UP된 상품이 모두 노출되며, 상품 삭제 시 이 목록에서도 제거된다.',
-          features: ['<b>UP한 상품 목록 = 한 번이라도 UP된 상품 전부</b>(현재 UP 여부와 무관, UP한 순서대로 누적).', '한정판매는 1개씩 노출되지만, 그동안 UP했던 상품이 목록에 쌓인다.', '스튜디오 리스트에서 상품 삭제 시 <b>UP한 상품 목록에서도 즉시 제거</b>.', '<b>스토어판매에는 이 목록(버튼)이 없음.</b>'] },
+          features: ['<b>한정판매:</b> “방송 리스트 + <b>UP한 상품</b>에서도 제거” 안내.', '<b>스토어판매:</b> UP 관련 문구 <b>제외</b>(스토어 삭제는 방송 리스트에서만 제거 안내).', '모달엔 <b>비즈센터/상품 마스터 언급 없음</b> — 단순 “삭제” 안내(내부 연동 정책은 미표기).'] },
+        { n: 3, target: '#btnUpFilter', title: 'UP한 상품 동기화 ([UP한 상품] 필터)', tag: '누적 · 자동 반영',
+          def: 'UP한 상품(한 번이라도 UP된 상품)은 [UP한 상품] 필터로 홈에서 걸러 볼 수 있으며, 상품 삭제 시 이 대상에서도 제거된다.',
+          features: ['<b>UP한 상품 = 한 번이라도 UP된 상품 전부</b>(현재 UP 여부와 무관, UP한 순서대로 누적).', '<b>[UP한 상품] 필터</b>(가격 수정 좌측)로 홈 리스트를 UP한 상품만 노출.', '스튜디오 리스트에서 상품 삭제 시 <b>UP한 상품 대상에서도 즉시 제거</b>.'] },
         { n: 4, target: '.sales-title', title: '삭제 연동 범위 (라이브 방송 상품 설정)', tag: '연동 · 범위',
           def: '스튜디오 삭제는 비즈센터의 ‘라이브 방송 상품 설정’ 영역까지 연동되어 함께 제거되며, 비즈센터의 실제 상품 목록(상품 마스터)은 유지된다.',
           features: ['스튜디오 삭제 → <b>비즈센터 ‘라이브 방송 상품 설정’에서도 함께 제거(연동)</b>.', '<b>비즈센터의 실제 상품 목록(상품 마스터)은 삭제되지 않음</b> — ‘라이브 방송 상품 설정’과는 별개 영역.', '즉 <strong>삭제 연동 범위 = 라이브 방송 상품 설정 한정</strong>(상품 자체는 보존).'] }
       ],
       steps: [
         { tag: '시작', t: '스튜디오 <b>방송 리스트에서 상품을 빼는</b> 기능을 시연합니다. (Jira GRIPPGM-3357)', target: function () { return q('.product-list'); }, act: function () { resetUI(); } },
-        { tag: 'UP 누적', t: '한정판매는 1개씩 노출되지만, <b>UP한 상품 목록</b>에는 <b>한 번이라도 UP한 상품</b>이 모두 쌓입니다. 몇 개를 UP해 둡니다.', target: function () { return q('#btnUpList'); }, act: function () { [1, 2].forEach(function (i) { var r = rowN(i); var b = r && r.querySelector('.btn-up'); if (b && !b.classList.contains('on')) b.click(); }); } },
-        { tag: 'UP한 상품 목록', t: '<b>[UP한 상품 목록]</b>을 열면 UP했던 상품이 <b>모두</b> 보입니다(현재 노출 1개 + 이전에 UP한 상품).', target: function () { return q('#upListModal .modal'); }, act: function () { var b = document.getElementById('btnUpList'); if (b) b.click(); } },
-        { tag: '상품 선택', t: '삭제할 상품을 <b>체크박스로 선택</b>하면 <b>[가격 수정] 라인의 [선택 삭제]</b> 버튼이 활성화됩니다(행별 개별 삭제 버튼이 아님).', target: function () { return q('#btnDelSel'); }, act: function () { var u = document.getElementById('upListClose'); if (u) u.click(); var cb = rowN(1).querySelector('.cbox'); if (cb && !cb.classList.contains('checked')) cb.click(); } },
+        { tag: 'UP 누적', t: '한정판매는 1개씩 노출되지만, <b>한 번이라도 UP한 상품</b>이 누적됩니다. 몇 개를 UP해 둡니다.', target: function () { return q('.product-list'); }, act: function () { [1, 2].forEach(function (i) { var r = rowN(i); var b = r && r.querySelector('.btn-up'); if (b && !b.classList.contains('on')) b.click(); }); } },
+        { tag: '[UP한 상품] 필터', t: '가격 수정 좌측 <b>[UP한 상품]</b> 필터를 켜면 홈 리스트가 <b>UP했던 상품만</b> 노출됩니다(현재 노출 + 이전에 UP한 상품).', target: function () { return q('#btnUpFilter'); }, act: function () { var b = document.getElementById('btnUpFilter'); if (b && b.classList.contains('enabled') && !b.classList.contains('filter-on')) b.click(); } },
+        { tag: '상품 선택', t: '삭제할 상품을 <b>체크박스로 선택</b>하면 <b>[가격 수정] 라인의 [선택 삭제]</b> 버튼이 활성화됩니다(행별 개별 삭제 버튼이 아님).', target: function () { return q('#btnDelSel'); }, act: function () { var f = document.getElementById('btnUpFilter'); if (f && f.classList.contains('filter-on')) f.click(); var cb = rowN(1).querySelector('.cbox'); if (cb && !cb.classList.contains('checked')) cb.click(); } },
         { tag: '선택 삭제 · 확인', t: '<b>[선택 삭제]</b> → 확인 창(한정판매라 <b>UP 목록에서도 제거</b> 안내).', target: function () { return q('#deleteModal .modal'); }, act: function () { var b = document.getElementById('btnDelSel'); if (b) b.click(); } },
         { tag: '제거', t: '<b>[제거]</b> → 방송 리스트에서 상품이 사라지고 <b>성공 토스트</b>.', target: function () { return q('.product-list'); }, act: function () { var c = document.getElementById('delConfirm'); if (c) c.click(); } },
-        { tag: 'UP 목록에서도 제거', t: '다시 <b>[UP한 상품 목록]</b>을 열면 <b>삭제한 상품이 목록에서도 빠져</b> 있습니다.', target: function () { return q('#upListModal .modal'); }, act: function () { var b = document.getElementById('btnUpList'); if (b) b.click(); } },
-        { tag: '삭제 연동 범위', t: '삭제는 <b>비즈센터 ‘라이브 방송 상품 설정’</b>에도 연동돼 함께 제거됩니다. 단 <b>비즈센터의 실제 상품 목록</b>은 유지(삭제 안 됨) — 별개 영역.', target: function () { return q('.head-btns'); }, act: function () { var u = document.getElementById('upListClose'); if (u) u.click(); } },
+        { tag: 'UP한 상품에서도 제거', t: '<b>[UP한 상품]</b> 필터로 다시 보면 <b>삭제한 상품이 UP한 상품에서도 빠져</b> 있습니다.', target: function () { return q('#btnUpFilter'); }, act: function () { var b = document.getElementById('btnUpFilter'); if (b && b.classList.contains('enabled') && !b.classList.contains('filter-on')) b.click(); } },
+        { tag: '삭제 연동 범위', t: '삭제는 <b>비즈센터 ‘라이브 방송 상품 설정’</b>에도 연동돼 함께 제거됩니다. 단 <b>비즈센터의 실제 상품 목록</b>은 유지(삭제 안 됨) — 별개 영역.', target: function () { return q('.head-btns'); }, act: function () { var f = document.getElementById('btnUpFilter'); if (f && f.classList.contains('filter-on')) f.click(); } },
         { tag: '스토어판매 · 툴바', t: '<b>스토어판매</b>로 바꾸면 [스토어 ON/OFF] 대신 <b>[UP 상품만 보기]</b> 토글이 나타납니다(상용 스튜디오와 동일). [가격 수정]·[선택 삭제]는 두 모드 공통.', target: function () { return q('#btnUpOnly'); }, act: function () { if (window.__gripSetMode) window.__gripSetMode('store'); } },
-        { tag: '스토어판매 분기', t: '스토어에서 <b>상품 선택 → [선택 삭제]</b> → 확인 창엔 <b>“UP한 상품 목록” 문구가 없습니다</b>(스토어엔 UP 목록 없음).', target: function () { return q('#deleteModal .modal'); }, act: function () { var cb = rowN(0).querySelector('.cbox'); if (cb && !cb.classList.contains('checked')) cb.click(); var b = document.getElementById('btnDelSel'); if (b) b.click(); } },
-        { tag: '정리', t: '판매 모드에 맞춘 안내로 <b>오해 없이</b> 삭제할 수 있습니다. (한정 = UP 목록 포함 / 스토어 = 제외)', target: function () { return q('.product-list'); }, act: function () { var x = document.getElementById('delCancel'); if (x) x.click(); if (window.__gripSetMode) window.__gripSetMode('limited'); } }
+        { tag: '스토어판매 분기', t: '스토어에서 <b>상품 선택 → [선택 삭제]</b> → 확인 창엔 <b>UP 관련 문구가 없습니다</b>(스토어 삭제는 방송 리스트에서만).', target: function () { return q('#deleteModal .modal'); }, act: function () { var cb = rowN(0).querySelector('.cbox'); if (cb && !cb.classList.contains('checked')) cb.click(); var b = document.getElementById('btnDelSel'); if (b) b.click(); } },
+        { tag: '정리', t: '판매 모드에 맞춘 안내로 <b>오해 없이</b> 삭제할 수 있습니다. (한정 = UP한 상품 포함 / 스토어 = 제외)', target: function () { return q('.product-list'); }, act: function () { var x = document.getElementById('delCancel'); if (x) x.click(); if (window.__gripSetMode) window.__gripSetMode('limited'); } }
       ]
     });
 
@@ -3908,37 +3917,51 @@
 
     // ===== 기능 10: UP한 상품 목록 검색 (GRIPPGM-3460) =====
     FEATURES.push({
-      id: 'upsearch', demoMode: 'store', jira: 'GRIPPGM-3460', name: '[스튜디오] UP한 상품 목록 검색 기능 개발',
+      id: 'upsearch', demoMode: 'limited', jira: 'GRIPPGM-3460', name: '[스튜디오] UP한 상품 목록 검색 기능 개발',
       overviewHTML:
         '<div class="ov-title">🎯 과제 개요</div>' +
         '<span class="prd-k2">과제의 목적</span>' +
-        '<p><b>UP한 상품 목록</b> 모달에서 <b>상품명·상품코드로 검색</b>해, 많은 UP 상품 중 특정 상품을 빠르게 찾아 스토어 ON 처리할 수 있게 한다. (Jira <b>GRIPPGM-3460</b>)</p>' +
+        '<p>UP한 상품들 중에서 <b>상품명·상품코드·자체상품코드</b>로 검색해 원하는 상품을 빠르게 골라 관리할 수 있게 한다. <b>[UP한 상품 목록] 모달을 없애고, 홈 화면의 [UP한 상품] 필터 + 검색</b>으로 재구성. (Jira <b>GRIPPGM-3460</b>)</p>' +
         '<span class="prd-k2">배경 · VOC</span>' +
-        '<p>UP한 상품이 많아지면 특정 상품을 찾아 스토어 ON 하는 데 시간이 오래 걸린다. UP 목록만의 차별화를 위해 <b>목록 내 검색창</b> 요청.</p>' +
-        '<span class="prd-k2">해결</span>' +
-        '<p>UP한 상품 목록 상단에 <b>검색창(상품명·상품코드)</b> 추가. 검색 결과만 노출되고, <b>전체 선택은 검색된 상품만</b> 대상이 된다.</p>',
+        '<p>UP한 상품이 많아지면(상품 100~500개) 특정 상품을 <b>목록에서 눈으로 훑어</b> 찾아야 해 오래 걸린다. 별도 [UP한 상품 목록] 모달을 여는 대신, <b>이미 홈에 있는 상품 검색</b>을 그대로 쓰는 게 자연스럽다.</p>' +
+        '<span class="prd-k2">해결 (리뷰 반영 — 필터로 재탄생)</span>' +
+        '<p>· <b>[UP한 상품 목록] 모달 제거.</b><br/>· 홈 툴바에 <b>[UP한 상품] 필터</b> 추가([가격 수정] 좌측). UP한 상품이 <b>없으면 비활성</b>(가격 수정·선택 삭제처럼), <b>1개 이상이면 활성</b>. 켜면 <b>홈 리스트가 UP한 상품만</b> 노출.<br/>· 그 상태에서 홈 검색 <b>[상품명 / 상품코드 / 자체상품코드]</b>로 원하는 상품만 추린다(라이크 검색).<br/>· <b>전체 선택 = 검색된(보이는) 상품만</b> 대상.</p>',
       flowHTML:
-        '<span class="prd-k2">검증 플로우</span>' +
+        '<span class="prd-k2">[UP한 상품] 필터 + 홈 검색 흐름</span>' +
         '<div class="fpath">' +
-          '<div class="fpath-h"><span class="fpath-tag a">경로</span> UP한 상품 목록</div>' +
-          '<div class="frow"><span class="fnode">[UP한 상품 목록]</span><span class="farr">→</span><span class="fnode">검색창에 상품명/코드 입력</span><span class="farr">→</span><span class="fnode">일치 상품만 노출</span></div>' +
-          '<div class="frow"><span class="fnode">선택</span><span class="farr">→</span><span class="fnode">스토어 ON/OFF</span></div>' +
+          '<div class="fpath-h"><span class="fpath-tag a">홈 툴바</span> [UP한 상품] 필터</div>' +
+          '<div class="frow"><span class="fnode">UP한 상품 0개</span><span class="farr">→</span><span class="fnode">[UP한 상품] 필터 <b>비활성</b></span></div>' +
+          '<div class="frow"><span class="fnode">UP한 상품 1개+</span><span class="farr">→</span><span class="fnode">필터 <b>활성</b> · 켜면 홈 리스트 = UP한 상품만</span></div>' +
         '</div>' +
-        '<div class="fnode final">검색으로 특정 상품을 빠르게 찾아 스토어 처리 · 상단 카운트는 전체 UP 수 유지</div>',
+        '<div class="fmerge">↓ UP한 상품만 노출된 상태에서</div>' +
+        '<div class="fpath">' +
+          '<div class="fpath-h"><span class="fpath-tag b">홈 검색</span> 상품명 · 상품코드 · 자체상품코드</div>' +
+          '<div class="frow"><span class="fnode">검색 필드 선택</span><span class="farr">→</span><span class="fnode">검색어 입력(라이크)</span><span class="farr">→</span><span class="fnode">일치 상품만 노출</span></div>' +
+        '</div>' +
+        '<div class="fnode final">전체 선택 = 검색된(보이는) 상품만 · 별도 모달 없이 홈에서 UP 상품 검색·관리</div>',
       prd: [
-        { n: 1, target: '#upSearch', title: 'UP 목록 검색창', tag: '검색',
-          def: 'UP한 상품 목록에서 상품명·상품코드로 특정 상품을 검색한다.',
-          asis: ['UP 상품이 많으면 특정 상품을 찾아 스토어 ON 하는 데 시간이 오래 걸림.'],
-          tobe: ['목록 상단 <b>검색창(상품명·상품코드)</b>으로 즉시 필터.'],
-          features: ['상품명 또는 상품코드 부분 일치로 필터.', '상단 카운트는 <b>전체 UP 수</b> 유지, 목록만 검색 결과로 갱신.'] },
-        { n: 2, target: '#upAll', title: '전체 선택 = 검색된 상품만', tag: '핵심',
-          def: '검색 상태에서 전체 선택은 지금 보이는(검색된) 상품만 대상으로 한다.',
-          features: ['검색 결과만 대상으로 <b>전체 선택 / 스토어 ON</b>.'] }
+        { n: 1, target: '#btnUpFilter', title: '[UP한 상품] 필터 ([가격 수정] 좌측)', tag: '필터 · 핵심',
+          def: 'UP한 상품을 홈 리스트에서 걸러 보는 필터. UP한 상품이 있을 때만 활성화되고, 켜면 홈 리스트가 UP한 상품만 노출된다.',
+          asis: ['UP한 상품을 보려면 <b>[UP한 상품 목록] 모달</b>을 따로 열어야 했음.'],
+          tobe: ['홈 툴바 <b>[UP한 상품] 필터</b>로 홈 리스트에서 바로 UP한 상품만 노출.'],
+          features: ['UP한 상품 <b>0개면 비활성</b>(가격 수정·선택 삭제와 동일 패턴), <b>1개 이상이면 활성</b>.', '켜면 홈 리스트가 <b>UP한 상품(한 번이라도 UP된 상품)만</b> 노출.', '[UP한 상품 목록] 모달·버튼은 <b>제거</b>.'] },
+        { n: 2, target: '.toolbar', title: '홈 검색 (상품명·상품코드·자체상품코드)', tag: '검색',
+          def: '홈 상단 검색에서 검색 필드(상품명/상품코드/자체상품코드)를 고르고 검색어로 라이크 검색한다.',
+          asis: ['목록을 눈으로 훑어 특정 상품을 찾아야 함(상품 100~500개면 오래 걸림).'],
+          tobe: ['<b>[상품명 / 상품코드 / 자체상품코드]</b> 필드 선택 + 검색어로 즉시 필터(라이크).'],
+          features: ['검색 필드 드롭다운 = 상품명 · 상품코드 · 자체상품코드.', '[UP한 상품] 필터와 함께 쓰면 <b>UP한 상품 안에서</b> 검색.'] },
+        { n: 3, target: '#selectAllBox', title: '전체 선택 = 검색된 상품만', tag: '핵심',
+          def: '필터·검색으로 보이는 상품만 전체 선택/카운트/일괄 동작(가격 수정·선택 삭제) 대상이 된다.',
+          asis: ['전체 선택 시 무조건 전체 UP 상품이 선택됨(검색 결과만 선택하는 기능 없음).'],
+          tobe: ['<b>검색된(보이는) 상품만</b> 전체 선택 대상.'],
+          features: ['전체 선택·카운트(n/총)·[가격 수정]·[선택 삭제] 모두 <b>보이는 상품 기준</b>.'] }
       ],
       steps: [
-        { tag: '시작', t: '<b>UP한 상품 목록</b>에 <b>검색창</b>을 더해 특정 상품을 빠르게 찾는 흐름을 시연합니다. (Jira GRIPPGM-3460)', target: function () { return q('.product-list'); }, act: function () { resetUI(); } },
-        { tag: 'UP 목록 열기', t: '<b>[UP한 상품 목록]</b>을 엽니다. UP한 상품이 많을수록 특정 상품을 찾기 번거로웠어요.', target: function () { return q('#upListModal .modal'); }, act: function () { if (!q('#upListModal').classList.contains('open')) { var b = q('#btnUpList'); if (b) b.click(); } } },
-        { tag: '검색창으로 찾기', t: '상단 <b>검색창</b>에 <b>상품명·상품코드</b>를 입력하면 일치하는 상품만 남아, 바로 찾아 스토어 ON 할 수 있습니다.', target: function () { return q('#upSearch'); }, act: function () { if (!q('#upListModal').classList.contains('open')) { var b = q('#btnUpList'); if (b) b.click(); } } }
+        { tag: '시작', t: 'UP한 상품을 <b>홈 [UP한 상품] 필터 + 검색</b>으로 골라내는 흐름을 시연합니다. ([UP한 상품 목록] 모달은 제거됨, Jira GRIPPGM-3460)', target: function () { return q('.product-list'); }, act: function () { resetUI(); } },
+        { tag: 'UP 누적', t: '운영 중 <b>여러 상품을 UP</b>합니다. 한정판매는 1개씩 노출되지만 <b>UP한 상품은 누적</b>됩니다.', target: function () { return q('.product-list'); }, act: function () { [1, 2].forEach(function (i) { var r = rowN(i); var b = r && r.querySelector('.btn-up'); if (b && !b.classList.contains('on')) b.click(); }); } },
+        { tag: '[UP한 상품] 필터', t: 'UP한 상품이 생기면 <b>[가격 수정] 좌측 [UP한 상품] 필터가 활성화</b>됩니다. 켜면 홈 리스트가 <b>UP한 상품만</b> 노출돼요. (UP 없으면 비활성)', target: function () { return q('#btnUpFilter'); }, act: function () { var b = document.getElementById('btnUpFilter'); if (b && b.classList.contains('enabled') && !b.classList.contains('filter-on')) b.click(); } },
+        { tag: '홈 검색으로 추리기', t: 'UP한 상품만 노출된 상태에서 상단 검색 <b>[상품명 / 상품코드 / 자체상품코드]</b>로 검색하면 <b>일치 상품만</b> 남습니다(라이크 검색).', target: function () { return q('.toolbar'); }, act: function () { var s = document.getElementById('homeSearch'); if (s) { s.value = '미니'; s.dispatchEvent(new Event('input', { bubbles: true })); } } },
+        { tag: '전체 선택 = 검색된 것만', t: '이 상태에서 <b>전체 선택</b>하면 <b>검색된(보이는) 상품만</b> 선택되고, [가격 수정]·[선택 삭제]도 그 대상에만 적용됩니다.', target: function () { return q('#selectAllBox'); }, act: function () { var s = document.getElementById('homeSearch'); if (s && s.value) { s.value = ''; s.dispatchEvent(new Event('input', { bubbles: true })); } } }
       ]
     });
 
@@ -4127,7 +4150,7 @@
     function snapshot() { var r = rowN(0); if (r) snap = { reg: r.querySelector('.pi-regular-input').value, dis: r.querySelector('.pi-discount-input').value, live: r.querySelector('.pi-live-input').value }; }
     function resetUI() {
       if (window.__gripSetMode) window.__gripSetMode(feat().demoMode || 'limited');
-      ['#priceModal', '#failModal', '#deleteModal', '#upListModal', '#upMaxModal', '#optionModal', '#optNameModal', '#optDelAllModal', '#optBulkModal', '#flashModal', '#impModal', '#castModal'].forEach(function (sel) { var m = q(sel); if (m) m.classList.remove('open'); });
+      ['#priceModal', '#failModal', '#deleteModal', '#upMaxModal', '#optionModal', '#optNameModal', '#optDelAllModal', '#optBulkModal', '#flashModal', '#impModal', '#castModal'].forEach(function (sel) { var m = q(sel); if (m) m.classList.remove('open'); });
       if (window.__gripChatReset) window.__gripChatReset();
       if (window.__gripImgReset) window.__gripImgReset();
       var tw = document.getElementById('toastWrap'); if (tw) tw.innerHTML = '';
